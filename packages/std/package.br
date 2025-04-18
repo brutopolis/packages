@@ -1,0 +1,3 @@
+package "std";
+file "std.c";
+compile "bucc std.c -o std.brl";

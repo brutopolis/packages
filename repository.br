@@ -1,5 +1,2 @@
-repository.name: "bpm_default";
-repository.url: "https://github.com/jardimdanificado/bpm_packages";
-repository.description: "bpm default repository";
-repository.package: "name" "author" "version" "https://github.com/what/ever";
-repository.package: "example" "jardimdanificado" "0.0.0" "https://github.com/jardimdanificado/example";
+repo.name "bpm_packages";
+repo.description: "bpm default repository";
