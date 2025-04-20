@@ -1,0 +1,6 @@
+FILES="math.c"
+BUILD="bucc -o math.brl main.c --extra '-lm'"
+RUN=""
+SETUP=""
+UPDATE=""
+CLEAN=""

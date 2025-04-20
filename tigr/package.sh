@@ -1,4 +1,4 @@
-FILES="tigr.c"
+FILES="tigr.c build.sh"
 BUILD="echo this need to be updated before be used #build.sh"
 RUN=""
 SETUP=""
