@@ -2,13 +2,13 @@
 
 function(_new)
 {
-    hash_set(vm, arg(0).s, arg_i(1));
+    hash_set(vm, &arg(0).u8[0], arg_i(1));
     return -1;
 }
 
 function(_delete)
 {
-    hash_unset(vm, arg(0).s);
+    hash_unset(vm, &arg(0).u8[0]);
     return -1;
 }
 
@@ -50,7 +50,7 @@ function(_ignore)
 function(_repeat)
 {
     Int times = arg(0).i;
-    char* code = arg(1).s;
+    char* code = &arg(1).u8[0];
     Int result = -1;
     for (Int i = 0; i < times; i++)
     {
@@ -65,7 +65,7 @@ function(_repeat)
 
 function(_forever)
 {
-    char* code = arg(0).s;
+    char* code = &arg(0).u8[0];
     Int result = -1;
     while(1)
     {

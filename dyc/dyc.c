@@ -81,7 +81,7 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
 
     Int result = new_var(vm, TYPE_DATA, pun(tcc, p, i));
 
-    char *code = str_format("%s\n%s", bruter_header, arg(0).s);
+    char *code = str_format("%s\n%s", bruter_header, &arg(0).u8[0]);
     
     add_common_symbols(tcc);
 
@@ -99,10 +99,10 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
 
     for (Int i = 1; i < args->size; i++) 
     {
-        void *func = tcc_get_symbol(tcc, arg(i).s);
+        void *func = tcc_get_symbol(tcc, &arg(i).u8[0]);
         if (!func) 
         {
-            fprintf(stderr, "could not obtain '%s' symbol\n", arg(i).s);
+            fprintf(stderr, "could not obtain '%s' symbol\n", &arg(i).u8[0]);
             return -1;
         }
 
@@ -112,7 +112,7 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
 
         list_push(*tcc_states_temp, _syass);
 
-        register_var(vm, arg(i).s, TYPE_DATA, pun(func, p, i));
+        register_var(vm, &arg(i).u8[0], TYPE_DATA, pun(func, p, i));
     }
     free(code);
     return -1;
