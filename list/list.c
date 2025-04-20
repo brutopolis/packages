@@ -20,7 +20,8 @@ void ___atexit_free_lists()
 
 function(brl_std_list_new)
 {
-    Int index = new_list(vm);
+    Int index = new_var(vm, 0);
+    lists->data[index].p = list_init(0);
     List *list = (List*)data(index).p;
     for (Int i = 0; i < args->size; i++)
     {
@@ -86,7 +87,7 @@ function(brl_std_list_set)
 {
     List *list = (List*)arg(0).p;
     Int index = arg(1).i;
-    list_set(list, index, (Value){.i = arg_i(2)});
+    list->data[index].i = arg_i(2);
     return -1;
 }
 
