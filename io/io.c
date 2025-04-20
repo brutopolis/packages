@@ -3,26 +3,31 @@
 function(print_int)
 {
     printf("%d\n", arg(0).i);
+    return -1;
 }
 
 function(print_float)
 {
     printf("%f\n", arg(0).f);
+    return -1;
 }
 
 function(print_string)
 {
     printf("%s\n", arg(0).s);
+    return -1;
 }
 
 function(print_bool)
 {
     printf("%s\n", arg(0).i ? "true" : "false");
+    return -1;
 }
 
 function(print_pointer)
 {
     printf("%p\n", arg(0).p);
+    return -1;
 }
 
 function(format)
