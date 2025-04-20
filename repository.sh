@@ -1,4 +1,4 @@
-LIBS="
+PKGS="
 bit
 byte
 dyc
