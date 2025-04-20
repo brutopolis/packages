@@ -1,61 +1,74 @@
 #include "buxu.h"
 
-function(new)
+function(print_int)
 {
-    hash_set(vm, arg(0).s, arg_i(1));
-    return -1;
+    printf("%d\n", arg(0).i);
 }
 
-function(ls)
+function(print_float)
 {
-    for (Int i = 0; i < vm->values->size; i++)
-    {
-        if (vm->hashes->data[i].p != NULL)
-        {
-            printf("[%ld](\"%s\"):\t\t", i, vm->hashes->data[i].s);
-        }
-        else
-        {
-            printf("[%ld](\"\"):\t\t", i);
-        }
-
-        printf(" %i\n", vm->values->data[i].s);
-    }
-    return -1;
+    printf("%f\n", arg(0).f);
 }
 
-function(_return)
+function(print_string)
 {
-    if (args->size < 1)
-    {
-        return -1;
-    }
-    else
-    {
-        return arg_i(0);
-    }
+    printf("%s\n", arg(0).s);
 }
 
-function(_repeat)
+function(print_bool)
 {
-    Int times = arg(0).i;
-    char* code = arg(1).s;
-    Int result = -1;
-    for (Int i = 0; i < times; i++)
+    printf("%s\n", arg(0).i ? "true" : "false");
+}
+
+function(print_pointer)
+{
+    printf("%p\n", arg(0).p);
+}
+
+function(format)
+{
+    char *_format = arg(0).s;
+    char *result = malloc(strlen(_format) + 1);
+    for (int i = 0; _format[i] != '\0'; i++) 
     {
-        result = eval(vm, code);
-        if (result != -1)
-        {
-            break;
+        if (_format[i] == '%') {
+            if (_format[i + 1] == 'd') 
+            {
+                sprintf(result, "%d", arg(1).i);
+                i++;
+            } 
+            else if (_format[i + 1] == 'f') 
+            {
+                sprintf(result, "%f", arg(1).f);
+                i++;
+            } 
+            else if (_format[i + 1] == 's') 
+            {
+                sprintf(result, "%s", arg(1).s);
+                i++;
+            } 
+            else if (_format[i + 1] == 'b') 
+            {
+                sprintf(result, "%s", arg(1).i ? "true" : "false");
+                i++;
+            }
+        } else {
+            result[i] = _format[i];
         }
     }
-    return result;
+    result[strlen(_format)] = '\0';
+
+    Int index = new_first_var(vm, NULL);
+    vm->values->data[index].s = result;
+    return index;
 }
 
 init(io)
 {
-    add_function(vm, "new", new);
-    add_function(vm, "ls", ls);
-    add_function(vm, "return", _return);
-    add_function(vm, "repeat", _repeat);
+    add_function(vm, "print.int", print_int);
+    add_function(vm, "print.float", print_float);
+    add_function(vm, "print.string", print_string);
+    add_function(vm, "print.bool", print_bool);
+    add_function(vm, "print.pointer", print_pointer);
+    add_function(vm, "format", format);
 }
