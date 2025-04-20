@@ -52,7 +52,7 @@ function(_repeat)
     return result;
 }
 
-init(std)
+init(io)
 {
     add_function(vm, "new", new);
     add_function(vm, "ls", ls);
