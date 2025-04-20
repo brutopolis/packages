@@ -128,7 +128,7 @@ function(brl_std_list_reverse)
 
 init(list)
 {
-    lists = new_list(vm);
+    lists = list_init(0);
     atexit(___atexit_free_lists); // remove lists at exit if not freed by user
     
     add_function(vm, "list.new", brl_std_list_new);
