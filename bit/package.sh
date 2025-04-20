@@ -1,4 +1,4 @@
-FILES="dyc.c"
+FILES="bit.c"
 BUILD="bucc -o bit.brl bit.c --extra -lm"
 RUN=""
 SETUP=""
