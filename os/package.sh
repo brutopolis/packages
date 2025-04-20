@@ -1,0 +1,6 @@
+FILES="os.c"
+BUILD="bucc -o os.brl os.c"
+RUN=""
+SETUP=""
+UPDATE=""
+CLEAN=""
