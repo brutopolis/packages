@@ -1,6 +1,0 @@
-FILES="list.c"
-BUILD="bucc -o list.brl list.c"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""
