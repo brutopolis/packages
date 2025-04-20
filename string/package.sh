@@ -1,6 +1,0 @@
-FILES="string.c"
-BUILD="bucc -o string.brl string.c"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""
