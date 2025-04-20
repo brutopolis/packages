@@ -60,7 +60,7 @@ function(_fmod)
     return -1;
 }
 
-init(std)
+init(math)
 {
     add_function(vm, "iadd", _iadd);
     add_function(vm, "isub", _isub);
