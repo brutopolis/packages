@@ -1,5 +1,5 @@
 FILES="math.c"
-BUILD="bucc -o math.brl main.c --extra '-lm'"
+BUILD="bucc -o math.brl math.c --extra '-lm'"
 RUN=""
 SETUP=""
 UPDATE=""
