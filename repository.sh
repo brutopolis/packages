@@ -3,7 +3,6 @@ bit
 byte
 dyc
 io
-list
 math
 os
 string

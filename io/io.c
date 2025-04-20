@@ -14,7 +14,7 @@ function(print_float)
 
 function(print_string)
 {
-    printf("%s\n", arg(0).s);
+    printf("%s\n", &arg(0).u8[0]);
     return -1;
 }
 
