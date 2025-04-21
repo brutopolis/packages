@@ -1,5 +1,5 @@
 FILES="byte.c"
-BUILD="bucc -o bit.brl bit.c --extra -lm"
+BUILD="bucc -o byte.brl byte.c --extra -lm"
 RUN=""
 SETUP=""
 UPDATE=""

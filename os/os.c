@@ -2,7 +2,7 @@
 
 function(_read_file)
 {
-    char *filename = &arg(0).u8[0];
+    char *filename = arg_s(0);
     char *content = readfile(filename);
     if (content == NULL)
     {
@@ -23,15 +23,15 @@ function(_read_file)
 
 function(_write_file)
 {
-    char *filename = &arg(0).u8[0];
-    char *content = &arg(1).u8[0];
+    char *filename = arg_s(0);
+    char *content = arg_s(1);
     writefile(filename, content);
     return -1;
 }
 
 function(_file_exists)
 {
-    char *filename = &arg(0).u8[0];
+    char *filename = arg_s(0);
     return file_exists(filename);
 }
 
