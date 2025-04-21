@@ -78,6 +78,19 @@ function(_forever)
     return result;
 }
 
+function(_get)
+{
+    return arg(0).i;
+}
+
+function(_set)
+{
+    Int index = arg(0).i;
+    Int value = arg(1).i;
+    vm->values->data[index].i = value;
+    return -1;
+}
+
 init(std)
 {
     add_function(vm, "new", _new);
@@ -91,4 +104,7 @@ init(std)
 
     add_function(vm, "repeat", _repeat);
     add_function(vm, "forever", _forever);
+
+    add_function(vm, "get", _get);
+    add_function(vm, "set", _set);
 }
