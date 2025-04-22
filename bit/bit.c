@@ -73,7 +73,7 @@ function(_bit_swap)
     return -1;
 }
 
-init(bits)
+init(bit)
 {
     add_function(vm, "bit.and", _bit_and);
     add_function(vm, "bit.or", _bit_or);

@@ -57,7 +57,7 @@ function(_byte_div)
     return -1;
 }
 
-init(bytes)
+init(byte)
 {
     add_function(vm, "byte.set", _byte_set);
     add_function(vm, "byte.get", _byte_get);

@@ -6,6 +6,12 @@ function(print_int)
     return -1;
 }
 
+function(print_uint)
+{
+    printf("%u\n", arg(0).i);
+    return -1;
+}
+
 function(print_float)
 {
     printf("%f\n", arg(0).f);
@@ -30,10 +36,12 @@ function(print_pointer)
     return -1;
 }
 
-function(print_bits) // 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
+function(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
 {
+    // print the txt 0b0010101010101...
     Int number = arg(0).i;
     Int size = sizeof(Int);
+    printf("0b");
     for (Int i = size * 8 - 1; i >= 0; i--) {
         printf("%d", (number >> i) & 1);
     }
@@ -83,6 +91,7 @@ function(print_hex)
 init(io)
 {
     add_function(vm, "print.int", print_int);
+    add_function(vm, "print.uint", print_uint);
     add_function(vm, "print.float", print_float);
     add_function(vm, "print.string", print_string);
     add_function(vm, "print.bool", print_bool);
