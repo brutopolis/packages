@@ -10,9 +10,8 @@
 typedef void (*InitFunction)(VirtualMachine*);
 
 List *dyc_state_list;
-List *dyc_symbol_list;
 
-const char* bruter_header = "#include <libtcc.h>\n#include \"buxu.h\"\n";
+const char* bruter_header = "#include \"buxu.h\"\n";
 
 void add_common_symbols(TCCState *tcc)
 {
@@ -107,7 +106,6 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
             return -1;
         }
 
-        list_push(dyc_symbol_list, (Value){.p=func});
         list_push(dyc_state_list, (Value){.p=tcc});
 
         Int index = new_var(vm, arg_s(i));
@@ -126,15 +124,13 @@ void _terminate_tcc_at_exit_handler()
 {
     brl_tcc_clear_states(NULL, NULL);
     list_free(dyc_state_list);
-    list_free(dyc_symbol_list);
 }
 
 init(dyc)
 {
     dyc_state_list = list_init(0);
-    dyc_symbol_list = list_init(0);
 
-    if (!dyc_state_list || !dyc_symbol_list) 
+    if (!dyc_state_list) 
     {
         fprintf(stderr, "could not create dyc state list\n");
         return;
