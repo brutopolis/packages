@@ -7,17 +7,12 @@
 #include "buxu.h"
 #include <libtcc.h>
 
-typedef struct {
-    void *symbolPointer;
-    void *statePointer;
-} SymbolAssociation;
-
-typedef List(SymbolAssociation) SymbolAssociationList;
 typedef void (*InitFunction)(VirtualMachine*);
 
-SymbolAssociationList *tcc_states_temp;
+List *dyc_state_list;
+List *dyc_symbol_list;
 
-const char* bruter_header = "#include \"buxu.h\"\n";
+const char* bruter_header = "#include <libtcc.h>\n#include \"buxu.h\"\n";
 
 void add_common_symbols(TCCState *tcc)
 {
@@ -60,9 +55,9 @@ void add_common_symbols(TCCState *tcc)
 
 function(brl_tcc_clear_states)
 {
-    while (tcc_states_temp->size > 0) 
+    while (dyc_state_list->size > 0) 
     {
-        tcc_delete((TCCState *)(list_shift(*tcc_states_temp)).statePointer);
+        tcc_delete((TCCState *)(list_shift(dyc_state_list)).s);
     }
     return -1;
 }
@@ -79,7 +74,13 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
     // Configurar saída para memória
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    Int result = new_var(vm, TYPE_DATA, pun(tcc, p, i));
+    Int result = new_var(vm, NULL);
+    if (result < 0) 
+    {
+        fprintf(stderr, "could not create new var\n");
+        return -1;
+    }
+    data(result).p = tcc;
 
     char *code = str_format("%s\n%s", bruter_header, arg_s(0));
     
@@ -106,13 +107,16 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
             return -1;
         }
 
-        SymbolAssociation _syass;
-        _syass.symbolPointer = func;
-        _syass.statePointer = tcc;
+        list_push(dyc_symbol_list, (Value){.p=func});
+        list_push(dyc_state_list, (Value){.p=tcc});
 
-        list_push(*tcc_states_temp, _syass);
-
-        register_var(vm, arg_s(i), TYPE_DATA, pun(func, p, i));
+        Int index = new_var(vm, arg_s(i));
+        if (index < 0) 
+        {
+            fprintf(stderr, "could not create new var\n");
+            return -1;
+        }
+        data(index).p = func;
     }
     free(code);
     return -1;
@@ -121,12 +125,20 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
 void _terminate_tcc_at_exit_handler()
 {
     brl_tcc_clear_states(NULL, NULL);
-    list_free(*tcc_states_temp);
+    list_free(dyc_state_list);
+    list_free(dyc_symbol_list);
 }
 
 init(dyc)
 {
-    tcc_states_temp = list_init(SymbolAssociationList);
+    dyc_state_list = list_init(0);
+    dyc_symbol_list = list_init(0);
+
+    if (!dyc_state_list || !dyc_symbol_list) 
+    {
+        fprintf(stderr, "could not create dyc state list\n");
+        return;
+    }
 
     add_function(vm, "dycc.clear", brl_tcc_clear_states);
     add_function(vm, "dycc.compile", brl_tcc_c_new_function);

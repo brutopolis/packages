@@ -1,5 +1,5 @@
 FILES="dyc.c"
-BUILD="bucc -o dyc.brl dyc.c --extra -ltcc"
+BUILD="bucc -o dyc.brl dyc.c -ltcc"
 RUN=""
 SETUP=""
 UPDATE=""
