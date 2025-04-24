@@ -641,7 +641,7 @@ init(tigr)
     // builtin font
     Int index = new_var(vm);
     data(index).pointer = tfont;
-    hash_set(vm, "tigr.font", index);
+    label_set(vm, "tigr.font", index);
 
 
     register_builtin(vm, "tigr.rgb", bu_tigr_rgb);

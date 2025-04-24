@@ -2,13 +2,13 @@
 
 function(_new)
 {
-    hash_set(vm, arg_s(0), arg_i(1));
+    label_set(vm, arg_s(0), arg_i(1));
     return -1;
 }
 
 function(_delete)
 {
-    hash_unset(vm, arg_s(0));
+    label_unset(vm, arg_s(0));
     return -1;
 }
 
@@ -16,9 +16,9 @@ function(_ls)
 {
     for (Int i = 0; i < vm->values->size; i++)
     {
-        if (vm->hashes->data[i].p != NULL)
+        if (vm->labels->data[i].p != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, vm->hashes->data[i].s);
+            printf("[%ld](\"%s\"):\t\t", i, vm->labels->data[i].s);
         }
         else
         {
@@ -98,7 +98,7 @@ init(std)
     
     add_function(vm, "ls", _ls);
     
-    add_function(vm, "ignore", _ignore);
+    add_function(vm, "void", _ignore);
 
     add_function(vm, "return", _return);
 

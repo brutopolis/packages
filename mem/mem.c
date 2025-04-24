@@ -1,6 +1,6 @@
 #include "buxu.h"
 
-function(mem_set)
+function(mem_compose)
 {
     
 }
