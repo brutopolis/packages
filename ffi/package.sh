@@ -1,0 +1,6 @@
+FILES="ffi.c"
+BUILD="bucc -o ffi.brl ffi.c -ltcc"
+RUN=""
+SETUP=""
+UPDATE=""
+CLEAN=""

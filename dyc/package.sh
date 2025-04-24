@@ -1,6 +1,0 @@
-FILES="dyc.c"
-BUILD="bucc -o dyc.brl dyc.c -ltcc"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""

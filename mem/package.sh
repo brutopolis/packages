@@ -1,6 +1,0 @@
-FILES="mem.c"
-BUILD="bucc -o mem.brl mem.c -lm"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""

@@ -9,7 +9,7 @@
 
 typedef void (*InitFunction)(VirtualMachine*);
 
-List *dyc_state_list;
+List *ffi_state_list;
 
 const char* bruter_header = "#include \"buxu.h\"\n";
 
@@ -54,14 +54,14 @@ void add_common_symbols(TCCState *tcc)
 
 function(brl_tcc_clear_states)
 {
-    while (dyc_state_list->size > 0) 
+    while (ffi_state_list->size > 0) 
     {
-        tcc_delete((TCCState *)(list_shift(dyc_state_list)).s);
+        tcc_delete((TCCState *)(list_shift(ffi_state_list)).s);
     }
     return -1;
 }
 
-function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + get_symbol
+function(brl_tcc_c_new_function)
 {
     TCCState *tcc = tcc_new();
     if (!tcc) 
@@ -70,7 +70,6 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
         return -1;
     }
 
-    // Configurar saída para memória
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
     Int result = new_var(vm, NULL);
@@ -82,7 +81,7 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
     data(result).p = tcc;
 
     char *code = str_format("%s\n%s", bruter_header, arg_s(0));
-    
+
     add_common_symbols(tcc);
 
     if (tcc_compile_string(tcc, code) < 0) 
@@ -97,25 +96,48 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
         return -1;
     }
 
-    for (Int i = 1; i < args->size; i++) 
+    char *token = code;
+    while (*token) 
     {
-        void *func = tcc_get_symbol(tcc, arg_s(i));
+        token = strstr(token, "function(");
+        if (!token)
+        {
+            break;
+        }
+
+        token += 9;
+        char *end = strchr(token, ')');
+        if (!end)
+        {
+            break;
+        }
+
+        char *symbol = str_nduplicate(token, end - token);
+
+        void *func = tcc_get_symbol(tcc, symbol);
         if (!func) 
         {
-            fprintf(stderr, "could not obtain '%s' symbol\n", arg_s(i));
+            fprintf(stderr, "could not obtain '%s' symbol\n", symbol);
+            free(symbol);
             return -1;
         }
 
-        list_push(dyc_state_list, (Value){.p=tcc});
+        list_push(ffi_state_list, (Value){.p = tcc});
 
-        Int index = new_var(vm, arg_s(i));
+        Int index = new_var(vm, symbol);
         if (index < 0) 
         {
             fprintf(stderr, "could not create new var\n");
+            free(symbol);
             return -1;
         }
+
         data(index).p = func;
+        free(symbol);
+
+        token = end + 1;
     }
+
     free(code);
     return -1;
 }
@@ -123,21 +145,21 @@ function(brl_tcc_c_new_function) // a combo of new_state + compile + relocate + 
 void _terminate_tcc_at_exit_handler()
 {
     brl_tcc_clear_states(NULL, NULL);
-    list_free(dyc_state_list);
+    list_free(ffi_state_list);
 }
 
-init(dyc)
+init(ffi)
 {
-    dyc_state_list = list_init(0);
+    ffi_state_list = list_init(0);
 
-    if (!dyc_state_list) 
+    if (!ffi_state_list) 
     {
-        fprintf(stderr, "could not create dyc state list\n");
+        fprintf(stderr, "could not create ffi state list\n");
         return;
     }
 
-    add_function(vm, "dycc.clear", brl_tcc_clear_states);
-    add_function(vm, "dycc.compile", brl_tcc_c_new_function);
+    add_function(vm, "ffi.clear", brl_tcc_clear_states);
+    add_function(vm, "ffi.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

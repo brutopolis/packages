@@ -1,11 +1,11 @@
 #include "buxu.h"
 
-function(mem_compose)
+function(_str)
 {
     
 }
 
-init(mem)
+init(str)
 {
 
 }
