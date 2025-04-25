@@ -1,6 +1,6 @@
 #include "buxu.h"
 
-function(_new)
+function(_label)
 {
     label_set(vm, arg_s(0), arg_i(1));
     return -1;
@@ -8,7 +8,48 @@ function(_new)
 
 function(_delete)
 {
-    label_unset(vm, arg_s(0));
+    Int position = arg_i(0);
+    if (args->size == 0)
+    {
+        return -1;
+    }
+    else if (args->size == 1)
+    {
+        free(vm->labels->data[position].s);
+        vm->labels->data[position].s = NULL;
+        list_remove(vm->values, position);
+        list_remove(vm->labels, position);
+        return -1;
+    }
+    else if (args->size == 2)
+    {
+        Int amount = arg_i(1);
+        for (Int i = 0;i < amount; i++)
+        {
+            free(vm->labels->data[position].s);
+            vm->labels->data[position].s = NULL;
+            list_remove(vm->values, position);
+            list_remove(vm->labels, position);
+        }
+        return -1;
+    }
+    return -1;
+}
+
+function(_unlabel)
+{
+    Int position = arg_i(0);
+    free(vm->labels->data[position].s);
+    vm->labels->data[position].s = NULL;
+    return -1;
+}
+
+function(_rename)
+{
+    Int position = arg_i(0);
+    char* name = arg_s(1);
+    free(vm->labels->data[position].s);
+    vm->labels->data[position].s = str_duplicate(name);
     return -1;
 }
 
@@ -93,7 +134,10 @@ function(_set)
 
 init(std)
 {
-    add_function(vm, "new", _new);
+    add_function(vm, "label", _label);
+    add_function(vm, "unlabel", _unlabel);
+    add_function(vm, "rename", _rename);
+    
     add_function(vm, "delete", _delete);
     
     add_function(vm, "ls", _ls);

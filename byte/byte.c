@@ -5,16 +5,18 @@ function(_byte_set)
     Int index = arg(1).i;
     Int value = arg(2).i;
 
-    arg(0).u8[index] = value;
+    arg_s(0)[index] = value;
  
     return -1;
 }
 
 function(_byte_get)
 {
-    Int index = arg(1).i;
+    Int byte_index = arg(1).i;
+    Int index = new_var(vm, NULL);
+    arg(index).i = arg_s(0)[byte_index];
 
-    return arg(0).u8[index];
+    return index;
 }
 
 function(_byte_add)

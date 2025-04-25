@@ -17,7 +17,6 @@ void add_common_symbols(TCCState *tcc)
 {
     const void *core_funcs[] = {
         str_format,
-        special_space_split,
         special_split,
         make_vm,
         free_vm,
@@ -32,7 +31,6 @@ void add_common_symbols(TCCState *tcc)
 
     const char *core_names[] = {
         "str_format",
-        "special_space_split",
         "special_split",
         "make_vm",
         "free_vm",
