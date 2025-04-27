@@ -2,54 +2,7 @@
 
 function(_label)
 {
-    label_set(vm, arg_s(0), arg_i(1));
-    return -1;
-}
-
-function(_delete)
-{
-    Int position = arg_i(0);
-    if (args->size == 0)
-    {
-        return -1;
-    }
-    else if (args->size == 1)
-    {
-        free(vm->labels->data[position].s);
-        vm->labels->data[position].s = NULL;
-        list_remove(vm->values, position);
-        list_remove(vm->labels, position);
-        return -1;
-    }
-    else if (args->size == 2)
-    {
-        Int amount = arg_i(1);
-        for (Int i = 0;i < amount; i++)
-        {
-            free(vm->labels->data[position].s);
-            vm->labels->data[position].s = NULL;
-            list_remove(vm->values, position);
-            list_remove(vm->labels, position);
-        }
-        return -1;
-    }
-    return -1;
-}
-
-function(_unlabel)
-{
-    Int position = arg_i(0);
-    free(vm->labels->data[position].s);
-    vm->labels->data[position].s = NULL;
-    return -1;
-}
-
-function(_rename)
-{
-    Int position = arg_i(0);
-    char* name = arg_s(1);
-    free(vm->labels->data[position].s);
-    vm->labels->data[position].s = str_duplicate(name);
+    arg_l(1) = arg_i(0);
     return -1;
 }
 
@@ -57,16 +10,16 @@ function(_ls)
 {
     for (Int i = 0; i < vm->values->size; i++)
     {
-        if (vm->labels->data[i].p != NULL)
+        if (data_l(i) > -1)
         {
-            printf("[%ld](\"%s\"):\t\t", i, vm->labels->data[i].s);
+            printf("[%ld](\"%s\"):\t\t", i, data_ls(i));
         }
         else
         {
             printf("[%ld](\"\"):\t\t", i);
         }
 
-        printf(" %i\n", vm->values->data[i].s);
+        printf(" %s\n", data_s(i));
     }
     return -1;
 }
@@ -135,10 +88,10 @@ function(_set)
 init(std)
 {
     add_function(vm, "label", _label);
-    add_function(vm, "unlabel", _unlabel);
-    add_function(vm, "rename", _rename);
+    //add_function(vm, "unlabel", _unlabel);
+    //add_function(vm, "rename", _rename);
     
-    add_function(vm, "delete", _delete);
+    //add_function(vm, "delete", _delete);
     
     add_function(vm, "ls", _ls);
     

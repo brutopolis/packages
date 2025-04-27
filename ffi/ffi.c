@@ -22,8 +22,6 @@ void add_common_symbols(TCCState *tcc)
         free_vm,
         new_var,
         label_find,
-        label_set,
-        label_unset,
         eval,
         interpret,
         parse
@@ -36,8 +34,6 @@ void add_common_symbols(TCCState *tcc)
         "free_vm",
         "new_var",
         "label_find",
-        "label_set",
-        "label_unset",
         "eval",
         "interpret",
         "parse"
