@@ -2,7 +2,8 @@
 
 function(_label)
 {
-    arg_l(1) = arg_i(0);
+    char* label = arg_s(0);
+    
     return -1;
 }
 
@@ -10,9 +11,9 @@ function(_ls)
 {
     for (Int i = 0; i < vm->values->size; i++)
     {
-        if (data_l(i) > -1)
+        if (data_l(i).i != 0)
         {
-            printf("[%ld](\"%s\"):\t\t", i, data_ls(i));
+            printf("[%ld](\"%s\"):\t\t", i, data_l(i).u8);
         }
         else
         {
@@ -87,7 +88,7 @@ function(_set)
 
 init(std)
 {
-    add_function(vm, "label", _label);
+    add_function(vm, "lbl", _label);
     //add_function(vm, "unlabel", _unlabel);
     //add_function(vm, "rename", _rename);
     
