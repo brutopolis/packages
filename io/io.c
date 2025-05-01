@@ -90,15 +90,15 @@ function(print_hex)
 
 init(io)
 {
-    add_function(vm, "print.int", print_int);
-    add_function(vm, "print.uint", print_uint);
-    add_function(vm, "print.float", print_float);
-    add_function(vm, "print.string", print_string);
-    add_function(vm, "print.bool", print_bool);
-    add_function(vm, "print.pointer", print_pointer);
-    add_function(vm, "print.bits", print_bits);
-    add_function(vm, "print.bytes", print_bytearray);
-    add_function(vm, "print.octal", print_octal);
-    add_function(vm, "print.hex", print_hex);
-    add_function(vm, "print.bitarray", print_bitarray);
+    add_function(context, "print.int", print_int);
+    add_function(context, "print.uint", print_uint);
+    add_function(context, "print.float", print_float);
+    add_function(context, "print.string", print_string);
+    add_function(context, "print.bool", print_bool);
+    add_function(context, "print.pointer", print_pointer);
+    add_function(context, "print.bits", print_bits);
+    add_function(context, "print.bytes", print_bytearray);
+    add_function(context, "print.octal", print_octal);
+    add_function(context, "print.hex", print_hex);
+    add_function(context, "print.bitarray", print_bitarray);
 }

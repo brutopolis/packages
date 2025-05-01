@@ -5,7 +5,7 @@ function(_byte_set)
     Int index = arg(1).i;
     Int value = arg(2).i;
 
-    arg_s(0)[index] = value;
+    (arg_s(0))[index] = value;
  
     return -1;
 }
@@ -13,8 +13,8 @@ function(_byte_set)
 function(_byte_get)
 {
     Int byte_index = arg(1).i;
-    Int index = new_var(vm, NULL);
-    arg(index).i = arg_s(0)[byte_index];
+    Int index = new_var(context, NULL);
+    arg(index).i = (arg_s(0))[byte_index];
 
     return index;
 }
@@ -61,11 +61,11 @@ function(_byte_div)
 
 init(byte)
 {
-    add_function(vm, "byte.set", _byte_set);
-    add_function(vm, "byte.get", _byte_get);
+    add_function(context, "byte.set", _byte_set);
+    add_function(context, "byte.get", _byte_get);
     
-    add_function(vm, "byte.add", _byte_add);
-    add_function(vm, "byte.sub", _byte_sub);
-    add_function(vm, "byte.mul", _byte_mul);
-    add_function(vm, "byte.div", _byte_div);
+    add_function(context, "byte.add", _byte_add);
+    add_function(context, "byte.sub", _byte_sub);
+    add_function(context, "byte.mul", _byte_mul);
+    add_function(context, "byte.div", _byte_div);
 }

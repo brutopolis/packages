@@ -12,10 +12,10 @@ function(_read_file)
 
     Int len = strlen(content);
     Int blocks = (len+1) / sizeof(void*);
-    Int var = new_block(vm, NULL, blocks);
+    Int var = new_block(context, blocks, NULL);
     
-    memcpy(&vm->values->data[var].u8[0], content, len);
-    ((uint8_t*)vm->values->data)[(var*sizeof(void*)) + len] = '\0';
+    memcpy(&context->data[var].u8[0], content, len);
+    ((uint8_t*)context->data)[(var*sizeof(void*)) + len] = '\0';
 
     free(content);    
     return var;
@@ -38,7 +38,7 @@ function(_file_exists)
 init(os)
 {
     // register functions
-    register_function("file.read", _read_file);
-    register_function("file.write", _write_file);
-    register_function("file.exists", _file_exists);
+    add_function(context, "file.read", _read_file);
+    add_function(context, "file.write", _write_file);
+    add_function(context, "file.exists", _file_exists);
 }

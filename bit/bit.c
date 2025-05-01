@@ -75,15 +75,15 @@ function(_bit_swap)
 
 init(bit)
 {
-    add_function(vm, "bit.and", _bit_and);
-    add_function(vm, "bit.or", _bit_or);
-    add_function(vm, "bit.xor", _bit_xor);
-    add_function(vm, "bit.not", _bit_not);
-    add_function(vm, "bit.lshift", _bit_lshift);
-    add_function(vm, "bit.rshift", _bit_rshift);
-    add_function(vm, "bit.set", _bit_set);
-    add_function(vm, "bit.clear", _bit_clear);
-    add_function(vm, "bit.get", _bit_get);
-    add_function(vm, "bit.switch", _bit_switch);
-    add_function(vm, "bit.swap", _bit_swap);
+    add_function(context, "bit.and", _bit_and);
+    add_function(context, "bit.or", _bit_or);
+    add_function(context, "bit.xor", _bit_xor);
+    add_function(context, "bit.not", _bit_not);
+    add_function(context, "bit.lshift", _bit_lshift);
+    add_function(context, "bit.rshift", _bit_rshift);
+    add_function(context, "bit.set", _bit_set);
+    add_function(context, "bit.clear", _bit_clear);
+    add_function(context, "bit.get", _bit_get);
+    add_function(context, "bit.switch", _bit_switch);
+    add_function(context, "bit.swap", _bit_swap);
 }

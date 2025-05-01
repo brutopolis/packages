@@ -62,15 +62,15 @@ function(_fmod)
 
 init(math)
 {
-    add_function(vm, "iadd", _iadd);
-    add_function(vm, "isub", _isub);
-    add_function(vm, "imul", _imul);
-    add_function(vm, "idiv", _idiv);
-    add_function(vm, "imod", _imod);
+    add_function(context, "iadd", _iadd);
+    add_function(context, "isub", _isub);
+    add_function(context, "imul", _imul);
+    add_function(context, "idiv", _idiv);
+    add_function(context, "imod", _imod);
 
-    add_function(vm, "fadd", _fadd);
-    add_function(vm, "fsub", _fsub);
-    add_function(vm, "fmul", _fmul);
-    add_function(vm, "fdiv", _fdiv);
-    add_function(vm, "fmod", _fmod);
+    add_function(context, "fadd", _fadd);
+    add_function(context, "fsub", _fsub);
+    add_function(context, "fmul", _fmul);
+    add_function(context, "fdiv", _fdiv);
+    add_function(context, "fmod", _fmod);
 }

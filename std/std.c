@@ -2,18 +2,18 @@
 
 function(_label)
 {
-    char* label = arg_s(0);
-    
+    free(context->keys[arg_i(0)]);
+    context->keys[arg_i(1)] = str_duplicate(arg_s(0));
     return -1;
 }
 
 function(_ls)
 {
-    for (Int i = 0; i < vm->values->size; i++)
+    for (Int i = 0; i < context->size; i++)
     {
-        if (data_l(i).i != 0)
+        if (data_l(i) != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, data_l(i).u8);
+            printf("[%ld](\"%s\"):\t\t", i, data_l(i));
         }
         else
         {
@@ -49,7 +49,7 @@ function(_repeat)
     Int result = -1;
     for (Int i = 0; i < times; i++)
     {
-        result = eval(vm, code);
+        result = eval(context, code);
         if (result != -1)
         {
             break;
@@ -64,7 +64,7 @@ function(_forever)
     Int result = -1;
     while(1)
     {
-        result = eval(vm, code);
+        result = eval(context, code);
         if (result != -1)
         {
             break;
@@ -82,27 +82,27 @@ function(_set)
 {
     Int index = arg(0).i;
     Int value = arg(1).i;
-    vm->values->data[index].i = value;
+    context->data[index].i = value;
     return -1;
 }
 
 init(std)
 {
-    add_function(vm, "lbl", _label);
-    //add_function(vm, "unlabel", _unlabel);
-    //add_function(vm, "rename", _rename);
+    add_function(context, "label", _label);
+    //add_function(context, "unlabel", _unlabel);
+    //add_function(context, "rename", _rename);
     
-    //add_function(vm, "delete", _delete);
+    //add_function(context, "delete", _delete);
     
-    add_function(vm, "ls", _ls);
+    add_function(context, "ls", _ls);
     
-    add_function(vm, "void", _ignore);
+    add_function(context, "ignore", _ignore);
 
-    add_function(vm, "return", _return);
+    add_function(context, "return", _return);
 
-    add_function(vm, "repeat", _repeat);
-    add_function(vm, "forever", _forever);
+    add_function(context, "repeat", _repeat);
+    add_function(context, "forever", _forever);
 
-    add_function(vm, "get", _get);
-    add_function(vm, "set", _set);
+    add_function(context, "get", _get);
+    add_function(context, "set", _set);
 }
