@@ -1,5 +1,6 @@
 FILES="ffi.c"
-BUILD="bucc -o ffi.brl ffi.c -ltcc"
+#BUILD="bucc -o ffi.brl ffi.c -ltcc"
+BUILD="echo THIS BUXU PACKAGE IS DEADLY OUTDATED AND NEEDS TO BE FIXED, DO NOT USE IT"
 RUN=""
 SETUP=""
 UPDATE=""

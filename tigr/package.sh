@@ -1,5 +1,5 @@
 FILES="tigr.c build.sh"
-BUILD="echo this need to be updated before be used #build.sh"
+BUILD="echo THIS BUXU PACKAGE IS DEADLY OUTDATED AND NEEDS TO BE FIXED, DO NOT USE IT"
 RUN=""
 SETUP=""
 UPDATE=""
