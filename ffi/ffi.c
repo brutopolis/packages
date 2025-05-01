@@ -7,36 +7,79 @@
 #include "buxu.h"
 #include <libtcc.h>
 
-typedef void (*InitFunction)(VirtualMachine*);
-
 List *ffi_state_list;
 
 const char* bruter_header = "#include \"buxu.h\"\n";
+typedef void (*InitFunction)(List*);
 
 void add_common_symbols(TCCState *tcc)
 {
     const void *core_funcs[] = {
-        str_format,
+        list_init,
+        list_free,
+        list_double,
+        list_half,
+        list_push,
+        list_unshift,
+        list_insert,
+        list_pop,
+        list_shift,
+        list_remove,
+        list_swap,
+        list_fast_remove,
+        list_occurrences,
+        list_find,
+        list_reverse,
+        list_call,
+        list_set,
+        readfile,
+        file_exists,
+        writefile,
+        str_duplicate,
+        str_nduplicate,
+        special_space_split,
         special_split,
-        make_vm,
-        free_vm,
+        str_format,
         new_var,
-        label_find,
-        eval,
-        interpret,
-        parse
+        new_block,
+        new_string,
+        parse_number,
+        parse,
+        eval
     };
 
     const char *core_names[] = {
-        "str_format",
+        "list_init",
+        "list_free",
+        "list_double",
+        "list_half",
+        "list_push",
+        "list_unshift",
+        "list_insert",
+        "list_pop",
+        "list_shift",
+        "list_remove",
+        "list_swap",
+        "list_fast_remove",
+        "list_occurrences",
+        "list_find",
+        "list_reverse",
+        "list_call",
+        "list_set",
+        "readfile",
+        "file_exists",
+        "writefile",
+        "str_duplicate",
+        "str_nduplicate",
+        "special_space_split",
         "special_split",
-        "make_vm",
-        "free_vm",
+        "str_format",
         "new_var",
-        "label_find",
-        "eval",
-        "interpret",
-        "parse"
+        "new_block",
+        "new_string",
+        "parse_number",
+        "parse",
+        "eval"
     };
 
     for (Int i = 0; i < sizeof(core_funcs) / sizeof(core_funcs[0]); i++) 
@@ -66,7 +109,7 @@ function(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    Int result = new_var(vm, NULL);
+    Int result = new_var(context, NULL);
     if (result < 0) 
     {
         fprintf(stderr, "could not create new var\n");
@@ -116,9 +159,9 @@ function(brl_tcc_c_new_function)
             return -1;
         }
 
-        list_push(ffi_state_list, (Value){.p = tcc});
+        list_push(ffi_state_list, (Value){.p = tcc}, NULL);
 
-        Int index = new_var(vm, symbol);
+        Int index = new_var(context, symbol);
         if (index < 0) 
         {
             fprintf(stderr, "could not create new var\n");
@@ -144,7 +187,7 @@ void _terminate_tcc_at_exit_handler()
 
 init(ffi)
 {
-    ffi_state_list = list_init(0);
+    ffi_state_list = list_init(0, false);
 
     if (!ffi_state_list) 
     {
@@ -152,8 +195,8 @@ init(ffi)
         return;
     }
 
-    add_function(vm, "ffi.clear", brl_tcc_clear_states);
-    add_function(vm, "ffi.compile", brl_tcc_c_new_function);
+    add_function(context, "ffi.clear", brl_tcc_clear_states);
+    add_function(context, "ffi.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

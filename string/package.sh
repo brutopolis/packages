@@ -1,6 +1,5 @@
 FILES="string.c"
-#BUILD="bucc -o string.brl string.c"
-BUILD="echo THIS BUXU PACKAGE IS DEADLY OUTDATED AND NEEDS TO BE FIXED, DO NOT USE IT"
+BUILD="bucc -o string.brl string.c"
 RUN=""
 SETUP=""
 UPDATE=""

@@ -8,7 +8,7 @@ function(_str_concat)
     char *result = malloc(strlen(str1) + strlen(str2) + 1);
     strcpy(result, str1);
     strcat(result, str2);
-    Int result_i = new_string(context, NULL, result);
+    Int result_i = new_string(context, result, NULL);
     free(result);
     return result_i;
 }
@@ -82,7 +82,7 @@ function(_str_format)
     *out = '\0'; // terminate the string
 
     // create the new string inside context
-    Int result_i = new_string(context, NULL, buffer);
+    Int result_i = new_string(context, buffer, NULL);
 
     return result_i;
 }
