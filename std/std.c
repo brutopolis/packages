@@ -25,23 +25,6 @@ function(_ls)
     return -1;
 }
 
-function(_return)
-{
-    if (args->size < 1)
-    {
-        return -1;
-    }
-    else
-    {
-        return arg_i(0);
-    }
-}
-
-function(_ignore)
-{
-    return -1;
-}
-
 function(_repeat)
 {
     Int times = arg(0).i;
@@ -95,11 +78,6 @@ init(std)
     //add_function(context, "delete", _delete);
     
     add_function(context, "ls", _ls);
-    
-    add_function(context, "ignore", _ignore);
-
-    add_function(context, "return", _return);
-
     add_function(context, "repeat", _repeat);
     add_function(context, "forever", _forever);
 
