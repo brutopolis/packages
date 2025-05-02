@@ -1,9 +1,21 @@
 #include "buxu.h"
 
-function(_label)
+function(_unlabel)
 {
-    free(context->keys[arg_i(0)]);
-    context->keys[arg_i(1)] = str_duplicate(arg_s(0));
+    free(data_l(arg(0).i));
+    data_l(arg(0).i) = NULL;
+    return -1;
+}
+
+function(_rename)
+{
+    char* name = arg_s(0);
+    Int index = arg(1).i;
+    if (data_l(index) != NULL)
+    {
+        free(data_l(index));
+    }
+    data_l(index) = str_duplicate(name);
     return -1;
 }
 
@@ -71,12 +83,9 @@ function(_set)
 
 init(std)
 {
-    add_function(context, "label", _label);
-    //add_function(context, "unlabel", _unlabel);
-    //add_function(context, "rename", _rename);
-    
-    //add_function(context, "delete", _delete);
-    
+    add_function(context, "unlabel", _unlabel);
+    add_function(context, "rename", _rename);
+
     add_function(context, "ls", _ls);
     add_function(context, "repeat", _repeat);
     add_function(context, "forever", _forever);
