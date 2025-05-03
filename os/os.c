@@ -3,7 +3,7 @@
 function(_read_file)
 {
     char *filename = arg_s(0);
-    char *content = readfile(filename);
+    char *content = file_read(filename);
     if (content == NULL)
     {
         buxu_error("failed to read file: %s", filename);
@@ -25,7 +25,7 @@ function(_write_file)
 {
     char *filename = arg_s(0);
     char *content = arg_s(1);
-    writefile(filename, content);
+    file_write(filename, content);
     return -1;
 }
 
