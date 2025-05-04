@@ -1,6 +1,5 @@
-FILES="os.c"
-BUILD="bucc -o os.brl os.c"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""
+name os
+version 0.0.1
+description "buxu operating system"
+files os.c
+setup "bucc -o os.brl os.c"

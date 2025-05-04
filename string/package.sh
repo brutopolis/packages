@@ -1,6 +1,5 @@
-FILES="string.c"
-BUILD="bucc -o string.brl string.c"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""
+name string
+version 0.0.1
+description "buxu standard string library"
+files string.c
+setup "bucc -o string.brl string.c"

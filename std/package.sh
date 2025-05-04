@@ -1,6 +1,5 @@
-FILES="std.c"
-BUILD="bucc -o std.brl std.c"
-RUN=""
-SETUP=""
-UPDATE=""
-CLEAN=""
+name std
+files std.c
+version 0.0.1
+description "buxu standard library"
+setup "bucc -o std.brl std.c"
