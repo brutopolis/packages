@@ -7,7 +7,7 @@
 #include "buxu.h"
 #include <libtcc.h>
 
-List *ffi_state_list;
+List *dycc_state_list;
 
 const char* bruter_header = "#include \"buxu.h\"\n";
 typedef void (*InitFunction)(List*);
@@ -89,9 +89,9 @@ void add_common_symbols(TCCState *tcc)
 
 function(brl_tcc_clear_states)
 {
-    while (ffi_state_list->size > 0) 
+    while (dycc_state_list->size > 0) 
     {
-        tcc_delete((TCCState *)(list_shift(ffi_state_list)).s);
+        tcc_delete((TCCState *)(list_shift(dycc_state_list)).s);
     }
     return -1;
 }
@@ -157,7 +157,7 @@ function(brl_tcc_c_new_function)
             return -1;
         }
 
-        list_push(ffi_state_list, (Value){.p = tcc}, NULL);
+        list_push(dycc_state_list, (Value){.p = tcc}, NULL);
 
         Int index = new_var(context, symbol);
         if (index < 0) 
@@ -180,21 +180,21 @@ function(brl_tcc_c_new_function)
 void _terminate_tcc_at_exit_handler()
 {
     brl_tcc_clear_states(NULL, NULL);
-    list_free(ffi_state_list);
+    list_free(dycc_state_list);
 }
 
-init(ffi)
+init(dycc)
 {
-    ffi_state_list = list_init(0, false);
+    dycc_state_list = list_init(0, false);
 
-    if (!ffi_state_list) 
+    if (!dycc_state_list) 
     {
-        fprintf(stderr, "could not create ffi state list\n");
+        fprintf(stderr, "could not create dycc state list\n");
         return;
     }
 
-    add_function(context, "ffi.clear", brl_tcc_clear_states);
-    add_function(context, "ffi.compile", brl_tcc_c_new_function);
+    add_function(context, "dycc.clear", brl_tcc_clear_states);
+    add_function(context, "dycc.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

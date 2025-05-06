@@ -1,5 +1,5 @@
-name ffi
+name dycc
 version 0.0.1
 description "buxu foreign function interface"
-files ffi.c
-setup "bucc -o ffi.brl ffi.c -ltcc"
+files dycc.c
+setup "bucc -o dycc.brl dycc.c -ltcc"

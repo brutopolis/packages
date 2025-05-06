@@ -47,14 +47,32 @@ function(_repeat)
     Int times = arg(0).i;
     char* code = arg_s(1);
     Int result = -1;
-    for (Int i = 0; i < times; i++)
+    if (strchr(code, '(') != NULL) // do not optimize
     {
-        result = eval(context, code);
-        if (result != -1)
+        for (Int i = 0; i < times; i++)
         {
-            break;
+            result = eval(context, code);
+            if (result != -1)
+            {
+                break;
+            }
         }
     }
+    else
+    {
+        List* compiled = compile_code(context, code);
+        
+        for (Int i = 0; i < times; i++)
+        {
+            result = compiled_call(context, compiled);
+            if (result != -1)
+            {
+                break;
+            }
+        }
+        compiled_free(compiled);
+    }
+
     return result;
 }
 
@@ -86,6 +104,11 @@ function(_set)
     return -1;
 }
 
+function(_eval)
+{
+    return eval(context, arg_s(0));
+}
+
 init(std)
 {
     add_function(context, "label", _label);
@@ -105,4 +128,6 @@ init(std)
 
     add_function(context, "get", _get);
     add_function(context, "set", _set);
+
+    add_function(context, "eval", _eval);
 }
