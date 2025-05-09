@@ -1,60 +1,60 @@
 #include "buxu.h"
 
-function(_iadd)
+list_function(_iadd)
 {
     arg(0).i += arg(1).i;
     return -1;
 }
 
-function(_isub)
+list_function(_isub)
 {
     arg(0).i -= arg(1).i;
     return -1;
 }
 
-function(_imul)
+list_function(_imul)
 {
     arg(0).i *= arg(1).i;
     return -1;
 }
 
-function(_idiv)
+list_function(_idiv)
 {
     arg(0).i /= arg(1).i;
     return -1;
 }
 
-function(_imod)
+list_function(_imod)
 {
     arg(0).i %= arg(1).i;
     return -1;
 }
 
-function(_fadd)
+list_function(_fadd)
 {
     arg(0).f += arg(1).f;
     return -1;
 }
 
-function(_fsub)
+list_function(_fsub)
 {
     arg(0).f -= arg(1).f;
     return -1;
 }
 
-function(_fmul)
+list_function(_fmul)
 {
     arg(0).f *= arg(1).f;
     return -1;
 }
 
-function(_fdiv)
+list_function(_fdiv)
 {
     arg(0).f /= arg(1).f;
     return -1;
 }
 
-function(_fmod)
+list_function(_fmod)
 {
     arg(0).f = fmod(arg(0).f, arg(1).f);
     return -1;

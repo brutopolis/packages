@@ -1,42 +1,42 @@
 #include "buxu.h"
 
-function(print_int)
+list_function(print_int)
 {
     printf("%d\n", arg(0).i);
     return -1;
 }
 
-function(print_uint)
+list_function(print_uint)
 {
     printf("%u\n", arg(0).i);
     return -1;
 }
 
-function(print_float)
+list_function(print_float)
 {
     printf("%f\n", arg(0).f);
     return -1;
 }
 
-function(print_string)
+list_function(print_string)
 {
     printf("%s\n", arg_s(0));
     return -1;
 }
 
-function(print_bool)
+list_function(print_bool)
 {
     printf("%s\n", arg(0).i ? "true" : "false");
     return -1;
 }
 
-function(print_pointer)
+list_function(print_pointer)
 {
     printf("%p\n", arg(0).p);
     return -1;
 }
 
-function(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
+list_function(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
 {
     // print the txt 0b0010101010101...
     Int number = arg(0).i;
@@ -49,7 +49,7 @@ function(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101
     return -1;
 }
 
-function(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of Int
+list_function(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of Int
 {
     Int number = arg(0).i;
     Int size = sizeof(Int);
@@ -63,7 +63,7 @@ function(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 0000
     return -1;
 }
 
-function(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of Int
+list_function(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of Int
 {
     Int number = arg(0).i;
     Int size = sizeof(Int);
@@ -74,14 +74,14 @@ function(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending 
     return -1;
 }
 
-function(print_octal) // 0o1234567 or 0o123456789 depending on the size of Int
+list_function(print_octal) // 0o1234567 or 0o123456789 depending on the size of Int
 {
     Int number = arg(0).i;
     printf("0o%lo\n", number);
     return -1;
 }
 
-function(print_hex)
+list_function(print_hex)
 {
     Int i = arg(0).i;
     printf("0x%X\n", i);

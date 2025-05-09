@@ -1,6 +1,6 @@
 #include "buxu.h"
 
-function(_byte_set)
+list_function(_byte_set)
 {
     Int index = arg(1).i;
     Int value = arg(2).i;
@@ -10,7 +10,7 @@ function(_byte_set)
     return -1;
 }
 
-function(_byte_get)
+list_function(_byte_get)
 {
     Int byte_index = arg(1).i;
     Int index = new_var(context, NULL);
@@ -19,7 +19,7 @@ function(_byte_get)
     return index;
 }
 
-function(_byte_add)
+list_function(_byte_add)
 {
     Int index = arg(1).i;
     Int value = arg(2).i;
@@ -29,7 +29,7 @@ function(_byte_add)
     return -1;
 }
 
-function(_byte_sub)
+list_function(_byte_sub)
 {
     Int index = arg(1).i;
     Int value = arg(2).i;
@@ -39,7 +39,7 @@ function(_byte_sub)
     return -1;
 }
 
-function(_byte_mul)
+list_function(_byte_mul)
 {
     Int index = arg(1).i;
     Int value = arg(2).i;
@@ -49,7 +49,7 @@ function(_byte_mul)
     return -1;
 }
 
-function(_byte_div)
+list_function(_byte_div)
 {
     Int index = arg(1).i;
     Int value = arg(2).i;

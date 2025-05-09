@@ -1,6 +1,6 @@
 #include "buxu.h"
 
-function(_str_concat)
+list_function(_str_concat)
 {
     // concatenate two strings
     char *str1 = arg_s(0);
@@ -13,7 +13,7 @@ function(_str_concat)
     return result_i;
 }
 
-function(_str_delete)
+list_function(_str_delete)
 {
     Int len = strlen(arg_s(0));
     Int blocks = (len + 1 + sizeof(void*) - 1) / sizeof(void*);
@@ -26,21 +26,21 @@ function(_str_delete)
     return 0;
 }
 
-function(_str_length)
+list_function(_str_length)
 {
     Int index = new_var(context, 0);
     data(index).i = strlen(arg_s(0));
     return index;
 }
 
-function(_str_find)
+list_function(_str_find)
 {
     Int index = new_var(context, 0);
     data(index).i = (Int)strstr(arg_s(0), arg_s(1)) - (Int)arg_s(0);
     return index;
 }
 
-function(_str_format)
+list_function(_str_format)
 {
     // get the format string
     char *format = arg_s(0);

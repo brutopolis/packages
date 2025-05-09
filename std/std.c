@@ -1,13 +1,13 @@
 #include "buxu.h"
 
-function(_label)
+list_function(_label)
 {
     free(context->keys[arg_i(0)]);
     context->keys[arg_i(1)] = str_duplicate(arg_s(0));
     return -1;
 }
 
-function(_ls)
+list_function(_ls)
 {
     for (Int i = 0; i < context->size; i++)
     {
@@ -25,7 +25,7 @@ function(_ls)
     return -1;
 }
 
-function(_return)
+list_function(_return)
 {
     if (args->size < 1)
     {
@@ -37,12 +37,12 @@ function(_return)
     }
 }
 
-function(_ignore)
+list_function(_ignore)
 {
     return -1;
 }
 
-function(_repeat)
+list_function(_repeat)
 {
     Int times = arg(0).i;
     char* code = arg_s(1);
@@ -76,7 +76,7 @@ function(_repeat)
     return result;
 }
 
-function(_forever)
+list_function(_forever)
 {
     char* code = arg_s(0);
     Int result = -1;
@@ -91,12 +91,12 @@ function(_forever)
     return result;
 }
 
-function(_get)
+list_function(_get)
 {
     return arg(0).i;
 }
 
-function(_set)
+list_function(_set)
 {
     Int index = arg(0).i;
     Int value = arg(1).i;
@@ -104,7 +104,7 @@ function(_set)
     return -1;
 }
 
-function(_eval)
+list_function(_eval)
 {
     return eval(context, arg_s(0));
 }

@@ -30,7 +30,12 @@ void add_common_symbols(TCCState *tcc)
         list_find,
         list_reverse,
         list_call,
-        list_set,
+        table_init,
+        table_set,
+        table_find,
+        table_push,
+        table_unshift,
+        table_insert,
         file_read,
         file_exists,
         file_write,
@@ -63,7 +68,12 @@ void add_common_symbols(TCCState *tcc)
         "list_find",
         "list_reverse",
         "list_call",
-        "list_set",
+        "table_init",
+        "table_set",
+        "table_find",
+        "table_push",
+        "table_unshift",
+        "table_insert",
         "file_read",
         "file_exists",
         "file_write",
@@ -87,7 +97,7 @@ void add_common_symbols(TCCState *tcc)
 }
 
 
-function(brl_tcc_clear_states)
+list_function(brl_tcc_clear_states)
 {
     while (dycc_state_list->size > 0) 
     {
@@ -96,7 +106,7 @@ function(brl_tcc_clear_states)
     return -1;
 }
 
-function(brl_tcc_c_new_function)
+list_function(brl_tcc_c_new_function)
 {
     TCCState *tcc = tcc_new();
     if (!tcc) 
@@ -157,7 +167,7 @@ function(brl_tcc_c_new_function)
             return -1;
         }
 
-        list_push(dycc_state_list, (Value){.p = tcc}, NULL);
+        list_push(dycc_state_list, (Value){.p = tcc});
 
         Int index = new_var(context, symbol);
         if (index < 0) 
@@ -185,7 +195,7 @@ void _terminate_tcc_at_exit_handler()
 
 init(dycc)
 {
-    dycc_state_list = list_init(0, false);
+    dycc_state_list = list_init(0);
 
     if (!dycc_state_list) 
     {

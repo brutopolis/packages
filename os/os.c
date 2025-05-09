@@ -1,6 +1,6 @@
 #include "buxu.h"
 
-function(_read_file)
+list_function(_read_file)
 {
     char *filename = arg_s(0);
     char *content = file_read(filename);
@@ -21,7 +21,7 @@ function(_read_file)
     return var;
 }
 
-function(_write_file)
+list_function(_write_file)
 {
     char *filename = arg_s(0);
     char *content = arg_s(1);
@@ -29,7 +29,7 @@ function(_write_file)
     return -1;
 }
 
-function(_file_exists)
+list_function(_file_exists)
 {
     char *filename = arg_s(0);
     return file_exists(filename);

@@ -1,69 +1,69 @@
 #include "buxu.h"
 
-function(_bit_and)
+list_function(_bit_and)
 {
     arg(0).i &= arg(1).i;
     return -1;
 }
 
-function(_bit_or)
+list_function(_bit_or)
 {
     arg(0).i |= arg(1).i;
     return -1;
 }
 
-function(_bit_xor)
+list_function(_bit_xor)
 {
     arg(0).i ^= arg(1).i;
     return -1;
 }
 
-function(_bit_not)
+list_function(_bit_not)
 {
     arg(0).i = ~arg(0).i;
     return -1;
 }
 
-function(_bit_lshift)
+list_function(_bit_lshift)
 {
     arg(0).i <<= arg(1).i;
     return -1;
 }
 
-function(_bit_rshift)
+list_function(_bit_rshift)
 {
     arg(0).i >>= arg(1).i;
     return -1;
 }
 
-function(_bit_set)
+list_function(_bit_set)
 {
     Int mask = 1 << arg(1).i;
     arg(0).i |= mask;
     return -1;
 }
 
-function(_bit_clear)
+list_function(_bit_clear)
 {
     Int mask = ~(1 << arg(1).i);
     arg(0).i &= mask;
     return -1;
 }
 
-function(_bit_get)
+list_function(_bit_get)
 {
     Int mask = 1 << arg(1).i;
     return (arg(0).i & mask) != 0;
 }
 
-function(_bit_switch)
+list_function(_bit_switch)
 {
     Int mask = 1 << arg(1).i;
     arg(0).i ^= mask;
     return -1;
 }
 
-function(_bit_swap)
+list_function(_bit_swap)
 {
     Int mask = 1 << arg(1).i;
     Int mask2 = 1 << arg(2).i;
