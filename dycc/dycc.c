@@ -10,7 +10,6 @@
 List *dycc_state_list;
 
 const char* bruter_header = "#include \"buxu.h\"\n";
-typedef void (*InitFunction)(List*);
 
 void add_common_symbols(TCCState *tcc)
 {
