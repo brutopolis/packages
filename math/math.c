@@ -62,15 +62,15 @@ list_function(_fmod)
 
 init(math)
 {
-    add_function(context, "iadd", _iadd);
-    add_function(context, "isub", _isub);
-    add_function(context, "imul", _imul);
-    add_function(context, "idiv", _idiv);
-    add_function(context, "imod", _imod);
+    add_function(context, "i+", _iadd);
+    add_function(context, "i-", _isub);
+    add_function(context, "i*", _imul);
+    add_function(context, "i/", _idiv);
+    add_function(context, "i%", _imod);
 
-    add_function(context, "fadd", _fadd);
-    add_function(context, "fsub", _fsub);
-    add_function(context, "fmul", _fmul);
-    add_function(context, "fdiv", _fdiv);
-    add_function(context, "fmod", _fmod);
+    add_function(context, "f+", _fadd);
+    add_function(context, "f-", _fsub);
+    add_function(context, "f*", _fmul);
+    add_function(context, "f/", _fdiv);
+    add_function(context, "f%", _fmod);
 }
