@@ -90,7 +90,7 @@ list_function(_if)
     char* true_part = arg_s(1);
     char* false_part = NULL;
 
-    if (arg_count() > 2)
+    if (args->size > 2)
         false_part = arg_s(2);
     
     Int result = -1;
