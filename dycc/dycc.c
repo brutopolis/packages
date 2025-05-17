@@ -4,12 +4,12 @@
 
 #ifndef ARDUINO
 
-#include "buxu.h"
+#include "br.h"
 #include <libtcc.h>
 
 List *dycc_state_list;
 
-const char* bruter_header = "#include \"buxu.h\"\n";
+const char* bruter_header = "#include \"br.h\"\n";
 
 void add_common_symbols(TCCState *tcc)
 {
@@ -29,25 +29,27 @@ void add_common_symbols(TCCState *tcc)
         list_find,
         list_reverse,
         list_call,
+
         table_init,
         table_set,
         table_find,
         table_push,
         table_unshift,
         table_insert,
-        file_read,
-        file_exists,
-        file_write,
+
         str_duplicate,
         str_nduplicate,
         str_space_split,
         str_split,
         str_format,
+
         new_var,
         new_block,
         new_string,
+
         parse_number,
         parse,
+
         eval
     };
 
@@ -67,23 +69,24 @@ void add_common_symbols(TCCState *tcc)
         "list_find",
         "list_reverse",
         "list_call",
+
         "table_init",
         "table_set",
         "table_find",
         "table_push",
         "table_unshift",
         "table_insert",
-        "file_read",
-        "file_exists",
-        "file_write",
+
         "str_duplicate",
         "str_nduplicate",
         "str_space_split",
         "str_split",
         "str_format",
+
         "new_var",
         "new_block",
         "new_string",
+        
         "parse_number",
         "parse",
         "eval"
