@@ -1,9 +1,12 @@
-git clone https://github.com/emoon/minifb.git;
-cd minifb;
-mkdir build;
-cd build;
-cmake .. -DUSE_WAYLAND_API=OFF -DUSE_OPENGL_API=ON;
-make;
-sudo make install;
-cd ..;
-cd ..;
+rm -rf minifb
+rm -rf lib
+git clone https://github.com/emoon/minifb
+mkdir -p lib include
+cd minifb
+mkdir -p build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DUSE_OPENGL_API=ON;
+make
+cd ..
+cp build/libminifb.a ../lib/
+cp include/*.h ../include/
