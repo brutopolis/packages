@@ -30,13 +30,6 @@ void add_common_symbols(TCCState *tcc)
         list_reverse,
         list_call,
 
-        table_init,
-        table_set,
-        table_find,
-        table_push,
-        table_unshift,
-        table_insert,
-
         str_duplicate,
         str_nduplicate,
         str_space_split,
@@ -70,13 +63,6 @@ void add_common_symbols(TCCState *tcc)
         "list_reverse",
         "list_call",
 
-        "table_init",
-        "table_set",
-        "table_find",
-        "table_push",
-        "table_unshift",
-        "table_insert",
-
         "str_duplicate",
         "str_nduplicate",
         "str_space_split",
@@ -99,7 +85,7 @@ void add_common_symbols(TCCState *tcc)
 }
 
 
-list_function(brl_tcc_clear_states)
+LIST_FUNCTION(brl_tcc_clear_states)
 {
     while (dycc_state_list->size > 0) 
     {
@@ -108,7 +94,7 @@ list_function(brl_tcc_clear_states)
     return -1;
 }
 
-list_function(brl_tcc_c_new_function)
+LIST_FUNCTION(brl_tcc_c_new_function)
 {
     TCCState *tcc = tcc_new();
     if (!tcc) 
@@ -125,9 +111,9 @@ list_function(brl_tcc_c_new_function)
         fprintf(stderr, "could not create new var\n");
         return -1;
     }
-    data(result).p = tcc;
+    DATA(result).p = tcc;
 
-    char *code = str_format("%s\n%s", bruter_header, arg_s(0));
+    char *code = str_format("%s\n%s", bruter_header, ARG_S(0));
 
     add_common_symbols(tcc);
 
@@ -169,7 +155,7 @@ list_function(brl_tcc_c_new_function)
             return -1;
         }
 
-        list_push(dycc_state_list, (Value){.p = tcc});
+        list_push(dycc_state_list, (Value){.p = tcc}, NULL);
 
         Int index = new_var(context, symbol);
         if (index < 0) 
@@ -179,7 +165,7 @@ list_function(brl_tcc_c_new_function)
             return -1;
         }
 
-        data(index).p = func;
+        DATA(index).p = func;
         free(symbol);
 
         token = end + 1;
@@ -195,9 +181,9 @@ void _terminate_tcc_at_exit_handler()
     list_free(dycc_state_list);
 }
 
-init(dycc)
+INIT(dycc)
 {
-    dycc_state_list = list_init(0);
+    dycc_state_list = list_init(0, false);
 
     if (!dycc_state_list) 
     {
@@ -205,8 +191,8 @@ init(dycc)
         return;
     }
 
-    add_function(context, "dycc.clear", brl_tcc_clear_states);
-    add_function(context, "dycc.compile", brl_tcc_c_new_function);
+    ADD_FUNCTION(context, "dycc.clear", brl_tcc_clear_states);
+    ADD_FUNCTION(context, "dycc.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

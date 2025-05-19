@@ -1,71 +1,71 @@
 #include "br.h"
 
-list_function(_byte_set)
+LIST_FUNCTION(_byte_set)
 {
-    Int index = arg(1).i;
-    Int value = arg(2).i;
+    Int index = ARG(1).i;
+    Int value = ARG(2).i;
 
-    (arg_s(0))[index] = value;
+    (ARG_S(0))[index] = value;
  
     return -1;
 }
 
-list_function(_byte_get)
+LIST_FUNCTION(_byte_get)
 {
-    Int byte_index = arg(1).i;
+    Int byte_index = ARG(1).i;
     Int index = new_var(context, NULL);
-    arg(index).i = (arg_s(0))[byte_index];
+    ARG(index).i = (ARG_S(0))[byte_index];
 
     return index;
 }
 
-list_function(_byte_add)
+LIST_FUNCTION(_byte_add)
 {
-    Int index = arg(1).i;
-    Int value = arg(2).i;
+    Int index = ARG(1).i;
+    Int value = ARG(2).i;
 
-    arg(0).u8[index] += value;
+    ARG(0).u8[index] += value;
  
     return -1;
 }
 
-list_function(_byte_sub)
+LIST_FUNCTION(_byte_sub)
 {
-    Int index = arg(1).i;
-    Int value = arg(2).i;
+    Int index = ARG(1).i;
+    Int value = ARG(2).i;
 
-    arg(0).u8[index] -= value;
+    ARG(0).u8[index] -= value;
  
     return -1;
 }
 
-list_function(_byte_mul)
+LIST_FUNCTION(_byte_mul)
 {
-    Int index = arg(1).i;
-    Int value = arg(2).i;
+    Int index = ARG(1).i;
+    Int value = ARG(2).i;
 
-    arg(0).u8[index] *= value;
+    ARG(0).u8[index] *= value;
  
     return -1;
 }
 
-list_function(_byte_div)
+LIST_FUNCTION(_byte_div)
 {
-    Int index = arg(1).i;
-    Int value = arg(2).i;
+    Int index = ARG(1).i;
+    Int value = ARG(2).i;
 
-    arg(0).u8[index] /= value;
+    ARG(0).u8[index] /= value;
  
     return -1;
 }
 
-init(byte)
+INIT(byte)
 {
-    add_function(context, "byte.set", _byte_set);
-    add_function(context, "byte.get", _byte_get);
+    ADD_FUNCTION(context, "byte.set", _byte_set);
+    ADD_FUNCTION(context, "byte.get", _byte_get);
     
-    add_function(context, "byte.add", _byte_add);
-    add_function(context, "byte.sub", _byte_sub);
-    add_function(context, "byte.mul", _byte_mul);
-    add_function(context, "byte.div", _byte_div);
+    ADD_FUNCTION(context, "byte.add", _byte_add);
+    ADD_FUNCTION(context, "byte.sub", _byte_sub);
+    ADD_FUNCTION(context, "byte.mul", _byte_mul);
+    ADD_FUNCTION(context, "byte.div", _byte_div);
 }

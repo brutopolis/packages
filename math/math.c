@@ -1,76 +1,76 @@
 #include "br.h"
 
-list_function(_iadd)
+LIST_FUNCTION(_iadd)
 {
-    arg(0).i += arg(1).i;
+    ARG(0).i += ARG(1).i;
     return -1;
 }
 
-list_function(_isub)
+LIST_FUNCTION(_isub)
 {
-    arg(0).i -= arg(1).i;
+    ARG(0).i -= ARG(1).i;
     return -1;
 }
 
-list_function(_imul)
+LIST_FUNCTION(_imul)
 {
-    arg(0).i *= arg(1).i;
+    ARG(0).i *= ARG(1).i;
     return -1;
 }
 
-list_function(_idiv)
+LIST_FUNCTION(_idiv)
 {
-    arg(0).i /= arg(1).i;
+    ARG(0).i /= ARG(1).i;
     return -1;
 }
 
-list_function(_imod)
+LIST_FUNCTION(_imod)
 {
-    arg(0).i %= arg(1).i;
+    ARG(0).i %= ARG(1).i;
     return -1;
 }
 
-list_function(_fadd)
+LIST_FUNCTION(_fadd)
 {
-    arg(0).f += arg(1).f;
+    ARG(0).f += ARG(1).f;
     return -1;
 }
 
-list_function(_fsub)
+LIST_FUNCTION(_fsub)
 {
-    arg(0).f -= arg(1).f;
+    ARG(0).f -= ARG(1).f;
     return -1;
 }
 
-list_function(_fmul)
+LIST_FUNCTION(_fmul)
 {
-    arg(0).f *= arg(1).f;
+    ARG(0).f *= ARG(1).f;
     return -1;
 }
 
-list_function(_fdiv)
+LIST_FUNCTION(_fdiv)
 {
-    arg(0).f /= arg(1).f;
+    ARG(0).f /= ARG(1).f;
     return -1;
 }
 
-list_function(_fmod)
+LIST_FUNCTION(_fmod)
 {
-    arg(0).f = fmod(arg(0).f, arg(1).f);
+    ARG(0).f = fmod(ARG(0).f, ARG(1).f);
     return -1;
 }
 
-init(math)
+INIT(math)
 {
-    add_function(context, "i+", _iadd);
-    add_function(context, "i-", _isub);
-    add_function(context, "i*", _imul);
-    add_function(context, "i/", _idiv);
-    add_function(context, "i%", _imod);
+    ADD_FUNCTION(context, "i+", _iadd);
+    ADD_FUNCTION(context, "i-", _isub);
+    ADD_FUNCTION(context, "i*", _imul);
+    ADD_FUNCTION(context, "i/", _idiv);
+    ADD_FUNCTION(context, "i%", _imod);
 
-    add_function(context, "f+", _fadd);
-    add_function(context, "f-", _fsub);
-    add_function(context, "f*", _fmul);
-    add_function(context, "f/", _fdiv);
-    add_function(context, "f%", _fmod);
+    ADD_FUNCTION(context, "f+", _fadd);
+    ADD_FUNCTION(context, "f-", _fsub);
+    ADD_FUNCTION(context, "f*", _fmul);
+    ADD_FUNCTION(context, "f/", _fdiv);
+    ADD_FUNCTION(context, "f%", _fmod);
 }

@@ -1,97 +1,97 @@
 #include "br.h"
 
-list_function(_iequals)
+LIST_FUNCTION(_iequals)
 {
-    if (arg(0).i == arg(1).i)
+    if (ARG(0).i == ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_inotequals)
+LIST_FUNCTION(_inotequals)
 {
-    if (arg(0).i != arg(1).i)
+    if (ARG(0).i != ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_ibigger)
+LIST_FUNCTION(_ibigger)
 {
-    if (arg(0).i > arg(1).i)
+    if (ARG(0).i > ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_ibiggerorequals)
+LIST_FUNCTION(_ibiggerorequals)
 {
-    if (arg(0).i >= arg(1).i)
+    if (ARG(0).i >= ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_ilower)
+LIST_FUNCTION(_ilower)
 {
-    if (arg(0).i < arg(1).i)
+    if (ARG(0).i < ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_ilowerorequals)
+LIST_FUNCTION(_ilowerorequals)
 {
-    if (arg(0).i <= arg(1).i)
+    if (ARG(0).i <= ARG(1).i)
         return 1;
     return 0;
 }
 
-list_function(_fequals)
+LIST_FUNCTION(_fequals)
 {
-    if (arg(0).f == arg(1).f)
+    if (ARG(0).f == ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_fnotequals)
+LIST_FUNCTION(_fnotequals)
 {
-    if (arg(0).f != arg(1).f)
+    if (ARG(0).f != ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_fbigger)
+LIST_FUNCTION(_fbigger)
 {
-    if (arg(0).f > arg(1).f)
+    if (ARG(0).f > ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_fbiggerorequals)
+LIST_FUNCTION(_fbiggerorequals)
 {
-    if (arg(0).f >= arg(1).f)
+    if (ARG(0).f >= ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_flower)
+LIST_FUNCTION(_flower)
 {
-    if (arg(0).f < arg(1).f)
+    if (ARG(0).f < ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_flowerorequals)
+LIST_FUNCTION(_flowerorequals)
 {
-    if (arg(0).f <= arg(1).f)
+    if (ARG(0).f <= ARG(1).f)
         return 1;
     return 0;
 }
 
-list_function(_if)
+LIST_FUNCTION(_if)
 {
-    char* cond = arg_s(0);
-    char* true_part = arg_s(1);
+    char* cond = ARG_S(0);
+    char* true_part = ARG_S(1);
     char* false_part = NULL;
 
     if (args->size > 2)
-        false_part = arg_s(2);
+        false_part = ARG_S(2);
     
     Int result = -1;
 
@@ -120,21 +120,21 @@ list_function(_if)
 }
 
 
-init(math)
+INIT(math)
 {
-    add_function(context, "i==", _iequals);
-    add_function(context, "i!=", _inotequals);
-    add_function(context, "i>", _ibigger);
-    add_function(context, "i>=", _ibiggerorequals);
-    add_function(context, "i<", _ilower);
-    add_function(context, "i<=", _ilowerorequals);
+    ADD_FUNCTION(context, "i==", _iequals);
+    ADD_FUNCTION(context, "i!=", _inotequals);
+    ADD_FUNCTION(context, "i>", _ibigger);
+    ADD_FUNCTION(context, "i>=", _ibiggerorequals);
+    ADD_FUNCTION(context, "i<", _ilower);
+    ADD_FUNCTION(context, "i<=", _ilowerorequals);
     
-    add_function(context, "f==", _fequals);
-    add_function(context, "f!=", _fnotequals);
-    add_function(context, "f>", _fbigger);
-    add_function(context, "f>=", _fbiggerorequals);
-    add_function(context, "f<", _flower);
-    add_function(context, "f<=", _flowerorequals);
+    ADD_FUNCTION(context, "f==", _fequals);
+    ADD_FUNCTION(context, "f!=", _fnotequals);
+    ADD_FUNCTION(context, "f>", _fbigger);
+    ADD_FUNCTION(context, "f>=", _fbiggerorequals);
+    ADD_FUNCTION(context, "f<", _flower);
+    ADD_FUNCTION(context, "f<=", _flowerorequals);
 
-    add_function(context, "if", _if);
+    ADD_FUNCTION(context, "if", _if);
 }

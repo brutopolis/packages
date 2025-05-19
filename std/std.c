@@ -1,31 +1,31 @@
 #include "br.h"
 
-list_function(_label)
+LIST_FUNCTION(_label)
 {
-    free(context->keys[arg_i(0)]);
-    context->keys[arg_i(1)] = str_duplicate(arg_s(0));
+    free(context->keys[ARG_I(0)]);
+    context->keys[ARG_I(1)] = str_duplicate(ARG_S(0));
     return -1;
 }
 
-list_function(_ls)
+LIST_FUNCTION(_ls)
 {
     for (Int i = 0; i < context->size; i++)
     {
-        if (data_l(i) != NULL)
+        if (DATA_L(i) != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, data_l(i));
+            printf("[%ld](\"%s\"):\t\t", i, DATA_L(i));
         }
         else
         {
             printf("[%ld](\"\"):\t\t", i);
         }
 
-        printf(" %s\n", data_s(i));
+        printf(" %s\n", DATA_S(i));
     }
     return -1;
 }
 
-list_function(_return)
+LIST_FUNCTION(_return)
 {
     if (args->size < 1)
     {
@@ -33,19 +33,19 @@ list_function(_return)
     }
     else
     {
-        return arg_i(0);
+        return ARG_I(0);
     }
 }
 
-list_function(_ignore)
+LIST_FUNCTION(_ignore)
 {
     return -1;
 }
 
-list_function(_repeat)
+LIST_FUNCTION(_repeat)
 {
-    Int times = arg(0).i;
-    char* code = arg_s(1);
+    Int times = ARG(0).i;
+    char* code = ARG_S(1);
     Int result = -1;
     if (strchr(code, '(') != NULL) // do not optimize
     {
@@ -76,9 +76,9 @@ list_function(_repeat)
     return result;
 }
 
-list_function(_forever)
+LIST_FUNCTION(_forever)
 {
-    char* code = arg_s(0);
+    char* code = ARG_S(0);
     Int result = -1;
     while(1)
     {
@@ -91,43 +91,43 @@ list_function(_forever)
     return result;
 }
 
-list_function(_get)
+LIST_FUNCTION(_get)
 {
-    return arg(0).i;
+    return ARG(0).i;
 }
 
-list_function(_set)
+LIST_FUNCTION(_set)
 {
-    Int index = arg(0).i;
-    Int value = arg(1).i;
+    Int index = ARG(0).i;
+    Int value = ARG(1).i;
     context->data[index].i = value;
     return -1;
 }
 
-list_function(_eval)
+LIST_FUNCTION(_eval)
 {
-    return eval(context, arg_s(0));
+    return eval(context, ARG_S(0));
 }
 
-init(std)
+INIT(std)
 {
-    add_function(context, "label", _label);
-    //add_function(context, "unlabel", _unlabel);
-    //add_function(context, "rename", _rename);
+    ADD_FUNCTION(context, "label", _label);
+    //ADD_FUNCTION(context, "unlabel", _unlabel);
+    //ADD_FUNCTION(context, "rename", _rename);
     
-    //add_function(context, "delete", _delete);
+    //ADD_FUNCTION(context, "delete", _delete);
     
-    add_function(context, "ls", _ls);
+    ADD_FUNCTION(context, "ls", _ls);
     
-    add_function(context, "ignore", _ignore);
+    ADD_FUNCTION(context, "ignore", _ignore);
 
-    add_function(context, "return", _return);
+    ADD_FUNCTION(context, "return", _return);
 
-    add_function(context, "repeat", _repeat);
-    add_function(context, "forever", _forever);
+    ADD_FUNCTION(context, "repeat", _repeat);
+    ADD_FUNCTION(context, "forever", _forever);
 
-    add_function(context, "get", _get);
-    add_function(context, "set", _set);
+    ADD_FUNCTION(context, "get", _get);
+    ADD_FUNCTION(context, "set", _set);
 
-    add_function(context, "eval", _eval);
+    ADD_FUNCTION(context, "eval", _eval);
 }

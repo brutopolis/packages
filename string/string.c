@@ -1,10 +1,10 @@
 #include "br.h"
 
-list_function(_str_concat)
+LIST_FUNCTION(_str_concat)
 {
     // concatenate two strings
-    char *str1 = arg_s(0);
-    char *str2 = arg_s(1);
+    char *str1 = ARG_S(0);
+    char *str2 = ARG_S(1);
     char *result = malloc(strlen(str1) + strlen(str2) + 1);
     strcpy(result, str1);
     strcat(result, str2);
@@ -13,37 +13,37 @@ list_function(_str_concat)
     return result_i;
 }
 
-list_function(_str_delete)
+LIST_FUNCTION(_str_delete)
 {
-    Int len = strlen(arg_s(0));
+    Int len = strlen(ARG_S(0));
     Int blocks = (len + 1 + sizeof(void*) - 1) / sizeof(void*);
     
     for (Int i = 0; i < blocks; i++)
     {
-        list_remove(context, arg_i(0));
+        list_remove(context, ARG_I(0));
     }
     
     return 0;
 }
 
-list_function(_str_length)
+LIST_FUNCTION(_str_length)
 {
     Int index = new_var(context, 0);
-    data(index).i = strlen(arg_s(0));
+    DATA(index).i = strlen(ARG_S(0));
     return index;
 }
 
-list_function(_str_find)
+LIST_FUNCTION(_str_find)
 {
     Int index = new_var(context, 0);
-    data(index).i = (Int)strstr(arg_s(0), arg_s(1)) - (Int)arg_s(0);
+    DATA(index).i = (Int)strstr(ARG_S(0), ARG_S(1)) - (Int)ARG_S(0);
     return index;
 }
 
-list_function(_str_format)
+LIST_FUNCTION(_str_format)
 {
     // get the format string
-    char *format = arg_s(0);
+    char *format = ARG_S(0);
 
     // allocate a buffer for the formatted string
     char buffer[1024];
@@ -62,13 +62,13 @@ list_function(_str_format)
             if (*(in + 1) == 's')
             {
                 // string argument
-                char *arg = arg_s(arg_index++);
+                char *arg = ARG_S(arg_index++);
                 out += sprintf(out, "%s", arg);
             }
             else if (*(in + 1) == 'd')
             {
                 // integer argument
-                Int arg = arg_i(arg_index++);
+                Int arg = ARG_I(arg_index++);
                 out += sprintf(out, "%d", arg);
             }
             in += 2;
@@ -88,11 +88,11 @@ list_function(_str_format)
 }
 
 
-init(string)
+INIT(string)
 {
-    add_function(context, "string.concat", _str_concat);
-    add_function(context, "string.delete", _str_delete);
-    add_function(context, "string.length", _str_length);
-    add_function(context, "string.find", _str_find);
-    add_function(context, "string.format", _str_format);
+    ADD_FUNCTION(context, "string.concat", _str_concat);
+    ADD_FUNCTION(context, "string.delete", _str_delete);
+    ADD_FUNCTION(context, "string.length", _str_length);
+    ADD_FUNCTION(context, "string.find", _str_find);
+    ADD_FUNCTION(context, "string.format", _str_format);
 }
