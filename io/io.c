@@ -88,6 +88,24 @@ LIST_FUNCTION(print_hex)
     return -1;
 }
 
+LIST_FUNCTION(print_index)
+{
+    Int i = ARG_I(0);
+    printf("%d\n", i);
+    return -1;
+}
+
+LIST_FUNCTION(print_list)
+{
+    List *list = (List *)ARG(0).p;
+    for (Int i = 0; i < list->size; i++)
+    {
+        printf("%d ", list->data[i].i);
+    }
+    printf("\n");
+    return -1;
+}
+
 INIT(io)
 {
     ADD_FUNCTION(context, "print.int", print_int);
@@ -101,4 +119,6 @@ INIT(io)
     ADD_FUNCTION(context, "print.octal", print_octal);
     ADD_FUNCTION(context, "print.hex", print_hex);
     ADD_FUNCTION(context, "print.bitarray", print_bitarray);
+    ADD_FUNCTION(context, "print.index", print_index);
+    ADD_FUNCTION(context, "print.list", print_list);
 }

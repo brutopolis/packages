@@ -27,7 +27,7 @@ LIST_FUNCTION(_ls)
 
 LIST_FUNCTION(_return)
 {
-    if (args->size < 1)
+    if (ARG_COUNT() < 1)
     {
         return -1;
     }

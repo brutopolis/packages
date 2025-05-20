@@ -90,7 +90,7 @@ LIST_FUNCTION(_if)
     char* true_part = ARG_S(1);
     char* false_part = NULL;
 
-    if (args->size > 2)
+    if (ARG_COUNT() > 2)
         false_part = ARG_S(2);
     
     Int result = -1;
