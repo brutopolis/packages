@@ -1,5 +1,5 @@
 name condition
-version 0.0.3
+version 0.0.5
 description "buxu conditions library"
 files condition.c
 setup "bucc -o condition.brl condition.c -lm"

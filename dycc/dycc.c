@@ -113,7 +113,7 @@ LIST_FUNCTION(brl_tcc_c_new_function)
     }
     DATA(result).p = tcc;
 
-    char *code = str_format("%s\n%s", bruter_header, ARG_S(0));
+    char *code = str_format("%s\n%s", bruter_header, ARG_P(0));
 
     add_common_symbols(tcc);
 
@@ -191,8 +191,8 @@ INIT(dycc)
         return;
     }
 
-    ADD_FUNCTION(context, "dycc.clear", brl_tcc_clear_states);
-    ADD_FUNCTION(context, "dycc.compile", brl_tcc_c_new_function);
+    add_function(context, "dycc.clear", brl_tcc_clear_states);
+    add_function(context, "dycc.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

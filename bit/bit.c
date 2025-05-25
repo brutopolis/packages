@@ -86,16 +86,16 @@ LIST_FUNCTION(_bit_swap)
 
 INIT(bit)
 {
-    ADD_FUNCTION(context, "bit.and", _bit_and);
-    ADD_FUNCTION(context, "bit.or", _bit_or);
-    ADD_FUNCTION(context, "bit.xor", _bit_xor);
-    ADD_FUNCTION(context, "bit.not", _bit_not);
-    ADD_FUNCTION(context, "bit.lshift", _bit_lshift);
-    ADD_FUNCTION(context, "bit.rshift", _bit_rshift);
-    ADD_FUNCTION(context, "bit.on", _bit_on);
-    ADD_FUNCTION(context, "bit.off", _bit_off);
-    ADD_FUNCTION(context, "bit.set", _bit_set);
-    ADD_FUNCTION(context, "bit.get", _bit_get);
-    ADD_FUNCTION(context, "bit.switch", _bit_switch);
-    ADD_FUNCTION(context, "bit.swap", _bit_swap);
+    add_function(context, "bit.and", _bit_and);
+    add_function(context, "bit.or", _bit_or);
+    add_function(context, "bit.xor", _bit_xor);
+    add_function(context, "bit.not", _bit_not);
+    add_function(context, "bit.lshift", _bit_lshift);
+    add_function(context, "bit.rshift", _bit_rshift);
+    add_function(context, "bit.on", _bit_on);
+    add_function(context, "bit.off", _bit_off);
+    add_function(context, "bit.set", _bit_set);
+    add_function(context, "bit.get", _bit_get);
+    add_function(context, "bit.switch", _bit_switch);
+    add_function(context, "bit.swap", _bit_swap);
 }

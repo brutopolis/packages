@@ -3,7 +3,7 @@
 LIST_FUNCTION(_label)
 {
     free(context->keys[ARG_I(0)]);
-    context->keys[ARG_I(1)] = str_duplicate(ARG_S(0));
+    context->keys[ARG_I(1)] = str_duplicate(ARG_P(0));
     return -1;
 }
 
@@ -20,7 +20,7 @@ LIST_FUNCTION(_ls)
             printf("[%ld](\"\"):\t\t", i);
         }
 
-        printf(" %s\n", DATA_S(i));
+        printf(" %s\n", DATA_P(i));
     }
     return -1;
 }
@@ -45,7 +45,7 @@ LIST_FUNCTION(_ignore)
 LIST_FUNCTION(_repeat)
 {
     Int times = ARG(0).i;
-    char* code = ARG_S(1);
+    char* code = ARG_P(1);
     Int result = -1;
     if (strchr(code, '(') != NULL) // do not optimize
     {
@@ -78,7 +78,7 @@ LIST_FUNCTION(_repeat)
 
 LIST_FUNCTION(_forever)
 {
-    char* code = ARG_S(0);
+    char* code = ARG_P(0);
     Int result = -1;
     while(1)
     {
@@ -106,28 +106,28 @@ LIST_FUNCTION(_set)
 
 LIST_FUNCTION(_eval)
 {
-    return eval(context, ARG_S(0));
+    return eval(context, ARG_P(0));
 }
 
 INIT(std)
 {
-    ADD_FUNCTION(context, "label", _label);
-    //ADD_FUNCTION(context, "unlabel", _unlabel);
-    //ADD_FUNCTION(context, "rename", _rename);
+    add_function(context, "label", _label);
+    //add_function(context, "unlabel", _unlabel);
+    //add_function(context, "rename", _rename);
     
-    //ADD_FUNCTION(context, "delete", _delete);
+    //add_function(context, "delete", _delete);
     
-    ADD_FUNCTION(context, "ls", _ls);
+    add_function(context, "ls", _ls);
     
-    ADD_FUNCTION(context, "ignore", _ignore);
+    add_function(context, "ignore", _ignore);
 
-    ADD_FUNCTION(context, "return", _return);
+    add_function(context, "return", _return);
 
-    ADD_FUNCTION(context, "repeat", _repeat);
-    ADD_FUNCTION(context, "forever", _forever);
+    add_function(context, "repeat", _repeat);
+    add_function(context, "forever", _forever);
 
-    ADD_FUNCTION(context, "get", _get);
-    ADD_FUNCTION(context, "set", _set);
+    add_function(context, "get", _get);
+    add_function(context, "set", _set);
 
-    ADD_FUNCTION(context, "eval", _eval);
+    add_function(context, "eval", _eval);
 }

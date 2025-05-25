@@ -68,7 +68,7 @@ bool file_exists(char* filename)
 
 LIST_FUNCTION(_read_file)
 {
-    char *filename = ARG_S(0);
+    char *filename = ARG_P(0);
     char *content = file_read(filename);
     if (content == NULL)
     {
@@ -89,22 +89,22 @@ LIST_FUNCTION(_read_file)
 
 LIST_FUNCTION(_write_file)
 {
-    char *filename = ARG_S(0);
-    char *content = ARG_S(1);
+    char *filename = ARG_P(0);
+    char *content = ARG_P(1);
     file_write(filename, content);
     return -1;
 }
 
 LIST_FUNCTION(_file_exists)
 {
-    char *filename = ARG_S(0);
+    char *filename = ARG_P(0);
     return file_exists(filename);
 }
 
 INIT(os)
 {
     // register functions
-    ADD_FUNCTION(context, "file.read", _read_file);
-    ADD_FUNCTION(context, "file.write", _write_file);
-    ADD_FUNCTION(context, "file.exists", _file_exists);
+    add_function(context, "file.read", _read_file);
+    add_function(context, "file.write", _write_file);
+    add_function(context, "file.exists", _file_exists);
 }

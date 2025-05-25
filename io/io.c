@@ -20,7 +20,7 @@ LIST_FUNCTION(print_float)
 
 LIST_FUNCTION(print_string)
 {
-    printf("%s\n", ARG_S(0));
+    printf("%s\n", ARG_P(0));
     return -1;
 }
 
@@ -108,17 +108,17 @@ LIST_FUNCTION(print_list)
 
 INIT(io)
 {
-    ADD_FUNCTION(context, "print.int", print_int);
-    ADD_FUNCTION(context, "print.uint", print_uint);
-    ADD_FUNCTION(context, "print.float", print_float);
-    ADD_FUNCTION(context, "print.string", print_string);
-    ADD_FUNCTION(context, "print.bool", print_bool);
-    ADD_FUNCTION(context, "print.pointer", print_pointer);
-    ADD_FUNCTION(context, "print.bits", print_bits);
-    ADD_FUNCTION(context, "print.bytes", print_bytearray);
-    ADD_FUNCTION(context, "print.octal", print_octal);
-    ADD_FUNCTION(context, "print.hex", print_hex);
-    ADD_FUNCTION(context, "print.bitarray", print_bitarray);
-    ADD_FUNCTION(context, "print.index", print_index);
-    ADD_FUNCTION(context, "print.list", print_list);
+    add_function(context, "print.int", print_int);
+    add_function(context, "print.uint", print_uint);
+    add_function(context, "print.float", print_float);
+    add_function(context, "print.string", print_string);
+    add_function(context, "print.bool", print_bool);
+    add_function(context, "print.pointer", print_pointer);
+    add_function(context, "print.bits", print_bits);
+    add_function(context, "print.bytes", print_bytearray);
+    add_function(context, "print.octal", print_octal);
+    add_function(context, "print.hex", print_hex);
+    add_function(context, "print.bitarray", print_bitarray);
+    add_function(context, "print.index", print_index);
+    add_function(context, "print.list", print_list);
 }
