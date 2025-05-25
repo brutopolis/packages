@@ -70,18 +70,14 @@ LIST_FUNCTION(_read_file)
 {
     char *filename = ARG(0).s;
     char *content = file_read(filename);
+    
     if (content == NULL)
     {
-        printf("BRUTER_ERROR: failed to read file: %s\n", filename);
-        return -1;
+        printf("BRUTER_ERROR: could not read file '%s'\n", filename);
+        return -1; // return an error code
     }
-
-    Int len = strlen(content);
-    Int blocks = (len+1) / sizeof(void*);
-    Int var = new_block(context, blocks, NULL);
-    
-    memcpy(&context->data[var].u8[0], content, len);
-    ((uint8_t*)context->data)[(var*sizeof(void*)) + len] = '\0';
+    Int var = new_var(context, NULL);
+    DATA(var).s = content;
 
     free(content);    
     return var;
