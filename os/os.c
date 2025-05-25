@@ -68,7 +68,7 @@ bool file_exists(char* filename)
 
 LIST_FUNCTION(_read_file)
 {
-    char *filename = ARG_P(0);
+    char *filename = ARG(0).s;
     char *content = file_read(filename);
     if (content == NULL)
     {
@@ -89,15 +89,15 @@ LIST_FUNCTION(_read_file)
 
 LIST_FUNCTION(_write_file)
 {
-    char *filename = ARG_P(0);
-    char *content = ARG_P(1);
+    char *filename = ARG(0).s;
+    char *content = ARG(1).s;
     file_write(filename, content);
     return -1;
 }
 
 LIST_FUNCTION(_file_exists)
 {
-    char *filename = ARG_P(0);
+    char *filename = ARG(0).s;
     return file_exists(filename);
 }
 

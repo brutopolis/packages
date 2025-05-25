@@ -37,8 +37,6 @@ void add_common_symbols(TCCState *tcc)
         str_format,
 
         new_var,
-        new_block,
-        new_string,
 
         parse_number,
         parse,
@@ -70,8 +68,6 @@ void add_common_symbols(TCCState *tcc)
         "str_format",
 
         "new_var",
-        "new_block",
-        "new_string",
         
         "parse_number",
         "parse",
@@ -113,7 +109,7 @@ LIST_FUNCTION(brl_tcc_c_new_function)
     }
     DATA(result).p = tcc;
 
-    char *code = str_format("%s\n%s", bruter_header, ARG_P(0));
+    char *code = str_format("%s\n%s", bruter_header, ARG(0).s);
 
     add_common_symbols(tcc);
 

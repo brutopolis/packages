@@ -20,7 +20,7 @@ LIST_FUNCTION(print_float)
 
 LIST_FUNCTION(print_string)
 {
-    printf("%s\n", ARG_P(0));
+    printf("%s\n", ARG(0).s);
     return -1;
 }
 

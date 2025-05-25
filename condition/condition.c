@@ -86,12 +86,12 @@ LIST_FUNCTION(_flowerorequals)
 
 LIST_FUNCTION(_if)
 {
-    char* cond = ARG_P(0);
-    char* true_part = ARG_P(1);
+    char* cond = ARG(0).s;
+    char* true_part = ARG(1).s;
     char* false_part = NULL;
 
     if (ARG_COUNT() > 2)
-        false_part = ARG_P(2);
+        false_part = ARG(2).s;
     
     Int result = -1;
 

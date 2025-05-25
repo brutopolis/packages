@@ -43,7 +43,7 @@ LIST_FUNCTION(brl_list_push)
     char* key = NULL;
     if (ARG_COUNT() > 2)
     {
-        key = ARG_P(2);
+        key = ARG(2).s;
     }
     list_push(list, VALUE(i, ARG_I(1)), key);
     return -1;
@@ -55,7 +55,7 @@ LIST_FUNCTION(brl_list_unshift)
     char* key = NULL;
     if (ARG_COUNT() > 2)
     {
-        key = ARG_P(2);
+        key = ARG(2).s;
     }
     list_unshift(list, VALUE(i, ARG_I(1)), key);
     return -1;
@@ -68,7 +68,7 @@ LIST_FUNCTION(brl_list_insert)
     char* key = NULL;
     if (ARG_COUNT() > 3)
     {
-        key = ARG_P(3);
+        key = ARG(3).s;
     }
     list_insert(list, index, VALUE(i, ARG_I(2)), key);
     return -1;

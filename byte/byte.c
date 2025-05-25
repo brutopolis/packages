@@ -5,7 +5,7 @@ LIST_FUNCTION(_byte_set)
     Int index = ARG(1).i;
     Int value = ARG(2).i;
 
-    (ARG_P(0))[index] = value;
+    (ARG(0).s)[index] = value;
  
     return -1;
 }
@@ -14,7 +14,7 @@ LIST_FUNCTION(_byte_get)
 {
     Int byte_index = ARG(1).i;
     Int index = new_var(context, NULL);
-    ARG(index).i = (ARG_P(0))[byte_index];
+    ARG(index).i = (ARG(0).s)[byte_index];
 
     return index;
 }
