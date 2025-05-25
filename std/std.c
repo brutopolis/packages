@@ -47,11 +47,23 @@ LIST_FUNCTION(_repeat)
     Int times = ARG(0).i;
     char* code = ARG_P(1);
     Int result = -1;
+
+    // lets check if there is a parser variable in the program
+    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
+    if (parser_index == -1)
+    {
+        printf("BRUTER_ERROR: parser not found, using basic parser\n");
+        parser_index = new_var(context, "parser");
+        context->data[parser_index].p = basic_parser();
+    }
+    
+    List *parser = context->data[parser_index].p;
+
     if (strchr(code, '(') != NULL) // do not optimize
     {
         for (Int i = 0; i < times; i++)
         {
-            result = eval(context, code);
+            result = eval(context, parser, code);
             if (result != -1)
             {
                 break;
@@ -60,7 +72,7 @@ LIST_FUNCTION(_repeat)
     }
     else
     {
-        List* compiled = compile_code(context, code);
+        List* compiled = compile_code(context, parser, code);
         
         for (Int i = 0; i < times; i++)
         {
@@ -80,9 +92,21 @@ LIST_FUNCTION(_forever)
 {
     char* code = ARG_P(0);
     Int result = -1;
+
+    // lets check if there is a parser variable in the program
+    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
+    if (parser_index == -1)
+    {
+        printf("BRUTER_ERROR: parser not found, using basic parser\n");
+        parser_index = new_var(context, "parser");
+        context->data[parser_index].p = basic_parser();
+    }
+    
+    List *parser = context->data[parser_index].p;
+
     while(1)
     {
-        result = eval(context, code);
+        result = eval(context, parser, code);
         if (result != -1)
         {
             break;
@@ -106,7 +130,18 @@ LIST_FUNCTION(_set)
 
 LIST_FUNCTION(_eval)
 {
-    return eval(context, ARG_P(0));
+    // lets check if there is a parser variable in the program
+    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
+    if (parser_index == -1)
+    {
+        printf("BRUTER_ERROR: parser not found, using basic parser\n");
+        parser_index = new_var(context, "parser");
+        context->data[parser_index].p = basic_parser();
+    }
+    
+    List *parser = context->data[parser_index].p;
+
+    return eval(context, parser, ARG_P(0));
 }
 
 INIT(std)

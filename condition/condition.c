@@ -95,22 +95,36 @@ LIST_FUNCTION(_if)
     
     Int result = -1;
 
+    // lets check if there is a parser variable in the program
+    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
+    if (parser_index == -1)
+    {
+        printf("BRUTER_ERROR: parser not found, using basic parser\n");
+        parser_index = new_var(context, "parser");
+        context->data[parser_index].p = basic_parser();
+    }
+    else 
+    {
+        parser_index = context->data[parser_index].i;
+    }
+    List *parser = context->data[parser_index].p;
+
     if (cond == NULL)
     {
         result = 0;
     }
     else
     {
-        result = eval(context, cond);
+        result = eval(context, parser, cond);
     }
 
     if (result == 1)
     {
-        result = eval(context, true_part);
+        result = eval(context, parser, true_part);
     }
     else if (false_part != NULL)
     {
-        result = eval(context, false_part);
+        result = eval(context, parser, false_part);
     }
     else
     {
