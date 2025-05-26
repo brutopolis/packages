@@ -48,17 +48,8 @@ LIST_FUNCTION(_repeat)
     char* code = ARG(1).s;
     Int result = -1;
 
-    // lets check if there is a parser variable in the program
-    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
-    if (parser_index == -1)
-    {
-        printf("BRUTER_ERROR: parser not found, using basic parser\n");
-        parser_index = new_var(context, "parser");
-        context->data[parser_index].p = basic_parser();
-    }
+    List *parser = get_parser(context);
     
-    List *parser = context->data[parser_index].p;
-
     if (strchr(code, '(') != NULL) // do not optimize
     {
         for (Int i = 0; i < times; i++)
@@ -93,16 +84,7 @@ LIST_FUNCTION(_forever)
     char* code = ARG(0).s;
     Int result = -1;
 
-    // lets check if there is a parser variable in the program
-    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
-    if (parser_index == -1)
-    {
-        printf("BRUTER_ERROR: parser not found, using basic parser\n");
-        parser_index = new_var(context, "parser");
-        context->data[parser_index].p = basic_parser();
-    }
-    
-    List *parser = context->data[parser_index].p;
+    List *parser = get_parser(context);
 
     while(1)
     {
@@ -130,16 +112,7 @@ LIST_FUNCTION(_set)
 
 LIST_FUNCTION(_eval)
 {
-    // lets check if there is a parser variable in the program
-    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
-    if (parser_index == -1)
-    {
-        printf("BRUTER_ERROR: parser not found, using simple parser\n");
-        parser_index = new_var(context, "parser");
-        context->data[parser_index].p = basic_parser();
-    }
-    
-    List *parser = context->data[parser_index].p;
+    List *parser = get_parser(context);
 
     return eval(context, parser, ARG(0).s);
 }
