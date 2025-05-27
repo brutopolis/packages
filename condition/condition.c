@@ -1,90 +1,90 @@
 #include "br.h"
 
-LIST_FUNCTION(_iequals)
+BRUTER_FUNCTION(_iequals)
 {
     if (BR_ARG(0).i == BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_inotequals)
+BRUTER_FUNCTION(_inotequals)
 {
     if (BR_ARG(0).i != BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_ibigger)
+BRUTER_FUNCTION(_ibigger)
 {
     if (BR_ARG(0).i > BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_ibiggerorequals)
+BRUTER_FUNCTION(_ibiggerorequals)
 {
     if (BR_ARG(0).i >= BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_ilower)
+BRUTER_FUNCTION(_ilower)
 {
     if (BR_ARG(0).i < BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_ilowerorequals)
+BRUTER_FUNCTION(_ilowerorequals)
 {
     if (BR_ARG(0).i <= BR_ARG(1).i)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_fequals)
+BRUTER_FUNCTION(_fequals)
 {
     if (BR_ARG(0).f == BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_fnotequals)
+BRUTER_FUNCTION(_fnotequals)
 {
     if (BR_ARG(0).f != BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_fbigger)
+BRUTER_FUNCTION(_fbigger)
 {
     if (BR_ARG(0).f > BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_fbiggerorequals)
+BRUTER_FUNCTION(_fbiggerorequals)
 {
     if (BR_ARG(0).f >= BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_flower)
+BRUTER_FUNCTION(_flower)
 {
     if (BR_ARG(0).f < BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_flowerorequals)
+BRUTER_FUNCTION(_flowerorequals)
 {
     if (BR_ARG(0).f <= BR_ARG(1).f)
         return 1;
     return 0;
 }
 
-LIST_FUNCTION(_if)
+BRUTER_FUNCTION(_if)
 {
     char* cond = BR_ARG(0).s;
     char* true_part = BR_ARG(1).s;
@@ -93,10 +93,10 @@ LIST_FUNCTION(_if)
     if (BR_ARG_COUNT() > 2)
         false_part = BR_ARG(2).s;
     
-    Int result = -1;
+    BruterInt result = -1;
 
     // lets check if there is a parser variable in the program
-    Int parser_index = list_find(context, VALUE(p, NULL), "parser");
+    BruterInt parser_index = bruter_find(context, BRUTER_VALUE(p, NULL), "parser");
     if (parser_index == -1)
     {
         printf("BRUTER_ERROR: parser not found, using basic parser\n");
@@ -107,7 +107,7 @@ LIST_FUNCTION(_if)
     {
         parser_index = context->data[parser_index].i;
     }
-    List *parser = context->data[parser_index].p;
+    BruterList *parser = context->data[parser_index].p;
 
     if (cond == NULL)
     {

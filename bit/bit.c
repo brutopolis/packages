@@ -1,58 +1,58 @@
 #include "br.h"
 
-LIST_FUNCTION(_bit_and)
+BRUTER_FUNCTION(_bit_and)
 {
     BR_ARG(0).i &= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_or)
+BRUTER_FUNCTION(_bit_or)
 {
     BR_ARG(0).i |= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_xor)
+BRUTER_FUNCTION(_bit_xor)
 {
     BR_ARG(0).i ^= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_not)
+BRUTER_FUNCTION(_bit_not)
 {
     BR_ARG(0).i = ~BR_ARG(0).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_lshift)
+BRUTER_FUNCTION(_bit_lshift)
 {
     BR_ARG(0).i <<= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_rshift)
+BRUTER_FUNCTION(_bit_rshift)
 {
     BR_ARG(0).i >>= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_bit_on)
+BRUTER_FUNCTION(_bit_on)
 {
-    Int mask = 1 << BR_ARG(1).i;
+    BruterInt mask = 1 << BR_ARG(1).i;
     BR_ARG(0).i |= mask;
     return -1;
 }
 
-LIST_FUNCTION(_bit_off)
+BRUTER_FUNCTION(_bit_off)
 {
-    Int mask = ~(1 << BR_ARG(1).i);
+    BruterInt mask = ~(1 << BR_ARG(1).i);
     BR_ARG(0).i &= mask;
     return -1;
 }
 
-LIST_FUNCTION(_bit_set) // set 0 or 1
+BRUTER_FUNCTION(_bit_set) // set 0 or 1
 {
-    Int mask = 1 << BR_ARG(1).i;
+    BruterInt mask = 1 << BR_ARG(1).i;
     if (BR_ARG(2).i)
         BR_ARG(0).i |= mask;
     else
@@ -61,24 +61,24 @@ LIST_FUNCTION(_bit_set) // set 0 or 1
 }
 
 
-LIST_FUNCTION(_bit_get)
+BRUTER_FUNCTION(_bit_get)
 {
-    Int mask = 1 << BR_ARG(1).i;
+    BruterInt mask = 1 << BR_ARG(1).i;
     return (BR_ARG(0).i & mask) != 0;
 }
 
-LIST_FUNCTION(_bit_switch)
+BRUTER_FUNCTION(_bit_switch)
 {
-    Int mask = 1 << BR_ARG(1).i;
+    BruterInt mask = 1 << BR_ARG(1).i;
     BR_ARG(0).i ^= mask;
     return -1;
 }
 
-LIST_FUNCTION(_bit_swap)
+BRUTER_FUNCTION(_bit_swap)
 {
-    Int mask = 1 << BR_ARG(1).i;
-    Int mask2 = 1 << BR_ARG(2).i;
-    Int temp = (BR_ARG(0).i & mask) >> BR_ARG(1).i;
+    BruterInt mask = 1 << BR_ARG(1).i;
+    BruterInt mask2 = 1 << BR_ARG(2).i;
+    BruterInt temp = (BR_ARG(0).i & mask) >> BR_ARG(1).i;
     BR_ARG(0).i &= ~mask;
     BR_ARG(0).i |= (temp << BR_ARG(2).i);
     return -1;

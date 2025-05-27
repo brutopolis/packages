@@ -7,28 +7,28 @@
 #include "br.h"
 #include <libtcc.h>
 
-List *dycc_state_list;
+BruterList *dycc_state_list;
 
 const char* bruter_header = "#include \"br.h\"\n";
 
 void add_common_symbols(TCCState *tcc)
 {
     const void *core_funcs[] = {
-        list_init,
-        list_free,
-        list_double,
-        list_half,
-        list_push,
-        list_unshift,
-        list_insert,
-        list_pop,
-        list_shift,
-        list_remove,
-        list_swap,
-        list_fast_remove,
-        list_find,
-        list_reverse,
-        list_call,
+        bruter_init,
+        bruter_free,
+        bruter_double,
+        bruter_half,
+        bruter_push,
+        bruter_unshift,
+        bruter_insert,
+        bruter_pop,
+        bruter_shift,
+        bruter_remove,
+        bruter_swap,
+        bruter_fast_remove,
+        bruter_find,
+        bruter_reverse,
+        bruter_call,
 
         str_duplicate,
         str_nduplicate,
@@ -37,7 +37,6 @@ void add_common_symbols(TCCState *tcc)
         str_format,
 
         br_new_var,
-
         br_parser_number,
         br_parse,
 
@@ -45,21 +44,21 @@ void add_common_symbols(TCCState *tcc)
     };
 
     const char *core_names[] = {
-        "list_init",
-        "list_free",
-        "list_double",
-        "list_half",
-        "list_push",
-        "list_unshift",
-        "list_insert",
-        "list_pop",
-        "list_shift",
-        "list_remove",
-        "list_swap",
-        "list_fast_remove",
-        "list_find",
-        "list_reverse",
-        "list_call",
+        "bruter_init",
+        "bruter_free",
+        "bruter_double",
+        "bruter_half",
+        "bruter_push",
+        "bruter_unshift",
+        "bruter_insert",
+        "bruter_pop",
+        "bruter_shift",
+        "bruter_remove",
+        "bruter_swap",
+        "bruter_fast_remove",
+        "bruter_find",
+        "bruter_reverse",
+        "bruter_call",
 
         "str_duplicate",
         "str_nduplicate",
@@ -68,29 +67,28 @@ void add_common_symbols(TCCState *tcc)
         "str_format",
 
         "br_new_var",
-        
         "br_parser_number",
         "parse",
         "eval"
     };
 
-    for (Int i = 0; i < sizeof(core_funcs) / sizeof(core_funcs[0]); i++) 
+    for (BruterInt i = 0; i < sizeof(core_funcs) / sizeof(core_funcs[0]); i++) 
     {
         tcc_add_symbol(tcc, core_names[i], core_funcs[i]);
     }
 }
 
 
-LIST_FUNCTION(brl_tcc_clear_states)
+BRUTER_FUNCTION(brl_tcc_clear_states)
 {
     while (dycc_state_list->size > 0) 
     {
-        tcc_delete((TCCState *)(list_shift(dycc_state_list)).s);
+        tcc_delete((TCCState *)(bruter_shift(dycc_state_list)).s);
     }
     return -1;
 }
 
-LIST_FUNCTION(brl_tcc_c_new_function)
+BRUTER_FUNCTION(brl_tcc_c_new_function)
 {
     TCCState *tcc = tcc_new();
     if (!tcc) 
@@ -101,7 +99,7 @@ LIST_FUNCTION(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    Int result = br_new_var(context, NULL);
+    BruterInt result = br_new_var(context, NULL);
     if (result < 0) 
     {
         fprintf(stderr, "could not create new var\n");
@@ -151,9 +149,9 @@ LIST_FUNCTION(brl_tcc_c_new_function)
             return -1;
         }
 
-        list_push(dycc_state_list, (Value){.p = tcc}, NULL);
+        bruter_push(dycc_state_list, (BruterValue){.p = tcc}, NULL);
 
-        Int index = br_new_var(context, symbol);
+        BruterInt index = br_new_var(context, symbol);
         if (index < 0) 
         {
             fprintf(stderr, "could not create new var\n");
@@ -174,12 +172,12 @@ LIST_FUNCTION(brl_tcc_c_new_function)
 void _terminate_tcc_at_exit_handler()
 {
     brl_tcc_clear_states(NULL, NULL);
-    list_free(dycc_state_list);
+    bruter_free(dycc_state_list);
 }
 
 BR_INIT(dycc)
 {
-    dycc_state_list = list_init(0, false);
+    dycc_state_list = bruter_init(0, false);
 
     if (!dycc_state_list) 
     {

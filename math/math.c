@@ -1,60 +1,60 @@
 #include "br.h"
 
-LIST_FUNCTION(_iadd)
+BRUTER_FUNCTION(_iadd)
 {
     BR_ARG(0).i += BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_isub)
+BRUTER_FUNCTION(_isub)
 {
     BR_ARG(0).i -= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_imul)
+BRUTER_FUNCTION(_imul)
 {
     BR_ARG(0).i *= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_idiv)
+BRUTER_FUNCTION(_idiv)
 {
     BR_ARG(0).i /= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_imod)
+BRUTER_FUNCTION(_imod)
 {
     BR_ARG(0).i %= BR_ARG(1).i;
     return -1;
 }
 
-LIST_FUNCTION(_fadd)
+BRUTER_FUNCTION(_fadd)
 {
     BR_ARG(0).f += BR_ARG(1).f;
     return -1;
 }
 
-LIST_FUNCTION(_fsub)
+BRUTER_FUNCTION(_fsub)
 {
     BR_ARG(0).f -= BR_ARG(1).f;
     return -1;
 }
 
-LIST_FUNCTION(_fmul)
+BRUTER_FUNCTION(_fmul)
 {
     BR_ARG(0).f *= BR_ARG(1).f;
     return -1;
 }
 
-LIST_FUNCTION(_fdiv)
+BRUTER_FUNCTION(_fdiv)
 {
     BR_ARG(0).f /= BR_ARG(1).f;
     return -1;
 }
 
-LIST_FUNCTION(_fmod)
+BRUTER_FUNCTION(_fmod)
 {
     BR_ARG(0).f = fmod(BR_ARG(0).f, BR_ARG(1).f);
     return -1;

@@ -1,10 +1,10 @@
 #include "br.h"
 
-List* lists;
+BruterList* lists;
 
-LIST_FUNCTION(brl_new_list)
+BRUTER_FUNCTION(brl_new_list)
 {
-    Int is_table;
+    BruterInt is_table;
     if (BR_ARG_COUNT() == 0)
     {
         is_table = false;
@@ -14,175 +14,175 @@ LIST_FUNCTION(brl_new_list)
         is_table = BR_ARG(0).i;
     }
     
-    List* list = list_init(sizeof(void*), is_table);
-    list_push(lists, (Value){.p = list}, NULL);
-    Int result = br_new_var(context, NULL);
+    BruterList* list = bruter_init(sizeof(void*), is_table);
+    bruter_push(lists, (BruterValue){.p = list}, NULL);
+    BruterInt result = br_new_var(context, NULL);
     BR_DATA(result).p = list;
     return result;
 }
 
-LIST_FUNCTION(brl_delete_list)
+BRUTER_FUNCTION(brl_delete_list)
 {
-    List* list = (List*)BR_ARG(0).p;
+    BruterList* list = (BruterList*)BR_ARG(0).p;
     if (list == NULL)
     {
         return -1;
     }
-    Int found = list_find(lists, VALUE(p, list), NULL);
+    BruterInt found = bruter_find(lists, BRUTER_VALUE(p, list), NULL);
     if (found != -1)
     {
-        list_fast_remove(lists, found);
+        bruter_fast_remove(lists, found);
     }
-    list_free(list);
+    bruter_free(list);
     return 0;
 }
 
-LIST_FUNCTION(brl_list_push)
+BRUTER_FUNCTION(brl_bruter_push)
 {
-    List* list = (List*)BR_ARG(0).p;
+    BruterList* list = (BruterList*)BR_ARG(0).p;
     char* key = NULL;
     if (BR_ARG_COUNT() > 2)
     {
         key = BR_ARG(2).s;
     }
-    list_push(list, VALUE(i, BR_ARG_I(1)), key);
+    bruter_push(list, BRUTER_VALUE(i, BR_ARG_I(1)), key);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_unshift)
+BRUTER_FUNCTION(brl_bruter_unshift)
 {
-    List* list = (List*)BR_ARG(0).p;
+    BruterList* list = (BruterList*)BR_ARG(0).p;
     char* key = NULL;
     if (BR_ARG_COUNT() > 2)
     {
         key = BR_ARG(2).s;
     }
-    list_unshift(list, VALUE(i, BR_ARG_I(1)), key);
+    bruter_unshift(list, BRUTER_VALUE(i, BR_ARG_I(1)), key);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_insert)
+BRUTER_FUNCTION(brl_bruter_insert)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     char* key = NULL;
     if (BR_ARG_COUNT() > 3)
     {
         key = BR_ARG(3).s;
     }
-    list_insert(list, index, VALUE(i, BR_ARG_I(2)), key);
+    bruter_insert(list, index, BRUTER_VALUE(i, BR_ARG_I(2)), key);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_pop)
+BRUTER_FUNCTION(brl_bruter_pop)
 {
-    List* list = (List*)BR_ARG(0).p;
-    return list_pop(list).i;
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    return bruter_pop(list).i;
 }
 
-LIST_FUNCTION(brl_list_shift)
+BRUTER_FUNCTION(brl_bruter_shift)
 {
-    List* list = (List*)BR_ARG(0).p;
-    return list_shift(list).i;
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    return bruter_shift(list).i;
 }
 
-LIST_FUNCTION(brl_list_remove)
+BRUTER_FUNCTION(brl_bruter_remove)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     
-    return list_remove(list, index).i;
+    return bruter_remove(list, index).i;
 }
 
-LIST_FUNCTION(brl_list_get)
+BRUTER_FUNCTION(brl_bruter_get)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     
     return list->data[index].i;
 }
 
-LIST_FUNCTION(brl_list_set)
+BRUTER_FUNCTION(brl_bruter_set)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     
     list->data[index].i = BR_ARG(2).i;
     return -1;
 }
 
-LIST_FUNCTION(brl_list_size)
+BRUTER_FUNCTION(brl_bruter_size)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int result = br_new_var(context, NULL);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt result = br_new_var(context, NULL);
     BR_DATA(result).i = list->size;
     return result;
 }
 
-LIST_FUNCTION(brl_list_reverse)
+BRUTER_FUNCTION(brl_bruter_reverse)
 {
-    List* list = (List*)BR_ARG(0).p;
-    list_reverse(list);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    bruter_reverse(list);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_swap)
+BRUTER_FUNCTION(brl_bruter_swap)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index1 = BR_ARG_I(1);
-    Int index2 = BR_ARG_I(2);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index1 = BR_ARG_I(1);
+    BruterInt index2 = BR_ARG_I(2);
     
-    list_swap(list, index1, index2);
+    bruter_swap(list, index1, index2);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_find)
+BRUTER_FUNCTION(brl_bruter_find)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     
-    return list_find(list, VALUE(i, BR_ARG_I(2)), NULL);
+    return bruter_find(list, BRUTER_VALUE(i, BR_ARG_I(2)), NULL);
 }
 
-LIST_FUNCTION(brl_list_copy)
+BRUTER_FUNCTION(brl_bruter_copy)
 {
-    List* list = (List*)BR_ARG(0).p;
-    List* copy = list_copy(list);
-    Int result = br_new_var(context, NULL);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterList* copy = bruter_copy(list);
+    BruterInt result = br_new_var(context, NULL);
     BR_DATA(result).p = copy;
     return result;
 }
 
-LIST_FUNCTION(brl_list_fast_remove)
+BRUTER_FUNCTION(brl_bruter_fast_remove)
 {
-    List* list = (List*)BR_ARG(0).p;
-    Int index = BR_ARG_I(1);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    BruterInt index = BR_ARG_I(1);
     
-    return list_fast_remove(list, index).i;
+    return bruter_fast_remove(list, index).i;
 }
 
-LIST_FUNCTION(brl_list_double)
+BRUTER_FUNCTION(brl_bruter_double)
 {
-    List* list = (List*)BR_ARG(0).p;
-    list_double(list);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    bruter_double(list);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_half)
+BRUTER_FUNCTION(brl_bruter_half)
 {
-    List* list = (List*)BR_ARG(0).p;
-    list_half(list);
+    BruterList* list = (BruterList*)BR_ARG(0).p;
+    bruter_half(list);
     return -1;
 }
 
-LIST_FUNCTION(brl_list_call)
+BRUTER_FUNCTION(brl_bruter_call)
 {
     
-    List* sub_context = (List*)BR_ARG(0).p;
-    List* cmd = (List*)BR_ARG(1).p;
+    BruterList* sub_context = (BruterList*)BR_ARG(0).p;
+    BruterList* cmd = (BruterList*)BR_ARG(1).p;
     
 
-    return list_call(sub_context, cmd).i;
+    return bruter_call(sub_context, cmd).i;
 }
 
 // at exit function
@@ -192,35 +192,35 @@ void _free_at_exit()
     {
         while (lists->size > 0)
         {
-            list_free(list_pop(lists).p);
+            bruter_free(bruter_pop(lists).p);
         }
     }
-    list_free(lists);
+    bruter_free(lists);
 }
 
 
 BR_INIT(list)
 {
-    lists = list_init(sizeof(void*), false);
+    lists = bruter_init(sizeof(void*), false);
     br_add_function(context, "list.init", brl_new_list);
     br_add_function(context, "list.free", brl_delete_list);
-    br_add_function(context, "list.push", brl_list_push);
-    br_add_function(context, "list.unshift", brl_list_unshift);
-    br_add_function(context, "list.insert", brl_list_insert);
-    br_add_function(context, "list.pop", brl_list_pop);
-    br_add_function(context, "list.shift", brl_list_shift);
-    br_add_function(context, "list.remove", brl_list_remove);
-    br_add_function(context, "list.get", brl_list_get);
-    br_add_function(context, "list.set", brl_list_set);
-    br_add_function(context, "list.size", brl_list_size);
-    br_add_function(context, "list.reverse", brl_list_reverse);
-    br_add_function(context, "list.swap", brl_list_swap);
-    br_add_function(context, "list.find", brl_list_find);
-    br_add_function(context, "list.copy", brl_list_copy);
-    br_add_function(context, "list.fast_remove", brl_list_fast_remove);
-    br_add_function(context, "list.double", brl_list_double);
-    br_add_function(context, "list.half", brl_list_half);
-    br_add_function(context, "list.call", brl_list_call);
+    br_add_function(context, "list.push", brl_bruter_push);
+    br_add_function(context, "list.unshift", brl_bruter_unshift);
+    br_add_function(context, "list.insert", brl_bruter_insert);
+    br_add_function(context, "list.pop", brl_bruter_pop);
+    br_add_function(context, "list.shift", brl_bruter_shift);
+    br_add_function(context, "list.remove", brl_bruter_remove);
+    br_add_function(context, "list.get", brl_bruter_get);
+    br_add_function(context, "list.set", brl_bruter_set);
+    br_add_function(context, "list.size", brl_bruter_size);
+    br_add_function(context, "list.reverse", brl_bruter_reverse);
+    br_add_function(context, "list.swap", brl_bruter_swap);
+    br_add_function(context, "list.find", brl_bruter_find);
+    br_add_function(context, "list.copy", brl_bruter_copy);
+    br_add_function(context, "list.fast_remove", brl_bruter_fast_remove);
+    br_add_function(context, "list.double", brl_bruter_double);
+    br_add_function(context, "list.half", brl_bruter_half);
+    br_add_function(context, "list.call", brl_bruter_call);
 
     // at exit function
     atexit(_free_at_exit);

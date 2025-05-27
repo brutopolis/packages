@@ -1,58 +1,58 @@
 #include "br.h"
 
-LIST_FUNCTION(_byte_set)
+BRUTER_FUNCTION(_byte_set)
 {
-    Int index = BR_ARG(1).i;
-    Int value = BR_ARG(2).i;
+    BruterInt index = BR_ARG(1).i;
+    BruterInt value = BR_ARG(2).i;
 
     (BR_ARG(0).s)[index] = value;
  
     return -1;
 }
 
-LIST_FUNCTION(_byte_get)
+BRUTER_FUNCTION(_byte_get)
 {
-    Int byte_index = BR_ARG(1).i;
-    Int index = br_new_var(context, NULL);
+    BruterInt byte_index = BR_ARG(1).i;
+    BruterInt index = br_new_var(context, NULL);
     BR_ARG(index).i = (BR_ARG(0).s)[byte_index];
 
     return index;
 }
 
-LIST_FUNCTION(_byte_add)
+BRUTER_FUNCTION(_byte_add)
 {
-    Int index = BR_ARG(1).i;
-    Int value = BR_ARG(2).i;
+    BruterInt index = BR_ARG(1).i;
+    BruterInt value = BR_ARG(2).i;
 
     BR_ARG(0).u8[index] += value;
  
     return -1;
 }
 
-LIST_FUNCTION(_byte_sub)
+BRUTER_FUNCTION(_byte_sub)
 {
-    Int index = BR_ARG(1).i;
-    Int value = BR_ARG(2).i;
+    BruterInt index = BR_ARG(1).i;
+    BruterInt value = BR_ARG(2).i;
 
     BR_ARG(0).u8[index] -= value;
  
     return -1;
 }
 
-LIST_FUNCTION(_byte_mul)
+BRUTER_FUNCTION(_byte_mul)
 {
-    Int index = BR_ARG(1).i;
-    Int value = BR_ARG(2).i;
+    BruterInt index = BR_ARG(1).i;
+    BruterInt value = BR_ARG(2).i;
 
     BR_ARG(0).u8[index] *= value;
  
     return -1;
 }
 
-LIST_FUNCTION(_byte_div)
+BRUTER_FUNCTION(_byte_div)
 {
-    Int index = BR_ARG(1).i;
-    Int value = BR_ARG(2).i;
+    BruterInt index = BR_ARG(1).i;
+    BruterInt value = BR_ARG(2).i;
 
     BR_ARG(0).u8[index] /= value;
  

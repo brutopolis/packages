@@ -66,7 +66,7 @@ bool file_exists(char* filename)
     return true;
 }
 
-LIST_FUNCTION(_read_file)
+BRUTER_FUNCTION(_read_file)
 {
     char *filename = BR_ARG(0).s;
     char *content = file_read(filename);
@@ -76,14 +76,14 @@ LIST_FUNCTION(_read_file)
         printf("BRUTER_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
-    Int var = br_new_var(context, NULL);
+    BruterInt var = br_new_var(context, NULL);
     BR_DATA(var).s = content;
 
     free(content);    
     return var;
 }
 
-LIST_FUNCTION(_write_file)
+BRUTER_FUNCTION(_write_file)
 {
     char *filename = BR_ARG(0).s;
     char *content = BR_ARG(1).s;
@@ -91,7 +91,7 @@ LIST_FUNCTION(_write_file)
     return -1;
 }
 
-LIST_FUNCTION(_file_exists)
+BRUTER_FUNCTION(_file_exists)
 {
     char *filename = BR_ARG(0).s;
     return file_exists(filename);

@@ -1,59 +1,59 @@
 #include "br.h"
 
-LIST_FUNCTION(print_int)
+BRUTER_FUNCTION(print_int)
 {
     printf("%d\n", BR_ARG(0).i);
     return -1;
 }
 
-LIST_FUNCTION(print_uint)
+BRUTER_FUNCTION(print_uint)
 {
     printf("%u\n", BR_ARG(0).i);
     return -1;
 }
 
-LIST_FUNCTION(print_float)
+BRUTER_FUNCTION(print_float)
 {
     printf("%f\n", BR_ARG(0).f);
     return -1;
 }
 
-LIST_FUNCTION(print_string)
+BRUTER_FUNCTION(print_string)
 {
     printf("%s\n", BR_ARG(0).s);
     return -1;
 }
 
-LIST_FUNCTION(print_bool)
+BRUTER_FUNCTION(print_bool)
 {
     printf("%s\n", BR_ARG(0).i ? "true" : "false");
     return -1;
 }
 
-LIST_FUNCTION(print_pointer)
+BRUTER_FUNCTION(print_pointer)
 {
     printf("%p\n", BR_ARG(0).p);
     return -1;
 }
 
-LIST_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
+BRUTER_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of BruterInt
 {
     // print the txt 0b0010101010101...
-    Int number = BR_ARG(0).i;
-    Int size = sizeof(Int);
+    BruterInt number = BR_ARG(0).i;
+    BruterInt size = sizeof(BruterInt);
     printf("0b");
-    for (Int i = size * 8 - 1; i >= 0; i--) {
+    for (BruterInt i = size * 8 - 1; i >= 0; i--) {
         printf("%d", (number >> i) & 1);
     }
     printf("\n");
     return -1;
 }
 
-LIST_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of Int
+BRUTER_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of BruterInt
 {
-    Int number = BR_ARG(0).i;
-    Int size = sizeof(Int);
-    for (Int i = size * 8 - 1; i >= 0; i--) {
+    BruterInt number = BR_ARG(0).i;
+    BruterInt size = sizeof(BruterInt);
+    for (BruterInt i = size * 8 - 1; i >= 0; i--) {
         printf("%d", (number >> i) & 1);
         if (i % 8 == 0) {
             printf(" ");
@@ -63,42 +63,42 @@ LIST_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111
     return -1;
 }
 
-LIST_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of Int
+BRUTER_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of BruterInt
 {
-    Int number = BR_ARG(0).i;
-    Int size = sizeof(Int);
-    for (Int i = 0; i < size; i++) {
+    BruterInt number = BR_ARG(0).i;
+    BruterInt size = sizeof(BruterInt);
+    for (BruterInt i = 0; i < size; i++) {
         printf("%d ", (number >> (i * 8)) & 0xFF);
     }
     printf("\n");
     return -1;
 }
 
-LIST_FUNCTION(print_octal) // 0o1234567 or 0o123456789 depending on the size of Int
+BRUTER_FUNCTION(print_octal) // 0o1234567 or 0o123456789 depending on the size of BruterInt
 {
-    Int number = BR_ARG(0).i;
+    BruterInt number = BR_ARG(0).i;
     printf("0o%lo\n", number);
     return -1;
 }
 
-LIST_FUNCTION(print_hex)
+BRUTER_FUNCTION(print_hex)
 {
-    Int i = BR_ARG(0).i;
+    BruterInt i = BR_ARG(0).i;
     printf("0x%X\n", i);
     return -1;
 }
 
-LIST_FUNCTION(print_index)
+BRUTER_FUNCTION(print_index)
 {
-    Int i = BR_ARG_I(0);
+    BruterInt i = BR_ARG_I(0);
     printf("%d\n", i);
     return -1;
 }
 
-LIST_FUNCTION(print_list)
+BRUTER_FUNCTION(print_list)
 {
-    List *list = (List *)BR_ARG(0).p;
-    for (Int i = 0; i < list->size; i++)
+    BruterList *list = (BruterList *)BR_ARG(0).p;
+    for (BruterInt i = 0; i < list->size; i++)
     {
         printf("%d ", list->data[i].i);
     }

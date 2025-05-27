@@ -1,9 +1,9 @@
 #include "br.h"
 
-LIST_FUNCTION(_alloc_set_byte)
+BRUTER_FUNCTION(_alloc_set_byte)
 {
     uint8_t *allocd = BR_ARG(0).p;
-    Int index = BR_ARG(1).i;
+    BruterInt index = BR_ARG(1).i;
     uint8_t value = BR_ARG(2).i;
     if (allocd == NULL)
     {
@@ -13,10 +13,10 @@ LIST_FUNCTION(_alloc_set_byte)
     allocd[index] = value;
 }
 
-LIST_FUNCTION(_alloc_get_byte)
+BRUTER_FUNCTION(_alloc_get_byte)
 {
     uint8_t *allocd = BR_ARG(0).p;
-    Int index = BR_ARG(1).i;
+    BruterInt index = BR_ARG(1).i;
     if (allocd == NULL)
     {
         printf("BRUTER_ERROR: alloc_get_byte called with NULL pointer\n");

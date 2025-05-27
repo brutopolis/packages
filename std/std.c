@@ -1,15 +1,15 @@
 #include "br.h"
 
-LIST_FUNCTION(_label)
+BRUTER_FUNCTION(_label)
 {
     free(context->keys[BR_ARG_I(0)]);
     context->keys[BR_ARG_I(1)] = str_duplicate(BR_ARG(0).s);
     return -1;
 }
 
-LIST_FUNCTION(_ls)
+BRUTER_FUNCTION(_ls)
 {
-    for (Int i = 0; i < context->size; i++)
+    for (BruterInt i = 0; i < context->size; i++)
     {
         if (BR_DATA_L(i) != NULL)
         {
@@ -25,7 +25,7 @@ LIST_FUNCTION(_ls)
     return -1;
 }
 
-LIST_FUNCTION(_return)
+BRUTER_FUNCTION(_return)
 {
     if (BR_ARG_COUNT() < 1)
     {
@@ -37,22 +37,22 @@ LIST_FUNCTION(_return)
     }
 }
 
-LIST_FUNCTION(_ignore)
+BRUTER_FUNCTION(_ignore)
 {
     return -1;
 }
 
-LIST_FUNCTION(_repeat)
+BRUTER_FUNCTION(_repeat)
 {
-    Int times = BR_ARG(0).i;
+    BruterInt times = BR_ARG(0).i;
     char* code = BR_ARG(1).s;
-    Int result = -1;
+    BruterInt result = -1;
 
-    List *parser = br_get_parser(context);
+    BruterList *parser = br_get_parser(context);
     
     if (strchr(code, '(') != NULL) // do not optimize
     {
-        for (Int i = 0; i < times; i++)
+        for (BruterInt i = 0; i < times; i++)
         {
             result = br_eval(context, parser, code);
             if (result != -1)
@@ -63,9 +63,9 @@ LIST_FUNCTION(_repeat)
     }
     else
     {
-        List* compiled = br_compile_code(context, parser, code);
+        BruterList* compiled = br_compile_code(context, parser, code);
         
-        for (Int i = 0; i < times; i++)
+        for (BruterInt i = 0; i < times; i++)
         {
             result = br_compiled_call(context, compiled);
             if (result != -1)
@@ -79,12 +79,12 @@ LIST_FUNCTION(_repeat)
     return result;
 }
 
-LIST_FUNCTION(_forever)
+BRUTER_FUNCTION(_forever)
 {
     char* code = BR_ARG(0).s;
-    Int result = -1;
+    BruterInt result = -1;
 
-    List *parser = br_get_parser(context);
+    BruterList *parser = br_get_parser(context);
 
     while(1)
     {
@@ -97,41 +97,41 @@ LIST_FUNCTION(_forever)
     return result;
 }
 
-LIST_FUNCTION(_get)
+BRUTER_FUNCTION(_get)
 {
     return BR_ARG(0).i;
 }
 
-LIST_FUNCTION(_set)
+BRUTER_FUNCTION(_set)
 {
-    Int index = BR_ARG(0).i;
-    Int value = BR_ARG(1).i;
+    BruterInt index = BR_ARG(0).i;
+    BruterInt value = BR_ARG(1).i;
     context->data[index].i = value;
     return -1;
 }
 
-LIST_FUNCTION(_eval)
+BRUTER_FUNCTION(_eval)
 {
-    List *parser = br_get_parser(context);
+    BruterList *parser = br_get_parser(context);
 
     return br_eval(context, parser, BR_ARG(0).s);
 }
 
-LIST_FUNCTION(_unlabel)
+BRUTER_FUNCTION(_unlabel)
 {
     free(context->keys[BR_ARG_I(0)]);
     context->keys[BR_ARG_I(0)] = NULL;
     return -1;
 }
 
-LIST_FUNCTION(_rename)
+BRUTER_FUNCTION(_rename)
 {
     free(context->keys[BR_ARG_I(0)]);
     context->keys[BR_ARG_I(0)] = str_duplicate(BR_ARG(1).s);
     return -1;
 }
 
-LIST_FUNCTION(_delete)
+BRUTER_FUNCTION(_delete)
 {
     free(context->keys[BR_ARG_I(0)]);
     context->keys[BR_ARG_I(0)] = NULL;
