@@ -11,6 +11,7 @@ BRUTER_FUNCTION(_alloc_set_byte)
         return -1;
     }
     allocd[index] = value;
+    return -1;
 }
 
 BRUTER_FUNCTION(_alloc_get_byte)
@@ -22,10 +23,13 @@ BRUTER_FUNCTION(_alloc_get_byte)
         printf("BR_ERROR: alloc_get_byte called with NULL pointer\n");
         return -1;
     }
-    return allocd[index];
+    BruterInt result = br_new_var(context, NULL);
+    bruter_set(context, result, BRUTER_VALUE(i, allocd[index]));
+    return result;
 }
 
 BR_INIT(alloc)
 {
-    printf("BLANK PACKAGE, WILL BE REWRITTEN SOON\n");
+    br_add_function(context, "alloc.byte.set", _alloc_set_byte);
+    br_add_function(context, "alloc.byte.get", _alloc_get_byte);
 }

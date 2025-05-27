@@ -137,7 +137,7 @@ BRUTER_FUNCTION(_delete)
     context->keys[BR_ARG_I(0)] = NULL;
 
     BruterList* unused = br_get_unused(context);
-    bruter_push(unused, BRUTER_VALUE(i, BR_ARG(0).i), NULL);
+    bruter_push(unused, BRUTER_VALUE(i, BR_ARG_I(0)), NULL);
     return -1;
 }
 

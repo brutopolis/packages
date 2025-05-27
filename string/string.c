@@ -1,6 +1,88 @@
 #include "br.h"
 
+BRUTER_FUNCTION(_string_concat)
+{
+    char* str1 = BR_ARG(0).s;
+    char* str2 = BR_ARG(1).s;
+    size_t len1 = strlen(str1);
+    size_t len2 = strlen(str2);
+    
+    char* result_str = malloc(len1 + len2 + 1);
+    if (result_str == NULL) 
+    {
+        printf("BR_ERROR: Memory allocation failed\n");
+        return -1;
+    }
+    
+    strcpy(result_str, str1);
+    strncpy(result_str + len1, str2, len2);
+    result_str[len1 + len2] = '\0'; // Null-terminate the result string
+    
+    BruterInt result = br_new_var(context, NULL);
+    bruter_set(context, result, BRUTER_VALUE(s, result_str));
+
+    BruterList *allocs = br_get_allocs(context);
+    bruter_push(allocs, BRUTER_VALUE(p, result_str), NULL);
+    
+    return result;
+}
+
+BRUTER_FUNCTION(_string_length)
+{
+    char* str = BR_ARG(0).s;
+    size_t length = strlen(str);
+    
+    BruterInt result = br_new_var(context, NULL);
+    bruter_set(context, result, BRUTER_VALUE(i, length));
+    
+    return result;
+}
+
+BRUTER_FUNCTION(_string_compare)
+{
+    char* str1 = BR_ARG(0).s;
+    char* str2 = BR_ARG(1).s;
+    
+    int cmp_result = strcmp(str1, str2);
+    
+    BruterInt result = br_new_var(context, NULL);
+    bruter_set(context, result, BRUTER_VALUE(i, cmp_result));
+    
+    return result;
+}
+
+BRUTER_FUNCTION(_string_format) // dynamic string
+{
+    char* format = BR_ARG(0).s;
+    size_t arg_count = BR_ARG_COUNT();
+    
+    // Calculate the size needed for the formatted string
+    size_t size_needed = snprintf(NULL, 0, format, BR_ARG(1).s);
+    
+    // Allocate memory for the formatted string
+    char* result_str = malloc(size_needed + 1);
+    if (result_str == NULL) 
+    {
+        printf("BR_ERROR: Memory allocation failed\n");
+        return -1;
+    }
+    
+    // Format the string
+    snprintf(result_str, size_needed + 1, format, BR_ARG(1).s);
+    
+    BruterInt result = br_new_var(context, NULL);
+    bruter_set(context, result, BRUTER_VALUE(s, result_str));
+
+    BruterList *allocs = br_get_allocs(context);
+    bruter_push(allocs, BRUTER_VALUE(p, result_str), NULL);
+    
+    return result;
+}
+
 BR_INIT(string)
 {
-    printf("BLANK PACKAGE, WILL BE REWRITTEN SOON\n");
+    br_add_function(context, "string.concat", _string_concat);
+    br_add_function(context, "string.length", _string_length);
+    br_add_function(context, "string.compare", _string_compare);
+    br_add_function(context, "string.format", _string_format);
 }
