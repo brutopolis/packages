@@ -2,8 +2,8 @@
 
 LIST_FUNCTION(_label)
 {
-    free(context->keys[ARG_I(0)]);
-    context->keys[ARG_I(1)] = str_duplicate(ARG(0).s);
+    free(context->keys[BR_ARG_I(0)]);
+    context->keys[BR_ARG_I(1)] = str_duplicate(BR_ARG(0).s);
     return -1;
 }
 
@@ -11,29 +11,29 @@ LIST_FUNCTION(_ls)
 {
     for (Int i = 0; i < context->size; i++)
     {
-        if (DATA_L(i) != NULL)
+        if (BR_DATA_L(i) != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, DATA_L(i));
+            printf("[%ld](\"%s\"):\t\t", i, BR_DATA_L(i));
         }
         else
         {
             printf("[%ld](\"\"):\t\t", i);
         }
 
-        printf(" %ld\n", DATA(i).i);
+        printf(" %ld\n", BR_DATA(i).i);
     }
     return -1;
 }
 
 LIST_FUNCTION(_return)
 {
-    if (ARG_COUNT() < 1)
+    if (BR_ARG_COUNT() < 1)
     {
         return -1;
     }
     else
     {
-        return ARG_I(0);
+        return BR_ARG_I(0);
     }
 }
 
@@ -44,17 +44,17 @@ LIST_FUNCTION(_ignore)
 
 LIST_FUNCTION(_repeat)
 {
-    Int times = ARG(0).i;
-    char* code = ARG(1).s;
+    Int times = BR_ARG(0).i;
+    char* code = BR_ARG(1).s;
     Int result = -1;
 
-    List *parser = get_parser(context);
+    List *parser = br_get_parser(context);
     
     if (strchr(code, '(') != NULL) // do not optimize
     {
         for (Int i = 0; i < times; i++)
         {
-            result = eval(context, parser, code);
+            result = br_eval(context, parser, code);
             if (result != -1)
             {
                 break;
@@ -63,17 +63,17 @@ LIST_FUNCTION(_repeat)
     }
     else
     {
-        List* compiled = compile_code(context, parser, code);
+        List* compiled = br_compile_code(context, parser, code);
         
         for (Int i = 0; i < times; i++)
         {
-            result = compiled_call(context, compiled);
+            result = br_compiled_call(context, compiled);
             if (result != -1)
             {
                 break;
             }
         }
-        compiled_free(compiled);
+        br_compiled_free(compiled);
     }
 
     return result;
@@ -81,14 +81,14 @@ LIST_FUNCTION(_repeat)
 
 LIST_FUNCTION(_forever)
 {
-    char* code = ARG(0).s;
+    char* code = BR_ARG(0).s;
     Int result = -1;
 
-    List *parser = get_parser(context);
+    List *parser = br_get_parser(context);
 
     while(1)
     {
-        result = eval(context, parser, code);
+        result = br_eval(context, parser, code);
         if (result != -1)
         {
             break;
@@ -99,64 +99,64 @@ LIST_FUNCTION(_forever)
 
 LIST_FUNCTION(_get)
 {
-    return ARG(0).i;
+    return BR_ARG(0).i;
 }
 
 LIST_FUNCTION(_set)
 {
-    Int index = ARG(0).i;
-    Int value = ARG(1).i;
+    Int index = BR_ARG(0).i;
+    Int value = BR_ARG(1).i;
     context->data[index].i = value;
     return -1;
 }
 
 LIST_FUNCTION(_eval)
 {
-    List *parser = get_parser(context);
+    List *parser = br_get_parser(context);
 
-    return eval(context, parser, ARG(0).s);
+    return br_eval(context, parser, BR_ARG(0).s);
 }
 
 LIST_FUNCTION(_unlabel)
 {
-    free(context->keys[ARG_I(0)]);
-    context->keys[ARG_I(0)] = NULL;
+    free(context->keys[BR_ARG_I(0)]);
+    context->keys[BR_ARG_I(0)] = NULL;
     return -1;
 }
 
 LIST_FUNCTION(_rename)
 {
-    free(context->keys[ARG_I(0)]);
-    context->keys[ARG_I(0)] = str_duplicate(ARG(1).s);
+    free(context->keys[BR_ARG_I(0)]);
+    context->keys[BR_ARG_I(0)] = str_duplicate(BR_ARG(1).s);
     return -1;
 }
 
 LIST_FUNCTION(_delete)
 {
-    free(context->keys[ARG_I(0)]);
-    context->keys[ARG_I(0)] = NULL;
+    free(context->keys[BR_ARG_I(0)]);
+    context->keys[BR_ARG_I(0)] = NULL;
     return -1;
 }
 
-INIT(std)
+BR_INIT(std)
 {
-    add_function(context, "label", _label);
-    add_function(context, "unlabel", _unlabel);
-    add_function(context, "rename", _rename);
+    br_add_function(context, "label", _label);
+    br_add_function(context, "unlabel", _unlabel);
+    br_add_function(context, "rename", _rename);
     
-    add_function(context, "delete", _delete);
+    br_add_function(context, "delete", _delete);
     
-    add_function(context, "ls", _ls);
+    br_add_function(context, "ls", _ls);
     
-    add_function(context, "ignore", _ignore);
+    br_add_function(context, "ignore", _ignore);
 
-    add_function(context, "return", _return);
+    br_add_function(context, "return", _return);
 
-    add_function(context, "repeat", _repeat);
-    add_function(context, "forever", _forever);
+    br_add_function(context, "repeat", _repeat);
+    br_add_function(context, "forever", _forever);
 
-    add_function(context, "get", _get);
-    add_function(context, "set", _set);
+    br_add_function(context, "get", _get);
+    br_add_function(context, "set", _set);
 
-    add_function(context, "eval", _eval);
+    br_add_function(context, "eval", _eval);
 }

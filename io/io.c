@@ -2,44 +2,44 @@
 
 LIST_FUNCTION(print_int)
 {
-    printf("%d\n", ARG(0).i);
+    printf("%d\n", BR_ARG(0).i);
     return -1;
 }
 
 LIST_FUNCTION(print_uint)
 {
-    printf("%u\n", ARG(0).i);
+    printf("%u\n", BR_ARG(0).i);
     return -1;
 }
 
 LIST_FUNCTION(print_float)
 {
-    printf("%f\n", ARG(0).f);
+    printf("%f\n", BR_ARG(0).f);
     return -1;
 }
 
 LIST_FUNCTION(print_string)
 {
-    printf("%s\n", ARG(0).s);
+    printf("%s\n", BR_ARG(0).s);
     return -1;
 }
 
 LIST_FUNCTION(print_bool)
 {
-    printf("%s\n", ARG(0).i ? "true" : "false");
+    printf("%s\n", BR_ARG(0).i ? "true" : "false");
     return -1;
 }
 
 LIST_FUNCTION(print_pointer)
 {
-    printf("%p\n", ARG(0).p);
+    printf("%p\n", BR_ARG(0).p);
     return -1;
 }
 
 LIST_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of Int
 {
     // print the txt 0b0010101010101...
-    Int number = ARG(0).i;
+    Int number = BR_ARG(0).i;
     Int size = sizeof(Int);
     printf("0b");
     for (Int i = size * 8 - 1; i >= 0; i--) {
@@ -51,7 +51,7 @@ LIST_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b10101010
 
 LIST_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of Int
 {
-    Int number = ARG(0).i;
+    Int number = BR_ARG(0).i;
     Int size = sizeof(Int);
     for (Int i = size * 8 - 1; i >= 0; i--) {
         printf("%d", (number >> i) & 1);
@@ -65,7 +65,7 @@ LIST_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111
 
 LIST_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of Int
 {
-    Int number = ARG(0).i;
+    Int number = BR_ARG(0).i;
     Int size = sizeof(Int);
     for (Int i = 0; i < size; i++) {
         printf("%d ", (number >> (i * 8)) & 0xFF);
@@ -76,28 +76,28 @@ LIST_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depen
 
 LIST_FUNCTION(print_octal) // 0o1234567 or 0o123456789 depending on the size of Int
 {
-    Int number = ARG(0).i;
+    Int number = BR_ARG(0).i;
     printf("0o%lo\n", number);
     return -1;
 }
 
 LIST_FUNCTION(print_hex)
 {
-    Int i = ARG(0).i;
+    Int i = BR_ARG(0).i;
     printf("0x%X\n", i);
     return -1;
 }
 
 LIST_FUNCTION(print_index)
 {
-    Int i = ARG_I(0);
+    Int i = BR_ARG_I(0);
     printf("%d\n", i);
     return -1;
 }
 
 LIST_FUNCTION(print_list)
 {
-    List *list = (List *)ARG(0).p;
+    List *list = (List *)BR_ARG(0).p;
     for (Int i = 0; i < list->size; i++)
     {
         printf("%d ", list->data[i].i);
@@ -106,19 +106,19 @@ LIST_FUNCTION(print_list)
     return -1;
 }
 
-INIT(io)
+BR_INIT(io)
 {
-    add_function(context, "print.int", print_int);
-    add_function(context, "print.uint", print_uint);
-    add_function(context, "print.float", print_float);
-    add_function(context, "print.string", print_string);
-    add_function(context, "print.bool", print_bool);
-    add_function(context, "print.pointer", print_pointer);
-    add_function(context, "print.bits", print_bits);
-    add_function(context, "print.bytes", print_bytearray);
-    add_function(context, "print.octal", print_octal);
-    add_function(context, "print.hex", print_hex);
-    add_function(context, "print.bitarray", print_bitarray);
-    add_function(context, "print.index", print_index);
-    add_function(context, "print.list", print_list);
+    br_add_function(context, "print.int", print_int);
+    br_add_function(context, "print.uint", print_uint);
+    br_add_function(context, "print.float", print_float);
+    br_add_function(context, "print.string", print_string);
+    br_add_function(context, "print.bool", print_bool);
+    br_add_function(context, "print.pointer", print_pointer);
+    br_add_function(context, "print.bits", print_bits);
+    br_add_function(context, "print.bytes", print_bytearray);
+    br_add_function(context, "print.octal", print_octal);
+    br_add_function(context, "print.hex", print_hex);
+    br_add_function(context, "print.bitarray", print_bitarray);
+    br_add_function(context, "print.index", print_index);
+    br_add_function(context, "print.list", print_list);
 }

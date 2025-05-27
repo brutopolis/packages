@@ -68,7 +68,7 @@ bool file_exists(char* filename)
 
 LIST_FUNCTION(_read_file)
 {
-    char *filename = ARG(0).s;
+    char *filename = BR_ARG(0).s;
     char *content = file_read(filename);
     
     if (content == NULL)
@@ -76,8 +76,8 @@ LIST_FUNCTION(_read_file)
         printf("BRUTER_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
-    Int var = new_var(context, NULL);
-    DATA(var).s = content;
+    Int var = br_new_var(context, NULL);
+    BR_DATA(var).s = content;
 
     free(content);    
     return var;
@@ -85,22 +85,22 @@ LIST_FUNCTION(_read_file)
 
 LIST_FUNCTION(_write_file)
 {
-    char *filename = ARG(0).s;
-    char *content = ARG(1).s;
+    char *filename = BR_ARG(0).s;
+    char *content = BR_ARG(1).s;
     file_write(filename, content);
     return -1;
 }
 
 LIST_FUNCTION(_file_exists)
 {
-    char *filename = ARG(0).s;
+    char *filename = BR_ARG(0).s;
     return file_exists(filename);
 }
 
-INIT(os)
+BR_INIT(os)
 {
     // register functions
-    add_function(context, "file.read", _read_file);
-    add_function(context, "file.write", _write_file);
-    add_function(context, "file.exists", _file_exists);
+    br_add_function(context, "file.read", _read_file);
+    br_add_function(context, "file.write", _write_file);
+    br_add_function(context, "file.exists", _file_exists);
 }

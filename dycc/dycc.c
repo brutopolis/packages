@@ -36,12 +36,12 @@ void add_common_symbols(TCCState *tcc)
         str_split,
         str_format,
 
-        new_var,
+        br_new_var,
 
-        parse_number,
-        parse,
+        br_parser_number,
+        br_parse,
 
-        eval
+        br_eval
     };
 
     const char *core_names[] = {
@@ -67,9 +67,9 @@ void add_common_symbols(TCCState *tcc)
         "str_split",
         "str_format",
 
-        "new_var",
+        "br_new_var",
         
-        "parse_number",
+        "br_parser_number",
         "parse",
         "eval"
     };
@@ -101,15 +101,15 @@ LIST_FUNCTION(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    Int result = new_var(context, NULL);
+    Int result = br_new_var(context, NULL);
     if (result < 0) 
     {
         fprintf(stderr, "could not create new var\n");
         return -1;
     }
-    DATA(result).p = tcc;
+    BR_DATA(result).p = tcc;
 
-    char *code = str_format("%s\n%s", bruter_header, ARG(0).s);
+    char *code = str_format("%s\n%s", bruter_header, BR_ARG(0).s);
 
     add_common_symbols(tcc);
 
@@ -153,7 +153,7 @@ LIST_FUNCTION(brl_tcc_c_new_function)
 
         list_push(dycc_state_list, (Value){.p = tcc}, NULL);
 
-        Int index = new_var(context, symbol);
+        Int index = br_new_var(context, symbol);
         if (index < 0) 
         {
             fprintf(stderr, "could not create new var\n");
@@ -161,7 +161,7 @@ LIST_FUNCTION(brl_tcc_c_new_function)
             return -1;
         }
 
-        DATA(index).p = func;
+        BR_DATA(index).p = func;
         free(symbol);
 
         token = end + 1;
@@ -177,7 +177,7 @@ void _terminate_tcc_at_exit_handler()
     list_free(dycc_state_list);
 }
 
-INIT(dycc)
+BR_INIT(dycc)
 {
     dycc_state_list = list_init(0, false);
 
@@ -187,8 +187,8 @@ INIT(dycc)
         return;
     }
 
-    add_function(context, "dycc.clear", brl_tcc_clear_states);
-    add_function(context, "dycc.compile", brl_tcc_c_new_function);
+    br_add_function(context, "dycc.clear", brl_tcc_clear_states);
+    br_add_function(context, "dycc.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }
