@@ -77,7 +77,7 @@ BRUTER_FUNCTION(_read_file)
         return -1; // return an error code
     }
     BruterInt var = br_new_var(context, NULL);
-    BR_DATA(var).s = content;
+    bruter_set(context, var, BRUTER_VALUE(s, content));
 
     free(content);    
     return var;

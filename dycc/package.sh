@@ -1,5 +1,5 @@
 name dycc
-version 0.0.8
+version 0.0.9
 description "buxu foreign function interface"
 files dycc.c
 setup "bucc -o dycc.brl dycc.c -ltcc"

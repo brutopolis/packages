@@ -73,7 +73,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
         fprintf(stderr, "could not create new var\n");
         return -1;
     }
-    BR_DATA(result).p = tcc;
+    bruter_set(context, result, BRUTER_VALUE(p, tcc));
 
     char *code = br_str_format("%s\n%s", bruter_header, BR_ARG(0).s);
 
@@ -94,13 +94,13 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
     char *token = code;
     while (*token) 
     {
-        token = strstr(token, "function(");
+        token = strstr(token, "BRUTER_FUNCTION(");
         if (!token)
         {
             break;
         }
 
-        token += 9;
+        token += 16;
         char *end = strchr(token, ')');
         if (!end)
         {
@@ -127,7 +127,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
             return -1;
         }
 
-        BR_DATA(index).p = func;
+        bruter_set(context, index, BRUTER_VALUE(p, func));
         free(symbol);
 
         token = end + 1;

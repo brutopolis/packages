@@ -11,16 +11,16 @@ BRUTER_FUNCTION(_ls)
 {
     for (BruterInt i = 0; i < context->size; i++)
     {
-        if (BR_DATA_L(i) != NULL)
+        if (bruter_get_key(context, i) != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, BR_DATA_L(i));
+            printf("[%ld](\"%s\"):\t\t", i, bruter_get_key(context, i));
         }
         else
         {
             printf("[%ld](\"\"):\t\t", i);
         }
 
-        printf(" %ld\n", BR_DATA(i).i);
+        printf(" %ld\n", bruter_get(context, i).i);
     }
     return -1;
 }
