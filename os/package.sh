@@ -1,5 +1,5 @@
 name os
-version 0.0.6
+version 0.0.7
 description "buxu operating system"
 files os.c
 setup "bucc -o os.brl os.c"

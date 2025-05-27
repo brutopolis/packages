@@ -12,7 +12,7 @@ char* file_read(char *filename)
     char *code = (char*)malloc(1);
     if (code == NULL)
     {
-        printf("BRUTER_ERROR: could not allocate memory for file\n");
+        printf("BR_ERROR: could not allocate memory for file\n");
         fclose(file);
         return NULL;
     }
@@ -27,7 +27,7 @@ char* file_read(char *filename)
         char *temp = realloc(code, new_size);
         if (temp == NULL)
         {
-            printf("BRUTER_ERROR: could not reallocate memory while reading file\n");
+            printf("BR_ERROR: could not reallocate memory while reading file\n");
             free(code);
             free(line);
             fclose(file);
@@ -73,7 +73,7 @@ BRUTER_FUNCTION(_read_file)
     
     if (content == NULL)
     {
-        printf("BRUTER_ERROR: could not read file '%s'\n", filename);
+        printf("BR_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
     BruterInt var = br_new_var(context, NULL);

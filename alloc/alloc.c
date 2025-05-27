@@ -7,7 +7,7 @@ BRUTER_FUNCTION(_alloc_set_byte)
     uint8_t value = BR_ARG(2).i;
     if (allocd == NULL)
     {
-        printf("BRUTER_ERROR: alloc_set_byte called with NULL pointer\n");
+        printf("BR_ERROR: alloc_set_byte called with NULL pointer\n");
         return -1;
     }
     allocd[index] = value;
@@ -19,7 +19,7 @@ BRUTER_FUNCTION(_alloc_get_byte)
     BruterInt index = BR_ARG(1).i;
     if (allocd == NULL)
     {
-        printf("BRUTER_ERROR: alloc_get_byte called with NULL pointer\n");
+        printf("BR_ERROR: alloc_get_byte called with NULL pointer\n");
         return -1;
     }
     return allocd[index];

@@ -14,27 +14,11 @@ const char* bruter_header = "#include \"br.h\"\n";
 void add_common_symbols(TCCState *tcc)
 {
     const void *core_funcs[] = {
-        bruter_init,
-        bruter_free,
-        bruter_double,
-        bruter_half,
-        bruter_push,
-        bruter_unshift,
-        bruter_insert,
-        bruter_pop,
-        bruter_shift,
-        bruter_remove,
-        bruter_swap,
-        bruter_fast_remove,
-        bruter_find,
-        bruter_reverse,
-        bruter_call,
-
-        str_duplicate,
-        str_nduplicate,
-        str_space_split,
-        str_split,
-        str_format,
+        br_str_duplicate,
+        br_str_nduplicate,
+        br_str_space_split,
+        br_str_split,
+        br_str_format,
 
         br_new_var,
         br_parser_number,
@@ -44,27 +28,11 @@ void add_common_symbols(TCCState *tcc)
     };
 
     const char *core_names[] = {
-        "bruter_init",
-        "bruter_free",
-        "bruter_double",
-        "bruter_half",
-        "bruter_push",
-        "bruter_unshift",
-        "bruter_insert",
-        "bruter_pop",
-        "bruter_shift",
-        "bruter_remove",
-        "bruter_swap",
-        "bruter_fast_remove",
-        "bruter_find",
-        "bruter_reverse",
-        "bruter_call",
-
-        "str_duplicate",
-        "str_nduplicate",
-        "str_space_split",
-        "str_split",
-        "str_format",
+        "br_str_duplicate",
+        "br_str_nduplicate",
+        "br_str_space_split",
+        "br_str_split",
+        "br_str_format",
 
         "br_new_var",
         "br_parser_number",
@@ -107,7 +75,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
     }
     BR_DATA(result).p = tcc;
 
-    char *code = str_format("%s\n%s", bruter_header, BR_ARG(0).s);
+    char *code = br_str_format("%s\n%s", bruter_header, BR_ARG(0).s);
 
     add_common_symbols(tcc);
 
@@ -139,7 +107,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
             break;
         }
 
-        char *symbol = str_nduplicate(token, end - token);
+        char *symbol = br_str_nduplicate(token, end - token);
 
         void *func = tcc_get_symbol(tcc, symbol);
         if (!func) 

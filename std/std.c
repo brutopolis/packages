@@ -3,7 +3,7 @@
 BRUTER_FUNCTION(_label)
 {
     free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(1)] = str_duplicate(BR_ARG(0).s);
+    context->keys[BR_ARG_I(1)] = br_str_duplicate(BR_ARG(0).s);
     return -1;
 }
 
@@ -127,7 +127,7 @@ BRUTER_FUNCTION(_unlabel)
 BRUTER_FUNCTION(_rename)
 {
     free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(0)] = str_duplicate(BR_ARG(1).s);
+    context->keys[BR_ARG_I(0)] = br_str_duplicate(BR_ARG(1).s);
     return -1;
 }
 
@@ -135,6 +135,9 @@ BRUTER_FUNCTION(_delete)
 {
     free(context->keys[BR_ARG_I(0)]);
     context->keys[BR_ARG_I(0)] = NULL;
+
+    BruterList* unused = br_get_unused(context);
+    bruter_push(unused, BRUTER_VALUE(i, BR_ARG(0).i), NULL);
     return -1;
 }
 

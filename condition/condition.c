@@ -99,9 +99,9 @@ BRUTER_FUNCTION(_if)
     BruterInt parser_index = bruter_find(context, BRUTER_VALUE(p, NULL), "parser");
     if (parser_index == -1)
     {
-        printf("BRUTER_ERROR: parser not found, using basic parser\n");
+        printf("BR_ERROR: parser not found, using basic parser\n");
         parser_index = br_new_var(context, "parser");
-        context->data[parser_index].p = basic_parser();
+        context->data[parser_index].p = br_simple_parser();
     }
     else 
     {
