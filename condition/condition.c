@@ -1,113 +1,101 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_iequals)
+BR_FUNCTION(_iequals)
 {
-    if (BR_ARG(0).i == BR_ARG(1).i)
+    if (br_arg(context, args, 0).i == br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_inotequals)
+BR_FUNCTION(_inotequals)
 {
-    if (BR_ARG(0).i != BR_ARG(1).i)
+    if (br_arg(context, args, 0).i != br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_ibigger)
+BR_FUNCTION(_ibigger)
 {
-    if (BR_ARG(0).i > BR_ARG(1).i)
+    if (br_arg(context, args, 0).i > br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_ibiggerorequals)
+BR_FUNCTION(_ibiggerorequals)
 {
-    if (BR_ARG(0).i >= BR_ARG(1).i)
+    if (br_arg(context, args, 0).i >= br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_ilower)
+BR_FUNCTION(_ilower)
 {
-    if (BR_ARG(0).i < BR_ARG(1).i)
+    if (br_arg(context, args, 0).i < br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_ilowerorequals)
+BR_FUNCTION(_ilowerorequals)
 {
-    if (BR_ARG(0).i <= BR_ARG(1).i)
+    if (br_arg(context, args, 0).i <= br_arg(context, args, 1).i)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_fequals)
+BR_FUNCTION(_fequals)
 {
-    if (BR_ARG(0).f == BR_ARG(1).f)
+    if (br_arg(context, args, 0).f == br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_fnotequals)
+BR_FUNCTION(_fnotequals)
 {
-    if (BR_ARG(0).f != BR_ARG(1).f)
+    if (br_arg(context, args, 0).f != br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_fbigger)
+BR_FUNCTION(_fbigger)
 {
-    if (BR_ARG(0).f > BR_ARG(1).f)
+    if (br_arg(context, args, 0).f > br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_fbiggerorequals)
+BR_FUNCTION(_fbiggerorequals)
 {
-    if (BR_ARG(0).f >= BR_ARG(1).f)
+    if (br_arg(context, args, 0).f >= br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_flower)
+BR_FUNCTION(_flower)
 {
-    if (BR_ARG(0).f < BR_ARG(1).f)
+    if (br_arg(context, args, 0).f < br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_flowerorequals)
+BR_FUNCTION(_flowerorequals)
 {
-    if (BR_ARG(0).f <= BR_ARG(1).f)
+    if (br_arg(context, args, 0).f <= br_arg(context, args, 1).f)
         return 1;
     return 0;
 }
 
-BRUTER_FUNCTION(_if)
+BR_FUNCTION(_if)
 {
-    char* cond = BR_ARG(0).s;
-    char* true_part = BR_ARG(1).s;
+    char* cond = br_arg(context, args, 0).s;
+    char* true_part = br_arg(context, args, 1).s;
     char* false_part = NULL;
 
-    if (BR_ARG_COUNT() > 2)
-        false_part = BR_ARG(2).s;
+    if (br_arg_count(args) > 2)
+        false_part = br_arg(context, args, 2).s;
     
     BruterInt result = -1;
 
-    // lets check if there is a parser variable in the program
-    BruterInt parser_index = bruter_find(context, BRUTER_VALUE(p, NULL), "parser");
-    if (parser_index == -1)
-    {
-        printf("BR_ERROR: parser not found, using basic parser\n");
-        parser_index = br_new_var(context, "parser");
-        context->data[parser_index].p = br_simple_parser();
-    }
-    else 
-    {
-        parser_index = context->data[parser_index].i;
-    }
-    BruterList *parser = context->data[parser_index].p;
+    BruterList *parser = br_get_parser(context);
 
     if (cond == NULL)
     {

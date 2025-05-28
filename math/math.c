@@ -1,62 +1,77 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_iadd)
+BR_FUNCTION(_iadd)
 {
-    BR_ARG(0).i += BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i + br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_isub)
+BR_FUNCTION(_isub)
 {
-    BR_ARG(0).i -= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i - br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_imul)
+BR_FUNCTION(_imul)
 {
-    BR_ARG(0).i *= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i * br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_idiv)
+BR_FUNCTION(_idiv)
 {
-    BR_ARG(0).i /= BR_ARG(1).i;
+    if (br_arg(context, args, 1).i == 0)
+    {
+        printf("BR_ERROR: Division by zero\n");
+        return -1; // or handle error appropriately
+    }
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i / br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_imod)
+BR_FUNCTION(_imod)
 {
-    BR_ARG(0).i %= BR_ARG(1).i;
+    if (br_arg(context, args, 1).i == 0)
+    {
+        printf("BR_ERROR: Division by zero\n");
+        return -1; // or handle error appropriately
+    }
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i % br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_fadd)
+BR_FUNCTION(_fadd)
 {
-    BR_ARG(0).f += BR_ARG(1).f;
+    br_arg_set(context, args, 0, bruter_value_f(br_arg(context, args, 0).f + br_arg(context, args, 1).f));
     return -1;
 }
 
-BRUTER_FUNCTION(_fsub)
+BR_FUNCTION(_fsub)
 {
-    BR_ARG(0).f -= BR_ARG(1).f;
+    br_arg_set(context, args, 0, bruter_value_f(br_arg(context, args, 0).f - br_arg(context, args, 1).f));
     return -1;
 }
 
-BRUTER_FUNCTION(_fmul)
+BR_FUNCTION(_fmul)
 {
-    BR_ARG(0).f *= BR_ARG(1).f;
+    br_arg_set(context, args, 0, bruter_value_f(br_arg(context, args, 0).f * br_arg(context, args, 1).f));
     return -1;
 }
 
-BRUTER_FUNCTION(_fdiv)
+BR_FUNCTION(_fdiv)
 {
-    BR_ARG(0).f /= BR_ARG(1).f;
+    if (br_arg(context, args, 1).f == 0.0f)
+    {
+        printf("BR_ERROR: Division by zero\n");
+        return -1; // or handle error appropriately
+    }
+    br_arg_set(context, args, 0, bruter_value_f(br_arg(context, args, 0).f / br_arg(context, args, 1).f));
     return -1;
 }
 
-BRUTER_FUNCTION(_fmod)
+BR_FUNCTION(_fmod)
 {
-    BR_ARG(0).f = fmod(BR_ARG(0).f, BR_ARG(1).f);
+    br_arg_set(context, args, 0, bruter_value_f(fmod(br_arg(context, args, 0).f, br_arg(context, args, 1).f)));
     return -1;
 }
 

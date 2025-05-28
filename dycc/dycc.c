@@ -47,7 +47,7 @@ void add_common_symbols(TCCState *tcc)
 }
 
 
-BRUTER_FUNCTION(brl_tcc_clear_states)
+BR_FUNCTION(brl_tcc_clear_states)
 {
     while (dycc_state_list->size > 0) 
     {
@@ -56,7 +56,7 @@ BRUTER_FUNCTION(brl_tcc_clear_states)
     return -1;
 }
 
-BRUTER_FUNCTION(brl_tcc_c_new_function)
+BR_FUNCTION(brl_tcc_c_new_function)
 {
     TCCState *tcc = tcc_new();
     if (!tcc) 
@@ -73,9 +73,9 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
         fprintf(stderr, "could not create new var\n");
         return -1;
     }
-    bruter_set(context, result, BRUTER_VALUE(p, tcc));
+    bruter_set(context, result, bruter_value_p(tcc));
 
-    char *code = br_str_format("%s\n%s", bruter_header, BR_ARG(0).s);
+    char *code = br_str_format("%s\n%s", bruter_header, br_arg(context, args, 0).s);
 
     add_common_symbols(tcc);
 
@@ -94,7 +94,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
     char *token = code;
     while (*token) 
     {
-        token = strstr(token, "BRUTER_FUNCTION(");
+        token = strstr(token, "BR_FUNCTION(");
         if (!token)
         {
             break;
@@ -127,7 +127,7 @@ BRUTER_FUNCTION(brl_tcc_c_new_function)
             return -1;
         }
 
-        bruter_set(context, index, BRUTER_VALUE(p, func));
+        bruter_set(context, index, bruter_value_p(func));
         free(symbol);
 
         token = end + 1;

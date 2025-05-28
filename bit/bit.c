@@ -1,86 +1,86 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_bit_and)
+BR_FUNCTION(_bit_and)
 {
-    BR_ARG(0).i &= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i & br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_or)
+BR_FUNCTION(_bit_or)
 {
-    BR_ARG(0).i |= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i | br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_xor)
+BR_FUNCTION(_bit_xor)
 {
-    BR_ARG(0).i ^= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i ^ br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_not)
+BR_FUNCTION(_bit_not)
 {
-    BR_ARG(0).i = ~BR_ARG(0).i;
+    br_arg_set(context, args, 0, bruter_value_i(~br_arg(context, args, 0).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_lshift)
+BR_FUNCTION(_bit_lshift)
 {
-    BR_ARG(0).i <<= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i << br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_rshift)
+BR_FUNCTION(_bit_rshift)
 {
-    BR_ARG(0).i >>= BR_ARG(1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i >> br_arg(context, args, 1).i));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_on)
+BR_FUNCTION(_bit_on)
 {
-    BruterInt mask = 1 << BR_ARG(1).i;
-    BR_ARG(0).i |= mask;
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i | mask));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_off)
+BR_FUNCTION(_bit_off)
 {
-    BruterInt mask = ~(1 << BR_ARG(1).i);
-    BR_ARG(0).i &= mask;
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i & ~mask));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_set) // set 0 or 1
+BR_FUNCTION(_bit_set) // set 0 or 1
 {
-    BruterInt mask = 1 << BR_ARG(1).i;
-    if (BR_ARG(2).i)
-        BR_ARG(0).i |= mask;
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    if (br_arg(context, args, 2).i)
+        br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i | mask));
     else
-        BR_ARG(0).i &= ~mask;
+        br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i & ~mask));
     return -1;
 }
 
-
-BRUTER_FUNCTION(_bit_get)
+BR_FUNCTION(_bit_get)
 {
-    BruterInt mask = 1 << BR_ARG(1).i;
-    return (BR_ARG(0).i & mask) != 0;
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    return (br_arg(context, args, 0).i & mask) ? 1 : 0;
 }
 
-BRUTER_FUNCTION(_bit_switch)
+BR_FUNCTION(_bit_switch)
 {
-    BruterInt mask = 1 << BR_ARG(1).i;
-    BR_ARG(0).i ^= mask;
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i ^ mask));
     return -1;
 }
 
-BRUTER_FUNCTION(_bit_swap)
+BR_FUNCTION(_bit_swap)
 {
-    BruterInt mask = 1 << BR_ARG(1).i;
-    BruterInt mask2 = 1 << BR_ARG(2).i;
-    BruterInt temp = (BR_ARG(0).i & mask) >> BR_ARG(1).i;
-    BR_ARG(0).i &= ~mask;
-    BR_ARG(0).i |= (temp << BR_ARG(2).i);
+    BruterInt mask = 1 << br_arg(context, args, 1).i;
+    BruterInt mask2 = 1 << br_arg(context, args, 2).i;
+    BruterInt temp = (br_arg(context, args, 0).i & mask) >> br_arg(context, args, 1).i;
+    temp ^= (br_arg(context, args, 0).i & mask2) >> br_arg(context, args, 2).i;
+    temp &= 1; // ensure it's only 0 or 1
+    br_arg_set(context, args, 0, bruter_value_i(br_arg(context, args, 0).i & ~(mask | mask2)));
     return -1;
 }
 

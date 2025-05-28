@@ -66,9 +66,9 @@ bool file_exists(char* filename)
     return true;
 }
 
-BRUTER_FUNCTION(_read_file)
+BR_FUNCTION(_read_file)
 {
-    char *filename = BR_ARG(0).s;
+    char *filename = br_arg(context, args, 0).s;
     char *content = file_read(filename);
     
     if (content == NULL)
@@ -77,23 +77,23 @@ BRUTER_FUNCTION(_read_file)
         return -1; // return an error code
     }
     BruterInt var = br_new_var(context, NULL);
-    bruter_set(context, var, BRUTER_VALUE(s, content));
+    bruter_set(context, var, bruter_value_p(content));
 
     free(content);    
     return var;
 }
 
-BRUTER_FUNCTION(_write_file)
+BR_FUNCTION(_write_file)
 {
-    char *filename = BR_ARG(0).s;
-    char *content = BR_ARG(1).s;
+    char *filename = br_arg(context, args, 0).s;
+    char *content = br_arg(context, args, 1).s;
     file_write(filename, content);
     return -1;
 }
 
-BRUTER_FUNCTION(_file_exists)
+BR_FUNCTION(_file_exists)
 {
-    char *filename = BR_ARG(0).s;
+    char *filename = br_arg(context, args, 0).s;
     return file_exists(filename);
 }
 

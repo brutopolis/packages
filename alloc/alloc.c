@@ -1,10 +1,10 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_alloc_set_byte)
+BR_FUNCTION(_alloc_set_byte)
 {
-    uint8_t *allocd = BR_ARG(0).p;
-    BruterInt index = BR_ARG(1).i;
-    uint8_t value = BR_ARG(2).i;
+    uint8_t *allocd = br_arg(context, args, 0).p;
+    BruterInt index = br_arg(context, args, 1).i;
+    uint8_t value = br_arg(context, args, 2).i;
     if (allocd == NULL)
     {
         printf("BR_ERROR: alloc_set_byte called with NULL pointer\n");
@@ -14,17 +14,17 @@ BRUTER_FUNCTION(_alloc_set_byte)
     return -1;
 }
 
-BRUTER_FUNCTION(_alloc_get_byte)
+BR_FUNCTION(_alloc_get_byte)
 {
-    uint8_t *allocd = BR_ARG(0).p;
-    BruterInt index = BR_ARG(1).i;
+    uint8_t *allocd = br_arg(context, args, 0).p;
+    BruterInt index = br_arg(context, args, 1).i;
     if (allocd == NULL)
     {
         printf("BR_ERROR: alloc_get_byte called with NULL pointer\n");
         return -1;
     }
     BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, BRUTER_VALUE(i, allocd[index]));
+    bruter_set(context, result, bruter_value_i(allocd[index]));
     return result;
 }
 

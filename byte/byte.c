@@ -1,60 +1,59 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_byte_set)
+BR_FUNCTION(_byte_set)
 {
-    BruterInt index = BR_ARG(1).i;
-    BruterInt value = BR_ARG(2).i;
+    BruterInt index = br_arg(context, args, 1).i;
+    BruterInt value = br_arg(context, args, 2).i;
 
-    (BR_ARG(0).s)[index] = value;
+    (br_arg(context, args, 0).s)[index] = value;
  
     return -1;
 }
 
-BRUTER_FUNCTION(_byte_get)
+BR_FUNCTION(_byte_get)
 {
-    BruterInt byte_index = BR_ARG(1).i;
+    BruterInt byte_index = br_arg(context, args, 1).i;
     BruterInt index = br_new_var(context, NULL);
-    BR_ARG(index).i = (BR_ARG(0).s)[byte_index];
-
+    bruter_set(context, index, bruter_value_i(bruter_get(context, index).u8[byte_index]));
     return index;
 }
 
-BRUTER_FUNCTION(_byte_add)
+BR_FUNCTION(_byte_add)
 {
-    BruterInt index = BR_ARG(1).i;
-    BruterInt value = BR_ARG(2).i;
+    BruterInt index = br_arg(context, args, 1).i;
+    BruterInt value = br_arg(context, args, 2).i;
 
-    BR_ARG(0).u8[index] += value;
+    br_arg(context, args, 0).u8[index] += value;
  
     return -1;
 }
 
-BRUTER_FUNCTION(_byte_sub)
+BR_FUNCTION(_byte_sub)
 {
-    BruterInt index = BR_ARG(1).i;
-    BruterInt value = BR_ARG(2).i;
+    BruterInt index = br_arg(context, args, 1).i;
+    BruterInt value = br_arg(context, args, 2).i;
 
-    BR_ARG(0).u8[index] -= value;
+    br_arg(context, args, 0).u8[index] -= value;
  
     return -1;
 }
 
-BRUTER_FUNCTION(_byte_mul)
+BR_FUNCTION(_byte_mul)
 {
-    BruterInt index = BR_ARG(1).i;
-    BruterInt value = BR_ARG(2).i;
+    BruterInt index = br_arg(context, args, 1).i;
+    BruterInt value = br_arg(context, args, 2).i;
 
-    BR_ARG(0).u8[index] *= value;
+    br_arg(context, args, 0).u8[index] *= value;
  
     return -1;
 }
 
-BRUTER_FUNCTION(_byte_div)
+BR_FUNCTION(_byte_div)
 {
-    BruterInt index = BR_ARG(1).i;
-    BruterInt value = BR_ARG(2).i;
+    BruterInt index = br_arg(context, args, 1).i;
+    BruterInt value = br_arg(context, args, 2).i;
 
-    BR_ARG(0).u8[index] /= value;
+    br_arg(context, args, 0).u8[index] /= value;
  
     return -1;
 }

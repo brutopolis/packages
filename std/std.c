@@ -1,13 +1,13 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_label)
+BR_FUNCTION(_key)
 {
-    free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(1)] = br_str_duplicate(BR_ARG(0).s);
+    free(context->keys[br_arg_index(args, 0)]);
+    context->keys[br_arg_index(args, 1)] = br_str_duplicate(br_arg(context, args, 0).s);
     return -1;
 }
 
-BRUTER_FUNCTION(_ls)
+BR_FUNCTION(_ls)
 {
     for (BruterInt i = 0; i < context->size; i++)
     {
@@ -25,27 +25,27 @@ BRUTER_FUNCTION(_ls)
     return -1;
 }
 
-BRUTER_FUNCTION(_return)
+BR_FUNCTION(_return)
 {
-    if (BR_ARG_COUNT() < 1)
+    if (br_arg_count(args) < 1)
     {
         return -1;
     }
     else
     {
-        return BR_ARG_I(0);
+        return br_arg_index(args, 0);
     }
 }
 
-BRUTER_FUNCTION(_ignore)
+BR_FUNCTION(_ignore)
 {
     return -1;
 }
 
-BRUTER_FUNCTION(_repeat)
+BR_FUNCTION(_repeat)
 {
-    BruterInt times = BR_ARG(0).i;
-    char* code = BR_ARG(1).s;
+    BruterInt times = br_arg(context, args, 0).i;
+    char* code = br_arg(context, args, 1).s;
     BruterInt result = -1;
 
     BruterList *parser = br_get_parser(context);
@@ -79,9 +79,9 @@ BRUTER_FUNCTION(_repeat)
     return result;
 }
 
-BRUTER_FUNCTION(_forever)
+BR_FUNCTION(_forever)
 {
-    char* code = BR_ARG(0).s;
+    char* code = br_arg(context, args, 0).s;
     BruterInt result = -1;
 
     BruterList *parser = br_get_parser(context);
@@ -97,54 +97,54 @@ BRUTER_FUNCTION(_forever)
     return result;
 }
 
-BRUTER_FUNCTION(_get)
+BR_FUNCTION(_get)
 {
-    return BR_ARG(0).i;
+    return br_arg(context, args, 0).i;
 }
 
-BRUTER_FUNCTION(_set)
+BR_FUNCTION(_set)
 {
-    BruterInt index = BR_ARG(0).i;
-    BruterInt value = BR_ARG(1).i;
+    BruterInt index = br_arg(context, args, 0).i;
+    BruterInt value = br_arg(context, args, 1).i;
     context->data[index].i = value;
     return -1;
 }
 
-BRUTER_FUNCTION(_eval)
+BR_FUNCTION(_eval)
 {
     BruterList *parser = br_get_parser(context);
 
-    return br_eval(context, parser, BR_ARG(0).s);
+    return br_eval(context, parser, br_arg(context, args, 0).s);
 }
 
-BRUTER_FUNCTION(_unlabel)
+BR_FUNCTION(_unkey)
 {
-    free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(0)] = NULL;
+    free(context->keys[br_arg_index(args, 0)]);
+    context->keys[br_arg_index(args, 0)] = NULL;
     return -1;
 }
 
-BRUTER_FUNCTION(_rename)
+BR_FUNCTION(_rename)
 {
-    free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(0)] = br_str_duplicate(BR_ARG(1).s);
+    free(context->keys[br_arg_index(args, 0)]);
+    context->keys[br_arg_index(args, 0)] = br_str_duplicate(br_arg(context, args, 1).s);
     return -1;
 }
 
-BRUTER_FUNCTION(_delete)
+BR_FUNCTION(_delete)
 {
-    free(context->keys[BR_ARG_I(0)]);
-    context->keys[BR_ARG_I(0)] = NULL;
+    free(context->keys[br_arg_index(args, 0)]);
+    context->keys[br_arg_index(args, 0)] = NULL;
 
     BruterList* unused = br_get_unused(context);
-    bruter_push(unused, BRUTER_VALUE(i, BR_ARG_I(0)), NULL);
+    bruter_push(unused, bruter_value_i(br_arg_index(args, 0)), NULL);
     return -1;
 }
 
-BR_INIT(std)
+void init_std(BruterList *context)
 {
-    br_add_function(context, "label", _label);
-    br_add_function(context, "unlabel", _unlabel);
+    br_add_function(context, "key", _key);
+    br_add_function(context, "unkey", _unkey);
     br_add_function(context, "rename", _rename);
     
     br_add_function(context, "delete", _delete);

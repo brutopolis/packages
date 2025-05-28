@@ -1,9 +1,9 @@
 #include "br.h"
 
-BRUTER_FUNCTION(_string_concat)
+BR_FUNCTION(_string_concat)
 {
-    char* str1 = BR_ARG(0).s;
-    char* str2 = BR_ARG(1).s;
+    char* str1 = br_arg(context, args, 0).s;
+    char* str2 = br_arg(context, args, 1).s;
     size_t len1 = strlen(str1);
     size_t len2 = strlen(str2);
     
@@ -19,45 +19,45 @@ BRUTER_FUNCTION(_string_concat)
     result_str[len1 + len2] = '\0'; // Null-terminate the result string
     
     BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, BRUTER_VALUE(s, result_str));
+    bruter_set(context, result, bruter_value_p(result_str));
 
     BruterList *allocs = br_get_allocs(context);
-    bruter_push(allocs, BRUTER_VALUE(p, result_str), NULL);
+    bruter_push(allocs, bruter_value_p(result_str), NULL);
     
     return result;
 }
 
-BRUTER_FUNCTION(_string_length)
+BR_FUNCTION(_string_length)
 {
-    char* str = BR_ARG(0).s;
+    char* str = br_arg(context, args, 0).s;
     size_t length = strlen(str);
     
     BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, BRUTER_VALUE(i, length));
+    bruter_set(context, result, bruter_value_i(length));
     
     return result;
 }
 
-BRUTER_FUNCTION(_string_compare)
+BR_FUNCTION(_string_compare)
 {
-    char* str1 = BR_ARG(0).s;
-    char* str2 = BR_ARG(1).s;
+    char* str1 = br_arg(context, args, 0).s;
+    char* str2 = br_arg(context, args, 1).s;
     
     int cmp_result = strcmp(str1, str2);
     
     BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, BRUTER_VALUE(i, cmp_result));
+    bruter_set(context, result, bruter_value_i(cmp_result));
     
     return result;
 }
 
-BRUTER_FUNCTION(_string_format) // dynamic string
+BR_FUNCTION(_string_format) // dynamic string
 {
-    char* format = BR_ARG(0).s;
-    size_t arg_count = BR_ARG_COUNT();
+    char* format = br_arg(context, args, 0).s;
+    size_t arg_count = br_arg_count(args);
     
     // Calculate the size needed for the formatted string
-    size_t size_needed = snprintf(NULL, 0, format, BR_ARG(1).s);
+    size_t size_needed = snprintf(NULL, 0, format, br_arg(context, args, 1).s);
     
     // Allocate memory for the formatted string
     char* result_str = malloc(size_needed + 1);
@@ -68,13 +68,13 @@ BRUTER_FUNCTION(_string_format) // dynamic string
     }
     
     // Format the string
-    snprintf(result_str, size_needed + 1, format, BR_ARG(1).s);
+    snprintf(result_str, size_needed + 1, format, br_arg(context, args, 1).s);
     
     BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, BRUTER_VALUE(s, result_str));
+    bruter_set(context, result, bruter_value_p(result_str));
 
     BruterList *allocs = br_get_allocs(context);
-    bruter_push(allocs, BRUTER_VALUE(p, result_str), NULL);
+    bruter_push(allocs, bruter_value_p(result_str), NULL);
     
     return result;
 }
