@@ -100,7 +100,7 @@ BR_FUNCTION(brl_tcc_c_new_function)
             break;
         }
 
-        token += 16;
+        token += 12;
         char *end = strchr(token, ')');
         if (!end)
         {
