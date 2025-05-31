@@ -1,4 +1,4 @@
-#include "br.h"
+#include "bruter-representation.h"
 
 // file stuff
 char* file_read(char *filename)

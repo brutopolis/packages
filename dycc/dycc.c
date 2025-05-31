@@ -4,12 +4,12 @@
 
 #ifndef ARDUINO
 
-#include "br.h"
+#include "bruter-representation.h"
 #include <libtcc.h>
 
 BruterList *dycc_state_list;
 
-const char* bruter_header = "#include \"br.h\"\n";
+const char* bruter_header = "#include \"bruter-representation.h\"\n";
 
 void add_common_symbols(TCCState *tcc)
 {

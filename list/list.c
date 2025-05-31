@@ -1,4 +1,4 @@
-#include "br.h"
+#include "bruter-representation.h"
 
 BruterList* lists;
 
