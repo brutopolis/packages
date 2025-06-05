@@ -23,8 +23,7 @@ BR_FUNCTION(_alloc_get_byte)
         printf("BR_ERROR: alloc_get_byte called with NULL pointer\n");
         return -1;
     }
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_i(allocd[index]));
+    BruterInt result = br_new_var(context, bruter_value_i(allocd[index]), NULL);
     return result;
 }
 

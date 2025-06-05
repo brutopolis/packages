@@ -99,7 +99,7 @@ BR_FUNCTION(_if)
 
     if (cond == NULL)
     {
-        result = 0;
+        result = -1;
     }
     else
     {
@@ -116,13 +116,13 @@ BR_FUNCTION(_if)
     }
     else
     {
-        result = 0;
+        result = -1;
     }
     return result;
 }
 
 
-BR_INIT(math)
+BR_INIT(condition)
 {
     br_add_function(context, "i==", _iequals);
     br_add_function(context, "i!=", _inotequals);

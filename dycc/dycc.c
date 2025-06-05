@@ -67,13 +67,7 @@ BR_FUNCTION(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    BruterInt result = br_new_var(context, NULL);
-    if (result < 0) 
-    {
-        fprintf(stderr, "could not create new var\n");
-        return -1;
-    }
-    bruter_set(context, result, bruter_value_p(tcc));
+    BruterInt result = br_new_var(context, bruter_value_p(tcc), NULL);
 
     char *code = br_str_format("%s\n%s", bruter_header, br_arg(context, args, 0).s);
 
@@ -119,15 +113,12 @@ BR_FUNCTION(brl_tcc_c_new_function)
 
         bruter_push(dycc_state_list, (BruterValue){.p = tcc}, NULL);
 
-        BruterInt index = br_new_var(context, symbol);
+        BruterInt index = br_new_var(context, bruter_value_p(func), symbol);
         if (index < 0) 
         {
-            fprintf(stderr, "could not create new var\n");
             free(symbol);
             return -1;
         }
-
-        bruter_set(context, index, bruter_value_p(func));
         free(symbol);
 
         token = end + 1;

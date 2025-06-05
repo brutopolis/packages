@@ -97,6 +97,26 @@ BR_FUNCTION(_forever)
     return result;
 }
 
+BR_FUNCTION(_while)
+{
+    char *condition_code = br_arg(context, args, 0).s;
+    char *code = br_arg(context, args, 1).s;
+    BruterInt result = -1;
+    BruterList *parser = br_get_parser(context);
+    BruterInt condition_result = br_eval(context, parser, condition_code);
+    while (condition_result == 1)
+    {
+        result = br_eval(context, parser, code);
+        if (result != -1)
+        {
+            break;
+        }
+        condition_result = br_eval(context, parser, condition_code);
+    }
+    
+    return result;
+}
+
 BR_FUNCTION(_get)
 {
     return br_arg(context, args, 0).i;
@@ -157,6 +177,7 @@ void init_std(BruterList *context)
 
     br_add_function(context, "repeat", _repeat);
     br_add_function(context, "forever", _forever);
+    br_add_function(context, "while", _while);
 
     br_add_function(context, "get", _get);
     br_add_function(context, "set", _set);

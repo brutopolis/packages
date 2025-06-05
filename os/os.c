@@ -76,8 +76,7 @@ BR_FUNCTION(_read_file)
         printf("BR_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
-    BruterInt var = br_new_var(context, NULL);
-    bruter_set(context, var, bruter_value_p(content));
+    BruterInt var = br_new_var(context, bruter_value_p(content), NULL);
 
     free(content);    
     return var;

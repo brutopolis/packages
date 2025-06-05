@@ -17,8 +17,7 @@ BR_FUNCTION(brl_new_list)
     BruterList* list = bruter_init(sizeof(void*), is_table);
     bruter_push(lists, bruter_value_p(list), NULL);
 
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_p(list));
+    BruterInt result = br_new_var(context, bruter_value_p(list), NULL);
     return result;
 }
 
@@ -115,8 +114,7 @@ BR_FUNCTION(brl_list_set)
 BR_FUNCTION(brl_list_size)
 {
     BruterList* list = (BruterList*)br_arg(context, args, 0).p;
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_i(list->size));
+    BruterInt result = br_new_var(context, bruter_value_i(list->size), NULL);
     return result;
 }
 
@@ -149,8 +147,7 @@ BR_FUNCTION(brl_list_copy)
 {
     BruterList* list = (BruterList*)br_arg(context, args, 0).p;
     BruterList* copy = bruter_copy(list);
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_p(copy));
+    BruterInt result = br_new_var(context, bruter_value_p(copy), NULL);
     return result;
 }
 

@@ -18,8 +18,7 @@ BR_FUNCTION(_string_concat)
     strncpy(result_str + len1, str2, len2);
     result_str[len1 + len2] = '\0'; // Null-terminate the result string
     
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_p(result_str));
+    BruterInt result = br_new_var(context, bruter_value_p(result_str), NULL);
 
     BruterList *allocs = br_get_allocs(context);
     bruter_push(allocs, bruter_value_p(result_str), NULL);
@@ -32,8 +31,7 @@ BR_FUNCTION(_string_length)
     char* str = br_arg(context, args, 0).s;
     size_t length = strlen(str);
     
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_i(length));
+    BruterInt result = br_new_var(context, bruter_value_i(length), NULL);
     
     return result;
 }
@@ -45,8 +43,7 @@ BR_FUNCTION(_string_compare)
     
     int cmp_result = strcmp(str1, str2);
     
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_i(cmp_result));
+    BruterInt result = br_new_var(context, bruter_value_i(cmp_result), NULL);
     
     return result;
 }
@@ -70,8 +67,7 @@ BR_FUNCTION(_string_format) // dynamic string
     // Format the string
     snprintf(result_str, size_needed + 1, format, br_arg(context, args, 1).s);
     
-    BruterInt result = br_new_var(context, NULL);
-    bruter_set(context, result, bruter_value_p(result_str));
+    BruterInt result = br_new_var(context, bruter_value_p(result_str), NULL);
 
     BruterList *allocs = br_get_allocs(context);
     bruter_push(allocs, bruter_value_p(result_str), NULL);
