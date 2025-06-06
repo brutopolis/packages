@@ -151,6 +151,15 @@ BR_FUNCTION(brl_list_copy)
     return result;
 }
 
+BR_FUNCTION(brl_list_concat)
+{
+    BruterList* dest = (BruterList*)br_arg(context, args, 0).p;
+    BruterList* src = (BruterList*)br_arg(context, args, 1).p;
+    
+    bruter_concat(dest, src);
+    return -1;
+}
+
 BR_FUNCTION(brl_list_fast_remove)
 {
     BruterList* list = (BruterList*)br_arg(context, args, 0).p;
@@ -215,6 +224,7 @@ BR_INIT(list)
     br_add_function(context, "list.swap", brl_list_swap);
     br_add_function(context, "list.find", brl_list_find);
     br_add_function(context, "list.copy", brl_list_copy);
+    br_add_function(context, "list.concat", brl_list_concat);
     br_add_function(context, "list.fast_remove", brl_list_fast_remove);
     br_add_function(context, "list.double", brl_list_double);
     br_add_function(context, "list.half", brl_list_half);
