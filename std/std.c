@@ -156,6 +156,14 @@ BR_FUNCTION(_delete)
     free(context->keys[br_arg_index(args, 0)]);
     context->keys[br_arg_index(args, 0)] = NULL;
 
+    BruterList *allocs = br_get_allocs(context);
+    BruterInt found = bruter_find(allocs, bruter_value_i(br_arg_index(args, 0)), NULL);
+    if (found != -1)
+    {
+        // if the variable is in allocs, we need to free it
+        free(bruter_fast_remove(allocs, found).p);
+    }
+
     BruterList* unused = br_get_unused(context);
     bruter_push(unused, bruter_value_i(br_arg_index(args, 0)), NULL);
     return -1;
@@ -171,7 +179,7 @@ void init_std(BruterList *context)
     
     br_add_function(context, "ls", _ls);
     
-    br_add_function(context, "ignore", _ignore);
+    br_add_function(context, "#", _ignore);
 
     br_add_function(context, "return", _return);
 
