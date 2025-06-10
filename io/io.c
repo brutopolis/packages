@@ -98,27 +98,45 @@ BR_FUNCTION(print_index)
 BR_FUNCTION(print_list)
 {
     BruterList *list = (BruterList *)br_arg(context, args, 0).p;
-    for (BruterInt i = 0; i < list->size; i++)
+    if (list->keys != NULL)
     {
-        printf("%d ", list->data[i].i);
+        for (BruterInt i = 0; i < list->size; i++)
+        {
+            if (bruter_get_key(list, i) != NULL)
+            {
+                printf("[%ld](\"%s\"):\t\t", i, bruter_get_key(list, i));
+            }
+            else
+            {
+                printf("[%ld](\"\"):\t\t", i);
+            }
+
+            printf(" %ld\n", bruter_get(list, i).i);
+        }
     }
-    printf("\n");
+    else
+    {
+        for (BruterInt i = 0; i < list->size; i++)
+        {
+            printf("[%ld]:\t\t %ld\n", i, bruter_get(list, i).i);
+        }
+    }
     return -1;
 }
 
 BR_INIT(io)
 {
-    br_add_function(context, "print.int", print_int);
-    br_add_function(context, "print.uint", print_uint);
-    br_add_function(context, "print.float", print_float);
-    br_add_function(context, "print.string", print_string);
-    br_add_function(context, "print.bool", print_bool);
-    br_add_function(context, "print.pointer", print_pointer);
-    br_add_function(context, "print.bits", print_bits);
-    br_add_function(context, "print.bytes", print_bytearray);
-    br_add_function(context, "print.octal", print_octal);
-    br_add_function(context, "print.hex", print_hex);
-    br_add_function(context, "print.bitarray", print_bitarray);
-    br_add_function(context, "print.index", print_index);
-    br_add_function(context, "print.list", print_list);
+    br_add_function(context, "print_int", print_int);
+    br_add_function(context, "print_uint", print_uint);
+    br_add_function(context, "print_float", print_float);
+    br_add_function(context, "print_string", print_string);
+    br_add_function(context, "print_bool", print_bool);
+    br_add_function(context, "print_pointer", print_pointer);
+    br_add_function(context, "print_bits", print_bits);
+    br_add_function(context, "print_bytes", print_bytearray);
+    br_add_function(context, "print_octal", print_octal);
+    br_add_function(context, "print_hex", print_hex);
+    br_add_function(context, "print_bitarray", print_bitarray);
+    br_add_function(context, "print_index", print_index);
+    br_add_function(context, "print_list", print_list);
 }

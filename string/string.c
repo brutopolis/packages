@@ -77,8 +77,8 @@ BR_FUNCTION(_string_format) // dynamic string
 
 BR_INIT(string)
 {
-    br_add_function(context, "string.concat", _string_concat);
-    br_add_function(context, "string.length", _string_length);
-    br_add_function(context, "string.compare", _string_compare);
-    br_add_function(context, "string.format", _string_format);
+    br_add_function(context, "string_concat", _string_concat);
+    br_add_function(context, "string_length", _string_length);
+    br_add_function(context, "string_compare", _string_compare);
+    br_add_function(context, "string_format", _string_format);
 }

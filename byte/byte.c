@@ -59,11 +59,11 @@ BR_FUNCTION(_byte_div)
 
 BR_INIT(byte)
 {
-    br_add_function(context, "byte.set", _byte_set);
-    br_add_function(context, "byte.get", _byte_get);
+    br_add_function(context, "byte_set", _byte_set);
+    br_add_function(context, "byte_get", _byte_get);
     
-    br_add_function(context, "byte.add", _byte_add);
-    br_add_function(context, "byte.sub", _byte_sub);
-    br_add_function(context, "byte.mul", _byte_mul);
-    br_add_function(context, "byte.div", _byte_div);
+    br_add_function(context, "byte_add", _byte_add);
+    br_add_function(context, "byte_sub", _byte_sub);
+    br_add_function(context, "byte_mul", _byte_mul);
+    br_add_function(context, "byte_div", _byte_div);
 }
