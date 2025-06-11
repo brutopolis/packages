@@ -209,26 +209,26 @@ void _free_at_exit()
 BR_INIT(list)
 {
     lists = bruter_init(sizeof(void*), false);
-    br_add_function(context, "list_init", brl_new_list);
-    br_add_function(context, "list_free", brl_delete_list);
-    br_add_function(context, "list_push", brl_list_push);
-    br_add_function(context, "list_unshift", brl_list_unshift);
-    br_add_function(context, "list_insert", brl_list_insert);
-    br_add_function(context, "list_pop", brl_list_pop);
-    br_add_function(context, "list_shift", brl_list_shift);
-    br_add_function(context, "list_remove", brl_list_remove);
-    br_add_function(context, "list_get", brl_list_get);
-    br_add_function(context, "list_set", brl_list_set);
-    br_add_function(context, "list_size", brl_list_size);
-    br_add_function(context, "list_reverse", brl_list_reverse);
-    br_add_function(context, "list_swap", brl_list_swap);
-    br_add_function(context, "list_find", brl_list_find);
-    br_add_function(context, "list_copy", brl_list_copy);
-    br_add_function(context, "list_concat", brl_list_concat);
-    br_add_function(context, "list_fast_remove", brl_list_fast_remove);
-    br_add_function(context, "list_double", brl_list_double);
-    br_add_function(context, "list_half", brl_list_half);
-    br_add_function(context, "list_call", brl_list_call);
+    br_add_function(context, "list.init", brl_new_list);
+    br_add_function(context, "list.free", brl_delete_list);
+    br_add_function(context, "list.push", brl_list_push);
+    br_add_function(context, "list.unshift", brl_list_unshift);
+    br_add_function(context, "list.insert", brl_list_insert);
+    br_add_function(context, "list.pop", brl_list_pop);
+    br_add_function(context, "list.shift", brl_list_shift);
+    br_add_function(context, "list.remove", brl_list_remove);
+    br_add_function(context, "list.get", brl_list_get);
+    br_add_function(context, "list.set", brl_list_set);
+    br_add_function(context, "list.size", brl_list_size);
+    br_add_function(context, "list.reverse", brl_list_reverse);
+    br_add_function(context, "list.swap", brl_list_swap);
+    br_add_function(context, "list.find", brl_list_find);
+    br_add_function(context, "list.copy", brl_list_copy);
+    br_add_function(context, "list.concat", brl_list_concat);
+    br_add_function(context, "list.fast_remove", brl_list_fast_remove);
+    br_add_function(context, "list.double", brl_list_double);
+    br_add_function(context, "list.half", brl_list_half);
+    br_add_function(context, "list.call", brl_list_call);
 
     // at exit function
     atexit(_free_at_exit);

@@ -86,16 +86,16 @@ BR_FUNCTION(_bit_swap)
 
 BR_INIT(bit)
 {
-    br_add_function(context, "bit_and", _bit_and);
-    br_add_function(context, "bit_or", _bit_or);
-    br_add_function(context, "bit_xor", _bit_xor);
-    br_add_function(context, "bit_not", _bit_not);
-    br_add_function(context, "bit_lshift", _bit_lshift);
-    br_add_function(context, "bit_rshift", _bit_rshift);
-    br_add_function(context, "bit_on", _bit_on);
-    br_add_function(context, "bit_off", _bit_off);
-    br_add_function(context, "bit_set", _bit_set);
-    br_add_function(context, "bit_get", _bit_get);
-    br_add_function(context, "bit_switch", _bit_switch);
-    br_add_function(context, "bit_swap", _bit_swap);
+    br_add_function(context, "bit.and", _bit_and);
+    br_add_function(context, "bit.or", _bit_or);
+    br_add_function(context, "bit.xor", _bit_xor);
+    br_add_function(context, "bit.not", _bit_not);
+    br_add_function(context, "bit.lshift", _bit_lshift);
+    br_add_function(context, "bit.rshift", _bit_rshift);
+    br_add_function(context, "bit.on", _bit_on);
+    br_add_function(context, "bit.off", _bit_off);
+    br_add_function(context, "bit.set", _bit_set);
+    br_add_function(context, "bit.get", _bit_get);
+    br_add_function(context, "bit.switch", _bit_switch);
+    br_add_function(context, "bit.swap", _bit_swap);
 }

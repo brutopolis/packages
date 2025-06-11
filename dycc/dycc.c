@@ -144,8 +144,8 @@ BR_INIT(dycc)
         return;
     }
 
-    br_add_function(context, "dycc_clear", brl_tcc_clear_states);
-    br_add_function(context, "dycc_compile", brl_tcc_c_new_function);
+    br_add_function(context, "dycc.clear", brl_tcc_clear_states);
+    br_add_function(context, "dycc.compile", brl_tcc_c_new_function);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

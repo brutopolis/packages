@@ -99,7 +99,7 @@ BR_FUNCTION(_file_exists)
 BR_INIT(os)
 {
     // register functions
-    br_add_function(context, "file_read", _read_file);
-    br_add_function(context, "file_write", _write_file);
-    br_add_function(context, "file_exists", _file_exists);
+    br_add_function(context, "file.read", _read_file);
+    br_add_function(context, "file.write", _write_file);
+    br_add_function(context, "file.exists", _file_exists);
 }
