@@ -14,7 +14,7 @@ BR_FUNCTION(brl_new_list)
         is_table = br_arg(context, args, 0).i;
     }
     
-    BruterList* list = bruter_init(sizeof(void*), is_table);
+    BruterList* list = bruter_init(sizeof(void*), is_table, false);
     bruter_push(lists, bruter_value_p(list), NULL);
 
     BruterInt result = br_new_var(context, bruter_value_p(list), NULL);
@@ -208,7 +208,7 @@ void _free_at_exit()
 
 BR_INIT(list)
 {
-    lists = bruter_init(sizeof(void*), false);
+    lists = bruter_init(sizeof(void*), false, false);
     br_add_function(context, "list.init", brl_new_list);
     br_add_function(context, "list.free", brl_delete_list);
     br_add_function(context, "list.push", brl_list_push);

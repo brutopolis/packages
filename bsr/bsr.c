@@ -546,7 +546,7 @@ void __bsr_at_exit(void)
 void init_bsr(BruterList *context)
 {
 
-    bsr_windows = bruter_init(sizeof(BSRWindow), true);
+    bsr_windows = bruter_init(sizeof(BSRWindow), true, false);
     bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows");
 
     // window flags (minifb)

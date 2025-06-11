@@ -136,7 +136,7 @@ void _terminate_tcc_at_exit_handler()
 
 BR_INIT(dycc)
 {
-    dycc_state_list = bruter_init(0, false);
+    dycc_state_list = bruter_init(0, false, false);
 
     if (!dycc_state_list) 
     {
