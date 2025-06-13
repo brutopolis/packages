@@ -5,7 +5,7 @@
 #define OLIVEC_IMPLEMENTATION
 #include "olive.c"
 #include "MiniFB.h"
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 // olive.c RGBA to ARGB patch
 // i am not sure if this patch does anything at all

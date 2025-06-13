@@ -1,4 +1,4 @@
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 BR_FUNCTION(_byte_set)
 {
@@ -13,7 +13,7 @@ BR_FUNCTION(_byte_set)
 BR_FUNCTION(_byte_get)
 {
     BruterInt byte_index = br_arg(context, args, 1).i;
-    BruterInt index = br_new_var(context, bruter_value_i(bruter_get(context, index).u8[byte_index]), NULL);
+    BruterInt index = br_new_var(context, bruter_value_i(bruter_get(context, index).u8[byte_index]), NULL, BR_TYPE_INT);
     return index;
 }
 

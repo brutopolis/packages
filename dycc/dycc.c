@@ -4,13 +4,13 @@
 
 #ifndef ARDUINO
 
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 #include <libtcc.h>
 
 BruterList *dycc_state_list;
 
 const char* bruter_header = "#include \"bruter-representation.h\"\n";
-
+/*
 void add_common_symbols(TCCState *tcc)
 {
     const void *core_funcs[] = {
@@ -45,7 +45,7 @@ void add_common_symbols(TCCState *tcc)
         tcc_add_symbol(tcc, core_names[i], core_funcs[i]);
     }
 }
-
+*/
 
 BR_FUNCTION(brl_tcc_clear_states)
 {
@@ -67,11 +67,7 @@ BR_FUNCTION(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    BruterInt result = br_new_var(context, bruter_value_p(tcc), NULL);
-
     char *code = br_str_format("%s\n%s", bruter_header, br_arg(context, args, 0).s);
-
-    add_common_symbols(tcc);
 
     if (tcc_compile_string(tcc, code) < 0) 
     {
@@ -111,9 +107,9 @@ BR_FUNCTION(brl_tcc_c_new_function)
             return -1;
         }
 
-        bruter_push(dycc_state_list, (BruterValue){.p = tcc}, NULL);
+        bruter_push(dycc_state_list, (BruterValue){.p = tcc}, NULL, 0);
 
-        BruterInt index = br_new_var(context, bruter_value_p(func), symbol);
+        BruterInt index = br_new_var(context, bruter_value_p(func), symbol, BR_TYPE_POINTER);
         if (index < 0) 
         {
             free(symbol);

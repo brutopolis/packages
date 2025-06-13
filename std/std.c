@@ -1,4 +1,4 @@
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 BR_FUNCTION(_key)
 {
@@ -165,7 +165,7 @@ BR_FUNCTION(_delete)
     }
 
     BruterList* unused = br_get_unused(context);
-    bruter_push(unused, bruter_value_i(br_arg_index(args, 0)), NULL);
+    bruter_push(unused, bruter_value_i(br_arg_index(args, 0)), NULL, 0);
     return -1;
 }
 

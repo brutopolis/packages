@@ -1,4 +1,4 @@
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 // file stuff
 char* file_read(char *filename)
@@ -76,7 +76,7 @@ BR_FUNCTION(_read_file)
         printf("BR_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
-    BruterInt var = br_new_var(context, bruter_value_p(content), NULL);
+    BruterInt var = br_new_var(context, bruter_value_p(content), NULL, BR_TYPE_STRING);
 
     free(content);    
     return var;

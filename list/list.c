@@ -1,4 +1,4 @@
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 BruterList* lists;
 
@@ -15,9 +15,9 @@ BR_FUNCTION(brl_new_list)
     }
     
     BruterList* list = bruter_init(sizeof(void*), is_table, false);
-    bruter_push(lists, bruter_value_p(list), NULL);
+    bruter_push(lists, bruter_value_p(list), NULL, 0);
 
-    BruterInt result = br_new_var(context, bruter_value_p(list), NULL);
+    BruterInt result = br_new_var(context, bruter_value_p(list), NULL, BR_TYPE_LIST);
     return result;
 }
 
@@ -45,7 +45,7 @@ BR_FUNCTION(brl_list_push)
     {
         key = br_arg(context, args, 2).s;
     }
-    bruter_push(list, bruter_value_i(br_arg_index(args, 1)), key);
+    bruter_push(list, bruter_value_i(br_arg_index(args, 1)), key, 0);
     return -1;
 }
 
@@ -57,7 +57,7 @@ BR_FUNCTION(brl_list_unshift)
     {
         key = br_arg(context, args, 2).s;
     }
-    bruter_unshift(list, bruter_value_i(bruter_get(args,1).i), key);
+    bruter_unshift(list, bruter_value_i(bruter_get(args,1).i), key, 0);
     return -1;
 }
 
@@ -70,7 +70,7 @@ BR_FUNCTION(brl_list_insert)
     {
         key = br_arg(context, args, 3).s;
     }
-    bruter_insert(list, index, bruter_value_i(bruter_get(args,2).i), key);
+    bruter_insert(list, index, bruter_value_i(bruter_get(args,2).i), key, 0);
     return -1;
 }
 
@@ -114,7 +114,7 @@ BR_FUNCTION(brl_list_set)
 BR_FUNCTION(brl_list_size)
 {
     BruterList* list = (BruterList*)br_arg(context, args, 0).p;
-    BruterInt result = br_new_var(context, bruter_value_i(list->size), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(list->size), NULL, BR_TYPE_INT);
     return result;
 }
 
@@ -147,7 +147,7 @@ BR_FUNCTION(brl_list_copy)
 {
     BruterList* list = (BruterList*)br_arg(context, args, 0).p;
     BruterList* copy = bruter_copy(list);
-    BruterInt result = br_new_var(context, bruter_value_p(copy), NULL);
+    BruterInt result = br_new_var(context, bruter_value_p(copy), NULL, BR_TYPE_LIST);
     return result;
 }
 

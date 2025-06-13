@@ -159,10 +159,7 @@ BR_FUNCTION(bsr_new_window)
     
     mfb_set_viewport(window, 0, 0, width, height);
 
-    bruter_push(bsr_windows, (BruterValue){.p = bsr_window}, NULL);
-
-    
-
+    bruter_push(bsr_windows, (BruterValue){.p = bsr_window}, NULL, 0);
 
     BruterInt result = br_new_var(context, bruter_value_p(bsr_window), NULL);
     return result;
@@ -547,7 +544,7 @@ void init_bsr(BruterList *context)
 {
 
     bsr_windows = bruter_init(sizeof(BSRWindow), true, false);
-    bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows");
+    bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows", 0);
 
     // window flags (minifb)
     br_new_var(context, bruter_value_i(WF_ALWAYS_ON_TOP), "bsr.flag.always_on_top");
