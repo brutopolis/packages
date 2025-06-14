@@ -2,96 +2,96 @@
 
 BR_FUNCTION(_iequals)
 {
-    if (br_arg(context, args, 0).i == br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i == br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_inotequals)
 {
-    if (br_arg(context, args, 0).i != br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i != br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_ibigger)
 {
-    if (br_arg(context, args, 0).i > br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i > br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_ibiggerorequals)
 {
-    if (br_arg(context, args, 0).i >= br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i >= br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_ilower)
 {
-    if (br_arg(context, args, 0).i < br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i < br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_ilowerorequals)
 {
-    if (br_arg(context, args, 0).i <= br_arg(context, args, 1).i)
+    if (br_arg_get(context, args, 0).i <= br_arg_get(context, args, 1).i)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_fequals)
 {
-    if (br_arg(context, args, 0).f == br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f == br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_fnotequals)
 {
-    if (br_arg(context, args, 0).f != br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f != br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_fbigger)
 {
-    if (br_arg(context, args, 0).f > br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f > br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_fbiggerorequals)
 {
-    if (br_arg(context, args, 0).f >= br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f >= br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_flower)
 {
-    if (br_arg(context, args, 0).f < br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f < br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_flowerorequals)
 {
-    if (br_arg(context, args, 0).f <= br_arg(context, args, 1).f)
+    if (br_arg_get(context, args, 0).f <= br_arg_get(context, args, 1).f)
         return 1;
     return 0;
 }
 
 BR_FUNCTION(_if)
 {
-    char* cond = br_arg(context, args, 0).s;
-    char* true_part = br_arg(context, args, 1).s;
+    char* cond = br_arg_get(context, args, 0).s;
+    char* true_part = br_arg_get(context, args, 1).s;
     char* false_part = NULL;
 
-    if (br_arg_count(args) > 2)
-        false_part = br_arg(context, args, 2).s;
+    if (br_arg_get_count(args) > 2)
+        false_part = br_arg_get(context, args, 2).s;
     
     BruterInt result = -1;
 

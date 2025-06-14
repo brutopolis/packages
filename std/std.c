@@ -2,8 +2,8 @@
 
 BR_FUNCTION(_key)
 {
-    free(context->keys[br_arg_index(args, 0)]);
-    context->keys[br_arg_index(args, 1)] = br_str_duplicate(br_arg(context, args, 0).s);
+    free(context->keys[br_arg_get_index(args, 0)]);
+    context->keys[br_arg_get_index(args, 1)] = br_str_duplicate(br_arg_get(context, args, 0).s);
     return -1;
 }
 
@@ -13,11 +13,11 @@ BR_FUNCTION(_ls)
     {
         if (bruter_get_key(context, i) != NULL)
         {
-            printf("[%ld](\"%s\"):\t\t", i, bruter_get_key(context, i));
+            printf("[%ld](%d){\"%s\"):\t\t", i, bruter_get_type(context, i), bruter_get_key(context, i));
         }
         else
         {
-            printf("[%ld](\"\"):\t\t", i);
+            printf("[%ld](%d):\t\t", i,  bruter_get_type(context, i));
         }
 
         printf(" %ld\n", bruter_get(context, i).i);
@@ -27,13 +27,13 @@ BR_FUNCTION(_ls)
 
 BR_FUNCTION(_return)
 {
-    if (br_arg_count(args) < 1)
+    if (br_arg_get_count(args) < 1)
     {
         return -1;
     }
     else
     {
-        return br_arg_index(args, 0);
+        return br_arg_get_index(args, 0);
     }
 }
 
@@ -44,8 +44,8 @@ BR_FUNCTION(_ignore)
 
 BR_FUNCTION(_repeat)
 {
-    BruterInt times = br_arg(context, args, 0).i;
-    char* code = br_arg(context, args, 1).s;
+    BruterInt times = br_arg_get(context, args, 0).i;
+    char* code = br_arg_get(context, args, 1).s;
     BruterInt result = -1;
 
     BruterList *parser = br_get_parser(context);
@@ -81,7 +81,7 @@ BR_FUNCTION(_repeat)
 
 BR_FUNCTION(_forever)
 {
-    char* code = br_arg(context, args, 0).s;
+    char* code = br_arg_get(context, args, 0).s;
     BruterInt result = -1;
 
     BruterList *parser = br_get_parser(context);
@@ -99,8 +99,8 @@ BR_FUNCTION(_forever)
 
 BR_FUNCTION(_while)
 {
-    char *condition_code = br_arg(context, args, 0).s;
-    char *code = br_arg(context, args, 1).s;
+    char *condition_code = br_arg_get(context, args, 0).s;
+    char *code = br_arg_get(context, args, 1).s;
     BruterInt result = -1;
     BruterList *parser = br_get_parser(context);
     BruterInt condition_result = br_eval(context, parser, condition_code);
@@ -119,13 +119,13 @@ BR_FUNCTION(_while)
 
 BR_FUNCTION(_get)
 {
-    return br_arg(context, args, 0).i;
+    return br_arg_get(context, args, 0).i;
 }
 
 BR_FUNCTION(_set)
 {
-    BruterInt index = br_arg(context, args, 0).i;
-    BruterInt value = br_arg(context, args, 1).i;
+    BruterInt index = br_arg_get(context, args, 0).i;
+    BruterInt value = br_arg_get(context, args, 1).i;
     context->data[index].i = value;
     return -1;
 }
@@ -134,38 +134,30 @@ BR_FUNCTION(_eval)
 {
     BruterList *parser = br_get_parser(context);
 
-    return br_eval(context, parser, br_arg(context, args, 0).s);
+    return br_eval(context, parser, br_arg_get(context, args, 0).s);
 }
 
 BR_FUNCTION(_unkey)
 {
-    free(context->keys[br_arg_index(args, 0)]);
-    context->keys[br_arg_index(args, 0)] = NULL;
+    free(context->keys[br_arg_get_index(args, 0)]);
+    context->keys[br_arg_get_index(args, 0)] = NULL;
     return -1;
 }
 
 BR_FUNCTION(_rename)
 {
-    free(context->keys[br_arg_index(args, 0)]);
-    context->keys[br_arg_index(args, 0)] = br_str_duplicate(br_arg(context, args, 1).s);
+    free(context->keys[br_arg_get_index(args, 0)]);
+    context->keys[br_arg_get_index(args, 0)] = br_str_duplicate(br_arg_get(context, args, 1).s);
     return -1;
 }
 
 BR_FUNCTION(_delete)
 {
-    free(context->keys[br_arg_index(args, 0)]);
-    context->keys[br_arg_index(args, 0)] = NULL;
+    free(context->keys[br_arg_get_index(args, 0)]);
+    context->keys[br_arg_get_index(args, 0)] = NULL;
 
-    BruterList *allocs = br_get_allocs(context);
-    BruterInt found = bruter_find(allocs, bruter_value_i(br_arg_index(args, 0)), NULL);
-    if (found != -1)
-    {
-        // if the variable is in allocs, we need to free it
-        free(bruter_fast_remove(allocs, found).p);
-    }
-
-    BruterList* unused = br_get_unused(context);
-    bruter_push(unused, bruter_value_i(br_arg_index(args, 0)), NULL, 0);
+    br_delete_var(context, br_arg_get_index(args, 0));
+    
     return -1;
 }
 
