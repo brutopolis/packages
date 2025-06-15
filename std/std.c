@@ -117,24 +117,12 @@ BR_FUNCTION(_while)
     return result;
 }
 
-BR_FUNCTION(_get)
-{
-    return br_arg_get(context, args, 0).i;
-}
-
 BR_FUNCTION(_set)
 {
-    BruterInt index = br_arg_get(context, args, 0).i;
+    BruterInt index = br_arg_get_index(args, 0);
     BruterInt value = br_arg_get(context, args, 1).i;
     context->data[index].i = value;
     return -1;
-}
-
-BR_FUNCTION(_eval)
-{
-    BruterList *parser = br_get_parser(context);
-
-    return br_eval(context, parser, br_arg_get(context, args, 0).s);
 }
 
 BR_FUNCTION(_unkey)
@@ -179,8 +167,5 @@ void init_std(BruterList *context)
     br_add_function(context, "forever", _forever);
     br_add_function(context, "while", _while);
 
-    br_add_function(context, "get", _get);
     br_add_function(context, "set", _set);
-
-    br_add_function(context, "eval", _eval);
 }
