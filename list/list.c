@@ -1,68 +1,24 @@
 #include <bruter-representation.h>
 
-BR_FUNCTION(brl_new_list)
-{
-    BruterInt is_table;
-    if (br_arg_get_count(args) == 0)
-    {
-        is_table = false;
-    }
-    else
-    {
-        is_table = br_arg_get(context, args, 0).i;
-    }
-    
-    BruterList* list = bruter_init(sizeof(void*), is_table, false);
-
-    BruterInt result = br_new_var(context, bruter_value_p(list), NULL, BR_TYPE_LIST);
-    return result;
-}
-
-BR_FUNCTION(brl_delete_list)
-{
-    BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    if (list == NULL)
-    {
-        return -1;
-    }
-    bruter_free(list);
-    return 0;
-}
-
 BR_FUNCTION(brl_list_push)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    char* key = NULL;
-    if (br_arg_get_count(args) > 2)
-    {
-        key = br_arg_get(context, args, 2).s;
-    }
-    bruter_push(list, bruter_value_i(br_arg_get_index(args, 1)), key, 0);
+    bruter_push(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
 BR_FUNCTION(brl_list_unshift)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    char* key = NULL;
-    if (br_arg_get_count(args) > 2)
-    {
-        key = br_arg_get(context, args, 2).s;
-    }
-    bruter_unshift(list, bruter_value_i(bruter_get(args,1).i), key, 0);
+    bruter_unshift(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
 BR_FUNCTION(brl_list_insert)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
-    char* key = NULL;
-    if (br_arg_get_count(args) > 3)
-    {
-        key = br_arg_get(context, args, 3).s;
-    }
-    bruter_insert(list, index, bruter_value_i(bruter_get(args,2).i), key, 0);
+    BruterInt index = br_arg_get(context, args, 1).i;
+    bruter_insert(list, index, bruter_value_i(br_arg_get_index(args, 2)), NULL, 0);
     return -1;
 }
 
@@ -81,7 +37,7 @@ BR_FUNCTION(brl_list_shift)
 BR_FUNCTION(brl_list_remove)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
+    BruterInt index = br_arg_get(context, args, 1).i;
     
     return bruter_remove(list, index).i;
 }
@@ -89,7 +45,7 @@ BR_FUNCTION(brl_list_remove)
 BR_FUNCTION(brl_list_get)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
+    BruterInt index = br_arg_get(context, args, 1).i;
     
     return list->data[index].i;
 }
@@ -97,7 +53,7 @@ BR_FUNCTION(brl_list_get)
 BR_FUNCTION(brl_list_set)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
+    BruterInt index = br_arg_get(context, args, 1).i;
     
     list->data[index].i = br_arg_get(context, args, 2).i;
     return -1;
@@ -120,8 +76,8 @@ BR_FUNCTION(brl_list_reverse)
 BR_FUNCTION(brl_list_swap)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index1 = br_arg_get_index(args, 1);
-    BruterInt index2 = br_arg_get_index(args, 2);
+    BruterInt index1 = br_arg_get(context, args, 1).i;
+    BruterInt index2 = br_arg_get(context, args, 2).i;
     
     bruter_swap(list, index1, index2);
     return -1;
@@ -130,7 +86,7 @@ BR_FUNCTION(brl_list_swap)
 BR_FUNCTION(brl_list_find)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
+    BruterInt index = br_arg_get(context, args, 1).i;
     
     return bruter_find(list, bruter_value_i(index), NULL);
 }
@@ -155,7 +111,7 @@ BR_FUNCTION(brl_list_concat)
 BR_FUNCTION(brl_list_fast_remove)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt index = br_arg_get_index(args, 1);
+    BruterInt index = br_arg_get(context, args, 1).i;
     
     return bruter_fast_remove(list, index).i;
 }
@@ -186,8 +142,6 @@ BR_FUNCTION(brl_list_call)
 
 BR_INIT(list)
 {
-    br_add_function(context, "list.init", brl_new_list);
-    br_add_function(context, "list.free", brl_delete_list);
     br_add_function(context, "list.push", brl_list_push);
     br_add_function(context, "list.unshift", brl_list_unshift);
     br_add_function(context, "list.insert", brl_list_insert);
