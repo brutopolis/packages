@@ -1,45 +1,45 @@
-#include "bruter-representation.h"
+#include <bruter-representation.h>
 
 BR_FUNCTION(print_int)
 {
-    printf("%d\n", br_arg(context, args, 0).i);
+    printf("%d\n", br_arg_get(context, args, 0).i);
     return -1;
 }
 
 BR_FUNCTION(print_uint)
 {
-    printf("%u\n", br_arg(context, args, 0).i);
+    printf("%u\n", br_arg_get(context, args, 0).i);
     return -1;
 }
 
 BR_FUNCTION(print_float)
 {
-    printf("%f\n", br_arg(context, args, 0).f);
+    printf("%f\n", br_arg_get(context, args, 0).f);
     return -1;
 }
 
 BR_FUNCTION(print_string)
 {
-    printf("%s\n", br_arg(context, args, 0).s);
+    printf("%s\n", br_arg_get(context, args, 0).s);
     return -1;
 }
 
 BR_FUNCTION(print_bool)
 {
-    printf("%s\n", br_arg(context, args, 0).i ? "true" : "false");
+    printf("%s\n", br_arg_get(context, args, 0).i ? "true" : "false");
     return -1;
 }
 
 BR_FUNCTION(print_pointer)
 {
-    printf("%p\n", br_arg(context, args, 0).p);
+    printf("%p\n", br_arg_get(context, args, 0).p);
     return -1;
 }
 
 BR_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010101010101010101010101001010101010101010101010101010101 depending on the size of BruterInt
 {
     // print the txt 0b0010101010101...
-    BruterInt number = br_arg(context, args, 0).i;
+    BruterInt number = br_arg_get(context, args, 0).i;
     BruterInt size = sizeof(BruterInt);
     printf("0b");
     for (BruterInt i = size * 8 - 1; i >= 0; i--) {
@@ -51,7 +51,7 @@ BR_FUNCTION(print_bits) // as 0b01010101010101010101010101010101 or 0b1010101010
 
 BR_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 00001111 00001111 11110000 00001111 00001111 00001111 11110000 depending on the size of BruterInt
 {
-    BruterInt number = br_arg(context, args, 0).i;
+    BruterInt number = br_arg_get(context, args, 0).i;
     BruterInt size = sizeof(BruterInt);
     for (BruterInt i = size * 8 - 1; i >= 0; i--) {
         printf("%d", (number >> i) & 1);
@@ -65,7 +65,7 @@ BR_FUNCTION(print_bitarray) // 00001111 00001111 00001111 11110000 or 00001111 0
 
 BR_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] depending on the size of BruterInt
 {
-    BruterInt number = br_arg(context, args, 0).i;
+    BruterInt number = br_arg_get(context, args, 0).i;
     BruterInt size = sizeof(BruterInt);
     for (BruterInt i = 0; i < size; i++) {
         printf("%d ", (number >> (i * 8)) & 0xFF);
@@ -76,39 +76,39 @@ BR_FUNCTION(print_bytearray) // [1, 2, 3, 4] or [1, 2, 3, 4, 5, 6, 7, 8] dependi
 
 BR_FUNCTION(print_octal) // 0o1234567 or 0o123456789 depending on the size of BruterInt
 {
-    BruterInt number = br_arg(context, args, 0).i;
+    BruterInt number = br_arg_get(context, args, 0).i;
     printf("0o%lo\n", number);
     return -1;
 }
 
 BR_FUNCTION(print_hex)
 {
-    BruterInt i = br_arg(context, args, 0).i;
+    BruterInt i = br_arg_get(context, args, 0).i;
     printf("0x%X\n", i);
     return -1;
 }
 
 BR_FUNCTION(print_index)
 {
-    BruterInt i = br_arg_index(args, 0);
+    BruterInt i = br_arg_get_index(args, 0);
     printf("%d\n", i);
     return -1;
 }
 
 BR_FUNCTION(print_list)
 {
-    BruterList *list = (BruterList *)br_arg(context, args, 0).p;
+    BruterList *list = (BruterList *)br_arg_get(context, args, 0).p;
     if (list->keys != NULL)
     {
         for (BruterInt i = 0; i < list->size; i++)
         {
             if (bruter_get_key(list, i) != NULL)
             {
-                printf("[%ld](\"%s\"):\t\t", i, bruter_get_key(list, i));
+                printf("[%ld](%d){\"%s\"}:\t\t", i,  bruter_get_type(list, i), bruter_get_key(list, i));
             }
             else
             {
-                printf("[%ld](\"\"):\t\t", i);
+                printf("[%ld](%d){\"\"}:\t\t", i, bruter_get_type(list, i));
             }
 
             printf(" %ld\n", bruter_get(list, i).i);

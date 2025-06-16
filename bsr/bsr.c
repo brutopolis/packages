@@ -111,12 +111,12 @@ static void mouse_scroll(struct mfb_window *window, mfb_key_mod mod, float delta
 
 BR_FUNCTION(bsr_new_window) 
 {
-    char *title = br_arg(context, args, 0).s;
-    int width = br_arg(context, args, 1).i;
-    int height = br_arg(context, args, 2).i;
+    char *title = br_arg_get(context, args, 0).s;
+    int width = br_arg_get(context, args, 1).i;
+    int height = br_arg_get(context, args, 2).i;
     int flags = 0;
-    for (int i = 3; i < br_arg_count(args); i++) {
-        flags |= br_arg(context, args, i).i;
+    for (int i = 3; i < br_arg_get_count(args); i++) {
+        flags |= br_arg_get(context, args, i).i;
     };
 
     struct mfb_window *window = mfb_open_ex(title, width, height, flags);
@@ -159,18 +159,15 @@ BR_FUNCTION(bsr_new_window)
     
     mfb_set_viewport(window, 0, 0, width, height);
 
-    bruter_push(bsr_windows, (BruterValue){.p = bsr_window}, NULL);
+    bruter_push(bsr_windows, (BruterValue){.p = bsr_window}, NULL, 0);
 
-    
-
-
-    BruterInt result = br_new_var(context, bruter_value_p(bsr_window), NULL);
+    BruterInt result = br_new_var(context, bruter_value_p(bsr_window), NULL, BR_TYPE_ANY);
     return result;
 }
 
 BR_FUNCTION(bsr_close_window)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
 
     if (window == NULL)
     {
@@ -197,7 +194,7 @@ BR_FUNCTION(bsr_close_window)
 
 BR_FUNCTION(bsr_update_window) 
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     uint8_t *buffer = (uint8_t*)(current_window)->buffer;
     int width = current_window->width;
@@ -215,7 +212,7 @@ BR_FUNCTION(bsr_update_window)
 
 BR_FUNCTION(bsr_update_window_events) 
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
@@ -227,96 +224,96 @@ BR_FUNCTION(bsr_update_window_events)
 
 BR_FUNCTION(bsr_is_window_active)
 {
-    return mfb_is_window_active(br_arg(context, args, 0).p);
+    return mfb_is_window_active(br_arg_get(context, args, 0).p);
 }
 
 BR_FUNCTION(bsr_get_window_width)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_width(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_width(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BR_FUNCTION(bsr_get_window_height)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_height(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_height(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BruterInt bsr_get_mouse_x(BruterList *context, BruterList *args)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_x(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_x(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BruterInt bsr_get_mouse_y(BruterList *context, BruterList *args)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_y(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_y(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BruterInt bsr_get_mouse_scroll_x(BruterList *context, BruterList *args)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_x(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_x(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BruterInt bsr_get_mouse_scroll_y(BruterList *context, BruterList *args)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_y(window)), NULL);
+    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_y(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
 
 BruterInt bsr_wait_sync(BruterList *context, BruterList *args)
 {
-    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg(context, args, 0).p))->window;
+    struct mfb_window *window = (struct mfb_window*)((BSRWindow*)(br_arg_get(context, args, 0).p))->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
@@ -329,20 +326,20 @@ BruterInt bsr_wait_sync(BruterList *context, BruterList *args)
 
 BR_FUNCTION(bsr_is_key_pressed)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
         printf("Window is NULL\n");
         return -1;
     }
-    mfb_key key = br_arg(context, args, 1).i;
+    mfb_key key = br_arg_get(context, args, 1).i;
     return current_window->keys[key];
 }
 
 BR_FUNCTION(bsr_get_framebuffer)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -356,7 +353,7 @@ BR_FUNCTION(bsr_get_framebuffer)
         return -1;
     }
     
-    BruterInt result = br_new_var(context, bruter_value_p(buffer), NULL);
+    BruterInt result = br_new_var(context, bruter_value_p(buffer), NULL, BR_TYPE_BUFFER);
     return result;
 }
 
@@ -364,7 +361,7 @@ BR_FUNCTION(bsr_get_framebuffer)
 // drawing functions
 BR_FUNCTION(bsr_fill)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -372,7 +369,7 @@ BR_FUNCTION(bsr_fill)
         return -1;
     }
     
-    uint32_t color = br_arg(context, args, 1).i;
+    uint32_t color = br_arg_get(context, args, 1).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -388,7 +385,7 @@ BR_FUNCTION(bsr_fill)
 
 BR_FUNCTION(bsr_draw_rect)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -396,11 +393,11 @@ BR_FUNCTION(bsr_draw_rect)
         return -1;
     }
     
-    int x = br_arg(context, args, 1).i;
-    int y = br_arg(context, args, 2).i;
-    int width = br_arg(context, args, 3).i;
-    int height = br_arg(context, args, 4).i;
-    uint32_t color = br_arg(context, args, 5).i;
+    int x = br_arg_get(context, args, 1).i;
+    int y = br_arg_get(context, args, 2).i;
+    int width = br_arg_get(context, args, 3).i;
+    int height = br_arg_get(context, args, 4).i;
+    uint32_t color = br_arg_get(context, args, 5).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -416,7 +413,7 @@ BR_FUNCTION(bsr_draw_rect)
 
 BR_FUNCTION(bsr_draw_frame)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -424,12 +421,12 @@ BR_FUNCTION(bsr_draw_frame)
         return -1;
     }
     
-    int x = br_arg(context, args, 1).i;
-    int y = br_arg(context, args, 2).i;
-    int width = br_arg(context, args, 3).i;
-    int height = br_arg(context, args, 4).i;
-    int thickness = br_arg(context, args, 5).i;
-    uint32_t color = br_arg(context, args, 6).i;
+    int x = br_arg_get(context, args, 1).i;
+    int y = br_arg_get(context, args, 2).i;
+    int width = br_arg_get(context, args, 3).i;
+    int height = br_arg_get(context, args, 4).i;
+    int thickness = br_arg_get(context, args, 5).i;
+    uint32_t color = br_arg_get(context, args, 6).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -445,7 +442,7 @@ BR_FUNCTION(bsr_draw_frame)
 
 BR_FUNCTION(bsr_draw_circle)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -453,10 +450,10 @@ BR_FUNCTION(bsr_draw_circle)
         return -1;
     }
     
-    int x = br_arg(context, args, 1).i;
-    int y = br_arg(context, args, 2).i;
-    int radius = br_arg(context, args, 3).i;
-    uint32_t color = br_arg(context, args, 4).i;
+    int x = br_arg_get(context, args, 1).i;
+    int y = br_arg_get(context, args, 2).i;
+    int radius = br_arg_get(context, args, 3).i;
+    uint32_t color = br_arg_get(context, args, 4).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -472,7 +469,7 @@ BR_FUNCTION(bsr_draw_circle)
 
 BR_FUNCTION(bsr_draw_ellipse)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -480,11 +477,11 @@ BR_FUNCTION(bsr_draw_ellipse)
         return -1;
     }
     
-    int x = br_arg(context, args, 1).i;
-    int y = br_arg(context, args, 2).i;
-    int radius_x = br_arg(context, args, 3).i;
-    int radius_y = br_arg(context, args, 4).i;
-    uint32_t color = br_arg(context, args, 5).i;
+    int x = br_arg_get(context, args, 1).i;
+    int y = br_arg_get(context, args, 2).i;
+    int radius_x = br_arg_get(context, args, 3).i;
+    int radius_y = br_arg_get(context, args, 4).i;
+    uint32_t color = br_arg_get(context, args, 5).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -500,7 +497,7 @@ BR_FUNCTION(bsr_draw_ellipse)
 
 BR_FUNCTION(bsr_draw_line)
 {
-    BSRWindow *current_window = (BSRWindow*)(br_arg(context, args, 0).p);
+    BSRWindow *current_window = (BSRWindow*)(br_arg_get(context, args, 0).p);
     struct mfb_window *window = (struct mfb_window*)(current_window)->window;
     if (window == NULL)
     {
@@ -508,11 +505,11 @@ BR_FUNCTION(bsr_draw_line)
         return -1;
     }
     
-    int x1 = br_arg(context, args, 1).i;
-    int y1 = br_arg(context, args, 2).i;
-    int x2 = br_arg(context, args, 3).i;
-    int y2 = br_arg(context, args, 4).i;
-    uint32_t color = br_arg(context, args, 5).i;
+    int x1 = br_arg_get(context, args, 1).i;
+    int y1 = br_arg_get(context, args, 2).i;
+    int x2 = br_arg_get(context, args, 3).i;
+    int y2 = br_arg_get(context, args, 4).i;
+    uint32_t color = br_arg_get(context, args, 5).i;
 
     Olivec_Canvas canvas = (Olivec_Canvas){
         .pixels = (uint32_t*)(current_window)->buffer,
@@ -546,45 +543,45 @@ void __bsr_at_exit(void)
 void init_bsr(BruterList *context)
 {
 
-    bsr_windows = bruter_init(sizeof(BSRWindow), true);
-    bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows");
+    bsr_windows = bruter_init(sizeof(BSRWindow), true, false);
+    bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows", 0);
 
     // window flags (minifb)
-    br_new_var(context, bruter_value_i(WF_ALWAYS_ON_TOP), "bsr.flag.always_on_top");
-    br_new_var(context, bruter_value_i(WF_RESIZABLE), "bsr.flag.resizable");
-    br_new_var(context, bruter_value_i(WF_FULLSCREEN), "bsr.flag.fullscreen");
-    br_new_var(context, bruter_value_i(WF_BORDERLESS), "bsr.flag.borderless");
-    br_new_var(context, bruter_value_i(WF_FULLSCREEN_DESKTOP), "bsr.flag.fullscreen_desktop");
+    br_new_var(context, bruter_value_i(WF_ALWAYS_ON_TOP), "bsr.flag.always_on_top", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_i(WF_RESIZABLE), "bsr.flag.resizable", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_i(WF_FULLSCREEN), "bsr.flag.fullscreen", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_i(WF_BORDERLESS), "bsr.flag.borderless", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_i(WF_FULLSCREEN_DESKTOP), "bsr.flag.fullscreen_desktop", BR_TYPE_ANY);
 
     // window functions (minifb)
-    br_new_var(context, bruter_value_p(bsr_new_window), "bsr.new");
-    br_new_var(context, bruter_value_p(bsr_close_window), "bsr.close");
-    br_new_var(context, bruter_value_p(bsr_update_window), "bsr.update");
-    br_new_var(context, bruter_value_p(bsr_update_window_events), "bsr.update_events");
-    br_new_var(context, bruter_value_p(bsr_is_window_active), "bsr.is_active");
-    br_new_var(context, bruter_value_p(bsr_get_window_width), "bsr.get_width");
-    br_new_var(context, bruter_value_p(bsr_get_window_height), "bsr.get_height");
-    br_new_var(context, bruter_value_p(bsr_get_mouse_x), "bsr.get_mouse_x");
-    br_new_var(context, bruter_value_p(bsr_get_mouse_y), "bsr.get_mouse_y");
-    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_x), "bsr.get_mouse_scroll_x");
-    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_y), "bsr.get_mouse_scroll_y");
-    br_new_var(context, bruter_value_p(bsr_wait_sync), "bsr.wait_sync");
+    br_new_var(context, bruter_value_p(bsr_new_window), "bsr.new", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_close_window), "bsr.close", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_update_window), "bsr.update", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_update_window_events), "bsr.update_events", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_is_window_active), "bsr.is_active", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_window_width), "bsr.get_width", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_window_height), "bsr.get_height", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_mouse_x), "bsr.get_mouse_x", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_mouse_y), "bsr.get_mouse_y", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_x), "bsr.get_mouse_scroll_x", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_y), "bsr.get_mouse_scroll_y", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_wait_sync), "bsr.wait_sync", BR_TYPE_FUNCTION);
 
     // io functions (minifb)
-    br_new_var(context, bruter_value_p(bsr_is_key_pressed), "bsr.is_key_pressed");
-    br_new_var(context, bruter_value_p(bsr_get_framebuffer), "bsr.get_framebuffer");
+    br_new_var(context, bruter_value_p(bsr_is_key_pressed), "bsr.is_key_pressed", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_get_framebuffer), "bsr.get_framebuffer", BR_TYPE_FUNCTION);
 
     // drawing functions (olivec)
-    br_new_var(context, bruter_value_p(bsr_fill), "bsr.fill");
-    br_new_var(context, bruter_value_p(bsr_draw_rect), "bsr.rect");
-    br_new_var(context, bruter_value_p(bsr_draw_frame), "bsr.frame");
-    br_new_var(context, bruter_value_p(bsr_draw_circle), "bsr.circle");
-    br_new_var(context, bruter_value_p(bsr_draw_ellipse), "bsr.ellipse");
-    br_new_var(context, bruter_value_p(bsr_draw_line), "bsr.line");
+    br_new_var(context, bruter_value_p(bsr_fill), "bsr.fill", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_draw_rect), "bsr.rect", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_draw_frame), "bsr.frame", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_draw_circle), "bsr.circle", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_draw_ellipse), "bsr.ellipse", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_p(bsr_draw_line), "bsr.line", BR_TYPE_FUNCTION);
 
 
     // add bsr_windows to context
-    br_new_var(context, bruter_value_p(bsr_windows), "bsr.windows");
+    br_new_var(context, bruter_value_p(bsr_windows), "bsr.windows", BR_TYPE_LIST);
     
 
     // register at exit function

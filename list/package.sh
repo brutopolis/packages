@@ -1,5 +1,5 @@
 name list
-version 0.1.0
+version 0.1.3
 description "buxu list library, basically a bruter wrapper"
 files list.c
 setup "bucc -o list.brl list.c"
