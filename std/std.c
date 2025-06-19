@@ -7,24 +7,6 @@ BR_FUNCTION(_key)
     return -1;
 }
 
-BR_FUNCTION(_ls)
-{
-    for (BruterInt i = 0; i < context->size; i++)
-    {
-        if (bruter_get_key(context, i) != NULL)
-        {
-            printf("[%ld](%d){\"%s\"):\t\t", i, bruter_get_type(context, i), bruter_get_key(context, i));
-        }
-        else
-        {
-            printf("[%ld](%d):\t\t", i,  bruter_get_type(context, i));
-        }
-
-        printf(" %ld\n", bruter_get(context, i).i);
-    }
-    return -1;
-}
-
 BR_FUNCTION(_return)
 {
     if (br_arg_get_count(args) < 1)
@@ -144,7 +126,8 @@ BR_FUNCTION(_delete)
     free(context->keys[br_arg_get_index(args, 0)]);
     context->keys[br_arg_get_index(args, 0)] = NULL;
 
-    br_delete_var(context, br_arg_get_index(args, 0));
+    br_clear_var(context, br_arg_get_index(args, 0));
+    bruter_push(br_get_unused(context), bruter_value_i(br_arg_get_index(args, 0)), NULL, 0);
     
     return -1;
 }
@@ -161,16 +144,24 @@ BR_FUNCTION(_bake)
     return baked;
 }
 
+/*BR_FUNCTION(_std_function)
+{
+    BruterList *parser = br_get_parser(context);
+    bruter_unshift(parser, bruter_value_p(parser_function_arg), "std_function", 0);
+    BruterInt baked = _bake(context, args);
+    context->types[baked] = BR_TYPE_USER_FUNCTION; // set the type to function
+    bruter_shift(parser); // remove the std_function from the parser
+    return baked;
+}*/
+
 void init_std(BruterList *context)
 {
-    br_add_function(context, "key", _key);
-    br_add_function(context, "unkey", _unkey);
+    br_add_function(context, "name", _key);
+    br_add_function(context, "unname", _unkey);
     br_add_function(context, "rename", _rename);
     
     br_add_function(context, "delete", _delete);
-    
-    br_add_function(context, "ls", _ls);
-    
+        
     br_add_function(context, "#", _ignore);
 
     br_add_function(context, "return", _return);
@@ -181,4 +172,5 @@ void init_std(BruterList *context)
 
     br_add_function(context, "set", _set);
     br_add_function(context, "bake", _bake);
+    //br_add_function(context, "function", _std_function);
 }
