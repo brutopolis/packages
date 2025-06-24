@@ -1,5 +1,17 @@
 #include <bruter-representation.h>
 
+BR_FUNCTION(brl_list_new)
+{
+    BruterList* list = bruter_new(sizeof(BruterValue), false, false);
+    BruterInt result = br_new_var(context, bruter_value_p(list), NULL, BR_TYPE_LIST);
+    for (BruterInt i = 0; i < br_arg_get_count(args); i++)
+    {
+        BruterValue value = br_arg_get(context, args, i);
+        bruter_push(list, value, NULL, 0);
+    }
+    return result;
+}
+
 BR_FUNCTION(brl_list_push)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
@@ -148,6 +160,7 @@ BR_FUNCTION(brl_list_run)
 
 BR_INIT(list)
 {
+    br_add_function(context, "list.new", brl_list_new);
     br_add_function(context, "list.push", brl_list_push);
     br_add_function(context, "list.unshift", brl_list_unshift);
     br_add_function(context, "list.insert", brl_list_insert);
