@@ -98,20 +98,25 @@ BR_FUNCTION(print_index)
 BR_FUNCTION(print_list)
 {
     BruterList *list = (BruterList *)br_arg_get(context, args, 0).p;
-    if (list->keys != NULL)
+    if (list->keys != NULL && list->types != NULL)
     {
         for (BruterInt i = 0; i < list->size; i++)
         {
-            if (bruter_get_key(list, i) != NULL)
-            {
-                printf("[%ld](%d){\"%s\"}:\t\t", i,  bruter_get_type(list, i), bruter_get_key(list, i));
-            }
-            else
-            {
-                printf("[%ld](%d){\"\"}:\t\t", i, bruter_get_type(list, i));
-            }
-
-            printf(" %ld\n", bruter_get(list, i).i);
+            printf("[%ld]{%s}(%d):\t %ld\n", i, list->keys[i] ? list->keys[i] : "NULL", list->types[i], bruter_get(list, i).i);
+        }
+    }
+    else if (list->keys != NULL)
+    {
+        for (BruterInt i = 0; i < list->size; i++)
+        {
+            printf("[%ld]{%s}: %ld\t\t \n", i, list->keys[i] ? list->keys[i] : "NULL", bruter_get(list, i).i);
+        }
+    }
+    else if (list->types != NULL)
+    {
+        for (BruterInt i = 0; i < list->size; i++)
+        {
+            printf("[%ld](%d):\t\t %ld\n", i, list->types[i], bruter_get(list, i).i);
         }
     }
     else
@@ -120,6 +125,47 @@ BR_FUNCTION(print_list)
         {
             printf("[%ld]:\t\t %ld\n", i, bruter_get(list, i).i);
         }
+    }
+    return -1;
+}
+
+BR_FUNCTION(io_print)
+{
+    BruterList *temp_args = NULL;
+    for (BruterInt i = 0; i < br_arg_get_count(args); i++)
+    {
+        int8_t arg_type = br_arg_get_type(context, args, i);
+        switch (arg_type)
+        {
+            case BR_TYPE_FLOAT:
+                printf("%f\n", br_arg_get(context, args, i).f);
+                break;
+            case BR_TYPE_BUFFER:
+                printf("%s\n", br_arg_get(context, args, i).s);
+                break;
+            case BR_TYPE_FUNCTION:
+                printf("%p\n", br_arg_get(context, args, i).p);
+                break;
+            case BR_TYPE_LIST:
+            case BR_TYPE_BAKED:
+                if (temp_args == NULL)
+                {
+                    temp_args = bruter_new(0, false, true);
+                    bruter_push(temp_args, bruter_value_i(-1), NULL, BR_TYPE_NULL); // dummy value
+                }
+                bruter_push(temp_args, args->data[i+1], NULL, 0);
+                print_list(context, temp_args);
+                bruter_pop(temp_args); // remove the list index
+                break;
+            case BR_TYPE_ANY:
+            default:
+                printf("%ld\n", br_arg_get(context, args, i).i);
+                break;
+        }
+    }
+    if (temp_args != NULL)
+    {
+        bruter_free(temp_args);
     }
     return -1;
 }
@@ -139,4 +185,5 @@ BR_INIT(io)
     br_add_function(context, "print.bitarray", print_bitarray);
     br_add_function(context, "print.index", print_index);
     br_add_function(context, "print.list", print_list);
+    br_add_function(context, "print", io_print); // auto print
 }

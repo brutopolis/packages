@@ -45,34 +45,9 @@ BR_FUNCTION(_string_compare)
     return result;
 }
 
-BR_FUNCTION(_string_format) // dynamic string
-{
-    char* format = br_arg_get(context, args, 0).s;
-    size_t arg_count = br_arg_get_count(args);
-    
-    // Calculate the size needed for the formatted string
-    size_t size_needed = snprintf(NULL, 0, format, br_arg_get(context, args, 1).s);
-    
-    // Allocate memory for the formatted string
-    char* result_str = malloc(size_needed + 1);
-    if (result_str == NULL) 
-    {
-        printf("BR_ERROR: Memory allocation failed\n");
-        return -1;
-    }
-    
-    // Format the string
-    snprintf(result_str, size_needed + 1, format, br_arg_get(context, args, 1).s);
-    
-    BruterInt result = br_new_var(context, bruter_value_p(result_str), NULL, BR_TYPE_BUFFER);
-
-    return result;
-}
-
 BR_INIT(string)
 {
     br_add_function(context, "string.concat", _string_concat);
     br_add_function(context, "string.length", _string_length);
     br_add_function(context, "string.compare", _string_compare);
-    br_add_function(context, "string.format", _string_format);
 }
