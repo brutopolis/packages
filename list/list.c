@@ -100,7 +100,15 @@ BR_FUNCTION(brl_list_find)
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterInt index = br_arg_get(context, args, 1).i;
     
-    return bruter_find(list, bruter_value_i(index), NULL);
+    return bruter_find(list, bruter_value_i(index));
+}
+
+BR_FUNCTION(brl_list_find_key)
+{
+    BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
+    const char* key = br_arg_get_key(context, args, 1);
+    
+    return bruter_find_key(list, key);
 }
 
 BR_FUNCTION(brl_list_copy)
