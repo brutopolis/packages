@@ -159,13 +159,6 @@ BR_FUNCTION(brl_list_call)
 
     return bruter_call(sub_context, cmd);
 }
-
-BR_FUNCTION(brl_list_run)
-{
-    BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    return bruter_run(list).i;
-}
-
 BR_INIT(list)
 {
     br_add_function(context, "list.new", brl_list_new);
@@ -187,5 +180,4 @@ BR_INIT(list)
     br_add_function(context, "list.double", brl_list_double);
     br_add_function(context, "list.half", brl_list_half);
     br_add_function(context, "list.call", brl_list_call);
-    br_add_function(context, "list.run", brl_list_run);
 }
