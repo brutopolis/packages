@@ -3,7 +3,7 @@
 BR_FUNCTION(brl_list_new)
 {
     BruterList* list = bruter_new(sizeof(BruterValue), false, false);
-    BruterInt result = br_new_var(context, bruter_value_p(list), NULL, BR_TYPE_LIST);
+    BruterInt result = br_new_var(context, bruter_value_pointer(list), NULL, BR_TYPE_LIST);
     for (BruterInt i = 0; i < br_arg_get_count(args); i++)
     {
         BruterValue value = br_arg_get(context, args, i);
@@ -15,14 +15,14 @@ BR_FUNCTION(brl_list_new)
 BR_FUNCTION(brl_list_push)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    bruter_push(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
+    bruter_push(list, bruter_value_int(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
 BR_FUNCTION(brl_list_unshift)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    bruter_unshift(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
+    bruter_unshift(list, bruter_value_int(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
@@ -30,7 +30,7 @@ BR_FUNCTION(brl_list_insert)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterInt index = br_arg_get(context, args, 1).i;
-    bruter_insert(list, index, bruter_value_i(br_arg_get_index(args, 2)), NULL, 0);
+    bruter_insert(list, index, bruter_value_int(br_arg_get_index(args, 2)), NULL, 0);
     return -1;
 }
 
@@ -74,7 +74,7 @@ BR_FUNCTION(brl_list_set)
 BR_FUNCTION(brl_list_size)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt result = br_new_var(context, bruter_value_i(list->size), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(list->size), NULL, BR_TYPE_ANY);
     return result;
 }
 
@@ -100,7 +100,7 @@ BR_FUNCTION(brl_list_find)
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterInt index = br_arg_get(context, args, 1).i;
     
-    return bruter_find(list, bruter_value_i(index));
+    return bruter_find(list, bruter_value_int(index));
 }
 
 BR_FUNCTION(brl_list_find_key)
@@ -115,7 +115,7 @@ BR_FUNCTION(brl_list_copy)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterList* copy = bruter_copy(list);
-    BruterInt result = br_new_var(context, bruter_value_p(copy), NULL, BR_TYPE_LIST);
+    BruterInt result = br_new_var(context, bruter_value_pointer(copy), NULL, BR_TYPE_LIST);
     return result;
 }
 

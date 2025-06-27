@@ -51,7 +51,7 @@ BR_FUNCTION(brl_tcc_clear_states)
 {
     while (dycc_state_list->size > 0) 
     {
-        tcc_delete((TCCState *)(bruter_shift(dycc_state_list)).s);
+        tcc_delete((TCCState *)(bruter_shift(dycc_state_list)).p);
     }
     return -1;
 }
@@ -67,7 +67,7 @@ BR_FUNCTION(brl_tcc_c_new_function)
 
     tcc_set_output_type(tcc, TCC_OUTPUT_MEMORY);
 
-    char *code = br_str_format("%s\n%s", bruter_header, br_arg_get(context, args, 0).s);
+    char *code = br_str_format("%s\n%s", bruter_header, br_arg_get(context, args, 0).p);
 
     if (tcc_compile_string(tcc, code) < 0) 
     {
@@ -109,7 +109,7 @@ BR_FUNCTION(brl_tcc_c_new_function)
 
         bruter_push(dycc_state_list, (BruterValue){.p = tcc}, NULL, 0);
 
-        BruterInt index = br_new_var(context, bruter_value_p(func), symbol, BR_TYPE_FUNCTION);
+        BruterInt index = br_new_var(context, bruter_value_pointer(func), symbol, BR_TYPE_FUNCTION);
         if (index < 0) 
         {
             free(symbol);

@@ -25,7 +25,7 @@ BR_FUNCTION(_type_get)
         return -1;
     }
 
-    return br_new_var(context, bruter_value_i(context->types[index]), NULL, BR_TYPE_ANY);
+    return br_new_var(context, bruter_value_int(context->types[index]), NULL, BR_TYPE_ANY);
 }
 
 BR_INIT(type)
