@@ -20,7 +20,7 @@ BR_FUNCTION(print_float)
 
 BR_FUNCTION(print_string)
 {
-    printf("%s\n", br_arg_get(context, args, 0).s);
+    printf("%s\n", br_arg_get(context, args, 0).p);
     return -1;
 }
 
@@ -141,7 +141,7 @@ BR_FUNCTION(io_print)
                 printf("%f\n", br_arg_get(context, args, i).f);
                 break;
             case BR_TYPE_BUFFER:
-                printf("%s\n", br_arg_get(context, args, i).s);
+                printf("%s\n", br_arg_get(context, args, i).p);
                 break;
             case BR_TYPE_FUNCTION:
                 printf("%p\n", br_arg_get(context, args, i).p);
@@ -151,7 +151,7 @@ BR_FUNCTION(io_print)
                 if (temp_args == NULL)
                 {
                     temp_args = bruter_new(0, false, true);
-                    bruter_push(temp_args, bruter_value_i(-1), NULL, BR_TYPE_NULL); // dummy value
+                    bruter_push(temp_args, bruter_value_int(-1), NULL, BR_TYPE_NULL); // dummy value
                 }
                 bruter_push(temp_args, args->data[i+1], NULL, 0);
                 print_list(context, temp_args);

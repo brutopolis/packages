@@ -4,19 +4,19 @@
 
 BR_FUNCTION(_iadd)
 {
-    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).i));
+    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).i));
     return -1;
 }
 
 BR_FUNCTION(_isub)
 {
-    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).i));
+    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).i));
     return -1;
 }
 
 BR_FUNCTION(_imul)
 {
-    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).i));
+    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).i));
     return -1;
 }
 
@@ -27,7 +27,7 @@ BR_FUNCTION(_idiv)
         printf("BR_ERROR: Division by zero\n");
         return -1; // or handle error appropriately
     }
-    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).i));
+    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).i));
     return -1;
 }
 
@@ -38,7 +38,7 @@ BR_FUNCTION(_imod)
         printf("BR_ERROR: Division by zero\n");
         return -1; // or handle error appropriately
     }
-    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i % br_arg_get(context, args, 1).i));
+    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i % br_arg_get(context, args, 1).i));
     return -1;
 }
 
@@ -46,19 +46,19 @@ BR_FUNCTION(_imod)
 
 BR_FUNCTION(_fadd)
 {
-    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).f));
+    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).f));
     return -1;
 }
 
 BR_FUNCTION(_fsub)
 {
-    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).f));
+    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).f));
     return -1;
 }
 
 BR_FUNCTION(_fmul)
 {
-    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).f));
+    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).f));
     return -1;
 }
 
@@ -69,13 +69,13 @@ BR_FUNCTION(_fdiv)
         printf("BR_ERROR: Division by zero\n");
         return -1; // or handle error appropriately
     }
-    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).f));
+    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).f));
     return -1;
 }
 
 BR_FUNCTION(_fmod)
 {
-    br_arg_set(context, args, 0, bruter_value_f(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).f)));
+    br_arg_set(context, args, 0, bruter_value_float(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).f)));
     return -1;
 }
 
@@ -89,10 +89,10 @@ BR_FUNCTION(_aadd)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).i + br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for addition\n");
@@ -102,10 +102,10 @@ BR_FUNCTION(_aadd)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f + br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for addition\n");
@@ -126,10 +126,10 @@ BR_FUNCTION(_asub)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).i - br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for subtraction\n");
@@ -139,10 +139,10 @@ BR_FUNCTION(_asub)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f - br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for subtraction\n");
@@ -163,10 +163,10 @@ BR_FUNCTION(_amul)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).i * br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for multiplication\n");
@@ -176,10 +176,10 @@ BR_FUNCTION(_amul)
             switch (br_arg_get_type(context, args, 1))
             {
                 case BR_TYPE_ANY:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f * br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for multiplication\n");
@@ -205,7 +205,7 @@ BR_FUNCTION(_adiv)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
                     if (br_arg_get(context, args, 1).f == 0.0f)
@@ -213,7 +213,7 @@ BR_FUNCTION(_adiv)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).i / br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for division\n");
@@ -228,7 +228,7 @@ BR_FUNCTION(_adiv)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
                     if (br_arg_get(context, args, 1).f == 0.0f)
@@ -236,7 +236,7 @@ BR_FUNCTION(_adiv)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).f));
+                    br_arg_set(context, args, 0, bruter_value_float(br_arg_get(context, args, 0).f / br_arg_get(context, args, 1).f));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for division\n");
@@ -262,7 +262,7 @@ BR_FUNCTION(_amod)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_i(br_arg_get(context, args, 0).i % br_arg_get(context, args, 1).i));
+                    br_arg_set(context, args, 0, bruter_value_int(br_arg_get(context, args, 0).i % br_arg_get(context, args, 1).i));
                     break;
                 case BR_TYPE_FLOAT:
                     if (br_arg_get(context, args, 1).f == 0.0f)
@@ -270,7 +270,7 @@ BR_FUNCTION(_amod)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(fmod(br_arg_get(context, args, 0).i, br_arg_get(context, args, 1).f)));
+                    br_arg_set(context, args, 0, bruter_value_float(fmod(br_arg_get(context, args, 0).i, br_arg_get(context, args, 1).f)));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for modulo\n");
@@ -285,7 +285,7 @@ BR_FUNCTION(_amod)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).i)));
+                    br_arg_set(context, args, 0, bruter_value_float(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).i)));
                     break;
                 case BR_TYPE_FLOAT:
                     if (br_arg_get(context, args, 1).f == 0.0f)
@@ -293,7 +293,7 @@ BR_FUNCTION(_amod)
                         printf("BR_ERROR: Division by zero\n");
                         return -1; // or handle error appropriately
                     }
-                    br_arg_set(context, args, 0, bruter_value_f(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).f)));
+                    br_arg_set(context, args, 0, bruter_value_float(fmod(br_arg_get(context, args, 0).f, br_arg_get(context, args, 1).f)));
                     break;
                 default:
                     printf("BR_ERROR: Unsupported type for modulo\n");

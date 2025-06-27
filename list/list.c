@@ -3,7 +3,7 @@
 BR_FUNCTION(brl_list_new)
 {
     BruterList* list = bruter_new(sizeof(BruterValue), false, false);
-    BruterInt result = br_new_var(context, bruter_value_p(list), NULL, BR_TYPE_LIST);
+    BruterInt result = br_new_var(context, bruter_value_pointer(list), NULL, BR_TYPE_LIST);
     for (BruterInt i = 0; i < br_arg_get_count(args); i++)
     {
         BruterValue value = br_arg_get(context, args, i);
@@ -15,14 +15,14 @@ BR_FUNCTION(brl_list_new)
 BR_FUNCTION(brl_list_push)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    bruter_push(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
+    bruter_push(list, bruter_value_int(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
 BR_FUNCTION(brl_list_unshift)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    bruter_unshift(list, bruter_value_i(br_arg_get_index(args, 1)), NULL, 0);
+    bruter_unshift(list, bruter_value_int(br_arg_get_index(args, 1)), NULL, 0);
     return -1;
 }
 
@@ -30,7 +30,7 @@ BR_FUNCTION(brl_list_insert)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterInt index = br_arg_get(context, args, 1).i;
-    bruter_insert(list, index, bruter_value_i(br_arg_get_index(args, 2)), NULL, 0);
+    bruter_insert(list, index, bruter_value_int(br_arg_get_index(args, 2)), NULL, 0);
     return -1;
 }
 
@@ -74,7 +74,7 @@ BR_FUNCTION(brl_list_set)
 BR_FUNCTION(brl_list_size)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterInt result = br_new_var(context, bruter_value_i(list->size), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(list->size), NULL, BR_TYPE_ANY);
     return result;
 }
 
@@ -100,14 +100,22 @@ BR_FUNCTION(brl_list_find)
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterInt index = br_arg_get(context, args, 1).i;
     
-    return bruter_find(list, bruter_value_i(index), NULL);
+    return bruter_find(list, bruter_value_int(index));
+}
+
+BR_FUNCTION(brl_list_find_key)
+{
+    BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
+    const char* key = br_arg_get_key(context, args, 1);
+    
+    return bruter_find_key(list, key);
 }
 
 BR_FUNCTION(brl_list_copy)
 {
     BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
     BruterList* copy = bruter_copy(list);
-    BruterInt result = br_new_var(context, bruter_value_p(copy), NULL, BR_TYPE_LIST);
+    BruterInt result = br_new_var(context, bruter_value_pointer(copy), NULL, BR_TYPE_LIST);
     return result;
 }
 
@@ -151,13 +159,6 @@ BR_FUNCTION(brl_list_call)
 
     return bruter_call(sub_context, cmd);
 }
-
-BR_FUNCTION(brl_list_run)
-{
-    BruterList* list = (BruterList*)br_arg_get(context, args, 0).p;
-    return bruter_run(list).i;
-}
-
 BR_INIT(list)
 {
     br_add_function(context, "list.new", brl_list_new);
@@ -179,5 +180,4 @@ BR_INIT(list)
     br_add_function(context, "list.double", brl_list_double);
     br_add_function(context, "list.half", brl_list_half);
     br_add_function(context, "list.call", brl_list_call);
-    br_add_function(context, "list.run", brl_list_run);
 }

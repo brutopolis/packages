@@ -111,7 +111,7 @@ static void mouse_scroll(struct mfb_window *window, mfb_key_mod mod, float delta
 
 BR_FUNCTION(bsr_new_window) 
 {
-    char *title = br_arg_get(context, args, 0).s;
+    char *title = br_arg_get(context, args, 0).p;
     int width = br_arg_get(context, args, 1).i;
     int height = br_arg_get(context, args, 2).i;
     int flags = 0;
@@ -161,7 +161,7 @@ BR_FUNCTION(bsr_new_window)
 
     bruter_push(bsr_windows, (BruterValue){.p = bsr_window}, NULL, 0);
 
-    BruterInt result = br_new_var(context, bruter_value_p(bsr_window), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_pointer(bsr_window), NULL, BR_TYPE_ANY);
     return result;
 }
 
@@ -236,7 +236,7 @@ BR_FUNCTION(bsr_get_window_width)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_width(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_window_width(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -250,7 +250,7 @@ BR_FUNCTION(bsr_get_window_height)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_window_height(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_window_height(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -264,7 +264,7 @@ BruterInt bsr_get_mouse_x(BruterList *context, BruterList *args)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_x(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_mouse_x(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -278,7 +278,7 @@ BruterInt bsr_get_mouse_y(BruterList *context, BruterList *args)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_y(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_mouse_y(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -292,7 +292,7 @@ BruterInt bsr_get_mouse_scroll_x(BruterList *context, BruterList *args)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_x(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_mouse_scroll_x(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -306,7 +306,7 @@ BruterInt bsr_get_mouse_scroll_y(BruterList *context, BruterList *args)
         return -1;
     }
 
-    BruterInt result = br_new_var(context, bruter_value_i(mfb_get_mouse_scroll_y(window)), NULL, BR_TYPE_ANY);
+    BruterInt result = br_new_var(context, bruter_value_int(mfb_get_mouse_scroll_y(window)), NULL, BR_TYPE_ANY);
 
     return result;
 }
@@ -353,7 +353,7 @@ BR_FUNCTION(bsr_get_framebuffer)
         return -1;
     }
     
-    BruterInt result = br_new_var(context, bruter_value_p(buffer), NULL, BR_TYPE_BUFFER);
+    BruterInt result = br_new_var(context, bruter_value_pointer(buffer), NULL, BR_TYPE_BUFFER);
     return result;
 }
 
@@ -547,41 +547,41 @@ void init_bsr(BruterList *context)
     bruter_push(context, (BruterValue){.p = bsr_windows}, "bsr.windows", 0);
 
     // window flags (minifb)
-    br_new_var(context, bruter_value_i(WF_ALWAYS_ON_TOP), "bsr.flag.always_on_top", BR_TYPE_ANY);
-    br_new_var(context, bruter_value_i(WF_RESIZABLE), "bsr.flag.resizable", BR_TYPE_ANY);
-    br_new_var(context, bruter_value_i(WF_FULLSCREEN), "bsr.flag.fullscreen", BR_TYPE_ANY);
-    br_new_var(context, bruter_value_i(WF_BORDERLESS), "bsr.flag.borderless", BR_TYPE_ANY);
-    br_new_var(context, bruter_value_i(WF_FULLSCREEN_DESKTOP), "bsr.flag.fullscreen_desktop", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_int(WF_ALWAYS_ON_TOP), "bsr.flag.always_on_top", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_int(WF_RESIZABLE), "bsr.flag.resizable", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_int(WF_FULLSCREEN), "bsr.flag.fullscreen", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_int(WF_BORDERLESS), "bsr.flag.borderless", BR_TYPE_ANY);
+    br_new_var(context, bruter_value_int(WF_FULLSCREEN_DESKTOP), "bsr.flag.fullscreen_desktop", BR_TYPE_ANY);
 
     // window functions (minifb)
-    br_new_var(context, bruter_value_p(bsr_new_window), "bsr.new", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_close_window), "bsr.close", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_update_window), "bsr.update", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_update_window_events), "bsr.update_events", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_is_window_active), "bsr.is_active", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_window_width), "bsr.get_width", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_window_height), "bsr.get_height", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_mouse_x), "bsr.get_mouse_x", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_mouse_y), "bsr.get_mouse_y", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_x), "bsr.get_mouse_scroll_x", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_mouse_scroll_y), "bsr.get_mouse_scroll_y", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_wait_sync), "bsr.wait_sync", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_new_window), "bsr.new", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_close_window), "bsr.close", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_update_window), "bsr.update", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_update_window_events), "bsr.update_events", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_is_window_active), "bsr.is_active", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_window_width), "bsr.get_width", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_window_height), "bsr.get_height", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_mouse_x), "bsr.get_mouse_x", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_mouse_y), "bsr.get_mouse_y", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_mouse_scroll_x), "bsr.get_mouse_scroll_x", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_mouse_scroll_y), "bsr.get_mouse_scroll_y", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_wait_sync), "bsr.wait_sync", BR_TYPE_FUNCTION);
 
     // io functions (minifb)
-    br_new_var(context, bruter_value_p(bsr_is_key_pressed), "bsr.is_key_pressed", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_get_framebuffer), "bsr.get_framebuffer", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_is_key_pressed), "bsr.is_key_pressed", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_get_framebuffer), "bsr.get_framebuffer", BR_TYPE_FUNCTION);
 
     // drawing functions (olivec)
-    br_new_var(context, bruter_value_p(bsr_fill), "bsr.fill", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_draw_rect), "bsr.rect", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_draw_frame), "bsr.frame", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_draw_circle), "bsr.circle", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_draw_ellipse), "bsr.ellipse", BR_TYPE_FUNCTION);
-    br_new_var(context, bruter_value_p(bsr_draw_line), "bsr.line", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_fill), "bsr.fill", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_draw_rect), "bsr.rect", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_draw_frame), "bsr.frame", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_draw_circle), "bsr.circle", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_draw_ellipse), "bsr.ellipse", BR_TYPE_FUNCTION);
+    br_new_var(context, bruter_value_pointer(bsr_draw_line), "bsr.line", BR_TYPE_FUNCTION);
 
 
     // add bsr_windows to context
-    br_new_var(context, bruter_value_p(bsr_windows), "bsr.windows", BR_TYPE_LIST);
+    br_new_var(context, bruter_value_pointer(bsr_windows), "bsr.windows", BR_TYPE_LIST);
     
 
     // register at exit function

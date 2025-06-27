@@ -86,12 +86,12 @@ BR_FUNCTION(_flowerorequals)
 
 BR_FUNCTION(_if)
 {
-    char* cond = br_arg_get(context, args, 0).s;
-    char* true_part = br_arg_get(context, args, 1).s;
+    char* cond = br_arg_get(context, args, 0).p;
+    char* true_part = br_arg_get(context, args, 1).p;
     char* false_part = NULL;
 
     if (br_arg_get_count(args) > 2)
-        false_part = br_arg_get(context, args, 2).s;
+        false_part = br_arg_get(context, args, 2).p;
     
     BruterInt result = -1;
 

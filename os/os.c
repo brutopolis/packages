@@ -68,7 +68,7 @@ bool file_exists(char* filename)
 
 BR_FUNCTION(_read_file)
 {
-    char *filename = br_arg_get(context, args, 0).s;
+    char *filename = br_arg_get(context, args, 0).p;
     char *content = file_read(filename);
     
     if (content == NULL)
@@ -76,7 +76,7 @@ BR_FUNCTION(_read_file)
         printf("BR_ERROR: could not read file '%s'\n", filename);
         return -1; // return an error code
     }
-    BruterInt var = br_new_var(context, bruter_value_p(content), NULL, BR_TYPE_BUFFER);
+    BruterInt var = br_new_var(context, bruter_value_pointer(content), NULL, BR_TYPE_BUFFER);
 
     free(content);    
     return var;
@@ -84,15 +84,15 @@ BR_FUNCTION(_read_file)
 
 BR_FUNCTION(_write_file)
 {
-    char *filename = br_arg_get(context, args, 0).s;
-    char *content = br_arg_get(context, args, 1).s;
+    char *filename = br_arg_get(context, args, 0).p;
+    char *content = br_arg_get(context, args, 1).p;
     file_write(filename, content);
     return -1;
 }
 
 BR_FUNCTION(_file_exists)
 {
-    char *filename = br_arg_get(context, args, 0).s;
+    char *filename = br_arg_get(context, args, 0).p;
     return file_exists(filename);
 }
 
