@@ -31,4 +31,5 @@ BR_FUNCTION(_type_get)
 BR_INIT(type)
 {
     br_add_function(context, "type.set", _type_set);
+    br_add_function(context, "type.get", _type_get);
 }
