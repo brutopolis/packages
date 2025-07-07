@@ -12,6 +12,7 @@ BR_PARSER_STEP(parser_list);
 BR_PARSER_STEP(parser_function_arg);
 BR_PARSER_STEP(parser_function);
 BR_PARSER_STEP(parser_variable);
+BR_PARSER_STEP(parser_conditional);
 BR_PARSER_STEP(parser_spread);
 BR_PARSER_STEP(parser_comment);
 BR_PARSER_STEP(parser_expression);
@@ -322,7 +323,8 @@ BR_PARSER_STEP(parser_reuse)
                         // nothing to do, the next variable is already the one we want to reuse
                     }
                 }
-                else // it is not in the unused list
+                // it is not in the unused list
+                else
                 {
                     bruter_push(unused, (BruterValue){.i = found}, NULL, 0);
                 }
@@ -365,6 +367,90 @@ BR_PARSER_STEP(parser_direct_access)
         bruter_free(bracket_args);
         free(temp);
         return true;
+    }
+    return false;
+}
+
+BR_PARSER_STEP(parser_conditional)
+{
+    BR_SUPRESS_UNUSED_WARNING();
+    
+    // we need to get the current word from the splited command
+    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
+    
+    // we need to get the size of the current word, which is stored in the first bytes
+    size_t current_word_size = 0;
+    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
+    
+    if (current_word[current_word_size - 1] == '?') // conditional
+    {
+        // lets verify if we have a next word
+        if (splited_command->size <= word_index + 1)
+        {
+            printf("BR_ERROR: conditional %s has no next word to depend on it\n", current_word);
+            // we return true to indicate that we successfully parsed this word, so the parser go to the next word
+            return true;
+        }
+
+        bool conditional = false;
+        
+        // lets remove the '?' from the end of the word
+        current_word[current_word_size - 1] = '\0';
+
+        // lets parse the current word
+        BruterList *parsed = br_parse(context, br_get_parser(context), current_word);
+        
+        // we assume the parsed list has only one value so we pop it
+        if (parsed->size != 0)
+        {
+            BruterInt index = bruter_pop_int(parsed);
+            
+            // we just check if it exists
+            if (index >= 0 && index < context->size)
+            {
+                // we check if the type is BR_TYPE_NULL (-1)
+                if (context->types[index] == BR_TYPE_NULL)
+                {
+                    // its false
+                    conditional = false;
+                }
+                else 
+                {
+                    // its true
+                    conditional = true;
+                }
+            }
+            else 
+            {
+                // out of range, we assume it is false
+                conditional = false;
+            }
+        }
+        else 
+        {
+            conditional = false;
+        }
+
+        // we dont need the parsed list anymore
+        free(parsed);
+
+        // found
+        if (conditional)
+        {
+            // ok its true, so lets end this word parsing here
+            return true;
+        }
+        else
+        {
+            // lets remove the next word
+            void* removed_str = bruter_remove_pointer(splited_command, word_index + 1);
+
+            // and free it
+            free(removed_str);
+
+            // we return true to indicate that we successfully parsed the string, so the parser go to the next word
+            return true;
+        }
     }
     return false;
 }
@@ -476,8 +562,8 @@ BR_PARSER_STEP(parser_spread)
     return false;
 }
 
-// note: this is not part of default parser, 
-// is not meant to be used by the user
+// note: this is not direcly part of default parser, 
+// is not meant to be used by the user direcly,
 // but if you want to, just add it to the parser before baking a function
 // it will be used to parse function arguments, like %0, %1, etc.
 // remove it from the parser after baking a function, so remove its overhead and avoid conflict with other parser steps
@@ -788,6 +874,7 @@ BruterList* br_default_parser(BruterList* context)
     bruter_push(_parser, (BruterValue){.step = parser_char}, "char", 0);
     bruter_push(_parser, (BruterValue){.step = parser_spread}, "spread", 0);
     bruter_push(_parser, (BruterValue){.step = parser_comment}, "comment", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_conditional}, "conditional", 0);
     bruter_push(_parser, (BruterValue){.step = parser_variable}, "variable", 0);
     
     return _parser;
