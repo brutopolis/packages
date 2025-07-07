@@ -16,7 +16,8 @@ BR_PARSER_STEP(parser_conditional);
 BR_PARSER_STEP(parser_spread);
 BR_PARSER_STEP(parser_comment);
 BR_PARSER_STEP(parser_expression);
-BR_PARSER_STEP(parser_key);
+BR_PARSER_STEP(parser_attr);
+BR_PARSER_STEP(parser_attr_get);
 BR_PARSER_STEP(parser_reuse);
 BR_PARSER_STEP(parser_direct_access);
 
@@ -175,7 +176,7 @@ BR_PARSER_STEP(parser_number)
     return false;
 }
 
-BR_PARSER_STEP(parser_key)
+BR_PARSER_STEP(parser_attr)
 {
     // just to ignore unused warning
     BR_SUPRESS_UNUSED_WARNING();
@@ -187,7 +188,8 @@ BR_PARSER_STEP(parser_key)
     size_t current_word_size = 0;
     memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
     
-    if (current_word[0] == '@') // key
+    // attributes
+    if (current_word[current_word_size - 1] == ':')
     {
         if (unlikely(result->size <= 0))
         {
@@ -198,49 +200,152 @@ BR_PARSER_STEP(parser_key)
         {
             printf("BR_ERROR: %s previous value is not a variable\n", current_word);
         }
-        else if (current_word[1] == '@') // type
-        {
-            if (unlikely(current_word[2] == '\0')) // @@, not valid
-            {
-                printf("BR_ERROR: @@ alone is not valid\n");
-            }
-            else // whatever @@type, 100% valid
-            {
-                if (isdigit(current_word[2])) // @@type, where type is a number, faster
-                {
-                    int8_t type = atoi(current_word + 2);
-                    context->types[result->data[result->size - 1].i] = type;
-                    // we dont need to push anything to the result, just set the type
-                }
-                else
-                {
-                    // whatever @@type, where type is a string
-                    BruterInt found = bruter_find_key(context, current_word + 2);
-
-                    if (unlikely(found == -1)) // not found
-                    {
-                        printf("BR_ERROR: type %s not found\n", current_word + 2);
-                    }
-                    else // found, we set the type
-                    {
-                        context->types[result->data[result->size - 1].i] = context->data[found].i;
-                        // we dont need to push anything to the result, just set the type
-                    }
-                }
-            }
-        }
         else if (current_word[1] ==  '\0') // invalid
         {
-            printf("BR_ERROR: @ alone is not valid\n");
-            bruter_push_int(result, -1, NULL, 0);
+            printf("BR_ERROR: : alone is not valid\n");
         }
-        else // default key behavior
+        else // default behavior
         {
-            context->keys[result->data[result->size - 1].i] = br_str_duplicate(current_word + 1);
-            // thats it, we dont need to push anything to the result
+            // we need to verify if there is a next word yet to parse
+            if (word_index + 1 >= splited_command->size)
+            {
+                printf("BR_ERROR: %s attribute requires a name to be set\n", current_word);
+                return true;
+            }
+
+            // we need to name the last value from the result
+            BruterInt last_index = result->data[result->size - 1].i;
+            
+            if (last_index < 0 || last_index >= context->size)
+            {
+                printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                return true;
+            }
+            
+            // we need to get the next word from the splited command
+            char* next_word = ((char*)bruter_remove_pointer(splited_command, word_index + 1));
+
+            // remove the colon
+            current_word[current_word_size - 1] = '\0';
+
+            // name attribute
+            if (strcmp(current_word, "name") == 0)
+            {
+                context->keys[last_index] = br_str_duplicate(next_word + sizeof(size_t)); // set the key to the last value
+            }
+            else if (strcmp(current_word, "type") == 0) 
+            {
+                context->types[last_index] = (int8_t)atoi(next_word + sizeof(size_t)); // set the type to the last value
+            }
+
+            free(next_word);
         }
         return true;
     }
+    return false;
+}
+
+BR_PARSER_STEP(parser_attr_get)
+{
+    // just to ignore unused warning
+    BR_SUPRESS_UNUSED_WARNING();
+    
+    // we need to get the current word from the splited command
+    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
+
+    // we need to get the size of the current word, which is stored in the first bytes
+    size_t current_word_size = 0;
+    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
+    
+    // attributes
+    if (current_word[0] == ':')
+    {
+        if (unlikely(result->size <= 0))
+        {
+            printf("result size: %" PRIdPTR ", but we need at least 1 element\n", result->size);
+            printf("BR_ERROR: %s has no previous value\n", current_word);
+        }
+        else if (unlikely(result->data[result->size - 1].i == -1))
+        {
+            printf("BR_ERROR: %s previous value is not a variable\n", current_word);
+        }
+        else if (current_word[1] ==  '\0') // invalid
+        {
+            printf("BR_ERROR: : alone is not valid\n");
+        }
+        else // default behavior
+        {
+            if (strcmp(current_word + 1, "name") == 0) // name attribute
+            {
+                // we need to get the last value from the result
+                BruterInt last_index = result->data[result->size - 1].i;
+                
+                if (last_index < 0 || last_index >= context->size)
+                {
+                    printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                    return true;
+                }
+                
+                // we need to create a new value with the key of the last value
+                char* key = context->keys[last_index];
+                if (key == NULL)
+                {
+                    printf("BR_ERROR: %s has no key\n", current_word);
+                    return true;
+                }
+                BruterInt index = br_new_var(context, (BruterValue){.p=(void*)key}, NULL, BR_TYPE_BUFFER);
+                bruter_push(result, (BruterValue){.i = index}, NULL, 0);
+            }
+            else if (strcmp(current_word + 1, "type") == 0) // type attribute
+            {
+                // we need to get the last value from the result
+                BruterInt last_index = result->data[result->size - 1].i;
+                if (last_index < 0 || last_index >= context->size)
+                {
+                    printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                    return true;
+                }
+                // we need to create a new value with the type of the last value
+                int8_t type = context->types[last_index];
+                BruterInt index = br_new_var(context, (BruterValue){.i = type}, NULL, BR_TYPE_ANY);
+                bruter_push(result, (BruterValue){.i = index}, NULL, 0);
+            }
+            else if (strcmp(current_word + 1, "index") == 0) // index attribute
+            {
+                // we need to get the last value from the result
+                BruterInt last_index = result->data[result->size - 1].i;
+                if (last_index < 0 || last_index >= context->size)
+                {
+                    printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                    return true;
+                }
+                // we need to create a new value with the index of the last value
+                BruterInt index = br_new_var(context, (BruterValue){.i = last_index}, NULL, BR_TYPE_ANY);
+                bruter_push(result, (BruterValue){.i = index}, NULL, 0);
+            }
+            else if (strcmp(current_word + 1, "value") == 0) // value attribute
+            {
+                // we need to get the last value from the result
+                BruterInt last_index = result->data[result->size - 1].i;
+                if (last_index < 0 || last_index >= context->size)
+                {
+                    printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                    return true;
+                }
+                
+                // we need to create a new value with the value of the last value
+                BruterValue value = context->data[last_index];
+                BruterInt index = br_new_var(context, value, NULL, context->types[last_index]);
+                bruter_push(result, (BruterValue){.i = index}, NULL, 0);
+            }
+            else // unknown attribute
+            {
+                printf("BR_ERROR: unknown attribute %s\n", current_word);
+            }
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -348,13 +453,16 @@ BR_PARSER_STEP(parser_direct_access)
     memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
     
     // direct access
-    if (current_word[0] == '<')
+    if (current_word[0] == '&')
     {
-        char* temp = br_str_nduplicate(current_word + 1, strlen(current_word) - 2);
-        BruterList* bracket_args = br_parse(context, parser, temp);
-        if (bracket_args->size > 0)
+        // skip the '&'
+        char* temp = current_word + 1;
+        
+        BruterList* direct_args = br_parse(context, parser, temp);
+        
+        if (direct_args->size > 0)
         {
-            BruterInt index = bruter_pop_int(bracket_args);
+            BruterInt index = bruter_pop_int(direct_args);
 
             // raw way to avoid aggregate return from bruter_get;
             bruter_push(result, context->data[index], NULL, 0);
@@ -364,8 +472,7 @@ BR_PARSER_STEP(parser_direct_access)
             printf("BR_ERROR: empty direct access\n");
             bruter_push_int(result, -1, NULL, 0);
         }
-        bruter_free(bracket_args);
-        free(temp);
+        bruter_free(direct_args);
         return true;
     }
     return false;
@@ -397,42 +504,26 @@ BR_PARSER_STEP(parser_conditional)
         // lets remove the '?' from the end of the word
         current_word[current_word_size - 1] = '\0';
 
-        // lets parse the current word
-        BruterList *parsed = br_parse(context, br_get_parser(context), current_word);
-        
-        // we assume the parsed list has only one value so we pop it
-        if (parsed->size != 0)
+        BruterInt found = bruter_find_key(context, current_word);
+        if (found != -1)
         {
-            BruterInt index = bruter_pop_int(parsed);
-            
-            // we just check if it exists
-            if (index >= 0 && index < context->size)
+            // we found the variable, lets check its type
+            if (context->types[found] == BR_TYPE_NULL)
             {
-                // we check if the type is BR_TYPE_NULL (-1)
-                if (context->types[index] == BR_TYPE_NULL)
-                {
-                    // its false
-                    conditional = false;
-                }
-                else 
-                {
-                    // its true
-                    conditional = true;
-                }
+                // the only way a existing variable can be false is if its type is null
+                conditional = false;
             }
             else 
             {
-                // out of range, we assume it is false
-                conditional = false;
+                // if the type is not null, we can consider it true
+                conditional = true;
             }
         }
         else 
         {
+            // we didnt find the variable, so we assume its false
             conditional = false;
         }
-
-        // we dont need the parsed list anymore
-        free(parsed);
 
         // found
         if (conditional)
@@ -457,7 +548,6 @@ BR_PARSER_STEP(parser_conditional)
 
 BR_PARSER_STEP(parser_variable)
 {
-    
     // just to ignore unused warning
     BR_SUPRESS_UNUSED_WARNING();
     
@@ -867,7 +957,7 @@ BruterList* br_default_parser(BruterList* context)
     bruter_push(_parser, (BruterValue){.step = parser_expression}, "expression", 0);
     bruter_push(_parser, (BruterValue){.step = parser_string}, "string", 0);
     bruter_push(_parser, (BruterValue){.step = parser_number}, "number", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_key}, "key", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_attr}, "key", 0);
     bruter_push(_parser, (BruterValue){.step = parser_reuse}, "next", 0);
     bruter_push(_parser, (BruterValue){.step = parser_list}, "list", 0);
     bruter_push(_parser, (BruterValue){.step = parser_direct_access}, "direct_access", 0);
