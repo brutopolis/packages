@@ -17,6 +17,7 @@ BR_PARSER_STEP(parser_spread);
 BR_PARSER_STEP(parser_comment);
 BR_PARSER_STEP(parser_expression);
 BR_PARSER_STEP(parser_attr);
+BR_PARSER_STEP(parser_return);
 BR_PARSER_STEP(parser_attr_get);
 BR_PARSER_STEP(parser_reuse);
 BR_PARSER_STEP(parser_direct_access);
@@ -240,6 +241,26 @@ BR_PARSER_STEP(parser_attr)
 
             free(next_word);
         }
+        return true;
+    }
+    return false;
+}
+
+BR_PARSER_STEP(parser_return)
+{
+    // just to ignore unused warning
+    BR_SUPRESS_UNUSED_WARNING();
+    
+    // we need to get the current word from the splited command
+    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
+
+    // we need to get the size of the current word, which is stored in the first bytes
+    size_t current_word_size = 0;
+    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
+    
+    if (current_word[0] == ':' && current_word[1] == '\0')
+    {
+        bruter_push_int(result, BR_SPECIAL_RETURN, NULL, 0); // we return a special value to indicate that this is a return
         return true;
     }
     return false;
@@ -782,6 +803,45 @@ BR_PARSER_STEP(parser_function)
 // evatuation steps
 // evatuation steps
 // evatuation steps
+BR_EVALUATOR_STEP(eval_step_return)
+{
+    // we will check if the first arg is index BR_SPECIAL_RETURN
+    if (br_arg_get_index(args, -1) == BR_SPECIAL_RETURN)
+    {
+        if (br_arg_get_count(args) == 0)
+        {
+            // if there are no arguments, we return a null-type value
+            return br_new_var(context, (BruterValue){.p = NULL}, NULL, BR_TYPE_NULL);
+        }
+        else if (br_arg_get_count(args) == 1)
+        {
+            // if there is only one argument, we return it
+            return br_arg_get_index(args, 0);
+        }
+        else
+        {
+            // if there are more than one argument, we will return all them as a list
+            BruterList *list = bruter_new(br_arg_get_count(args), false, false);
+            for (BruterInt i = 0; i < br_arg_get_count(args); i++)
+            {
+                // we will push each argument to the list
+                bruter_push_int(list, br_arg_get_index(args, i), NULL, 0);
+            }
+
+            // we will return the list as a value
+            BruterInt index = br_new_var(context, (BruterValue){.p = (void*)list}, NULL, BR_TYPE_LIST);
+
+            return index;
+        }
+
+        // special return to interrupt the evaluation, because we already found a step that can handle this
+        return BR_SPECIAL_RETURN;
+    }
+    
+    // means this is not what we are looking for;
+    return -1;
+}
+
 BR_EVALUATOR_STEP(eval_step_function)
 {
     if (br_arg_get_type(context, args, -1) == BR_TYPE_FUNCTION)
@@ -865,7 +925,7 @@ BR_EVALUATOR_STEP(eval_step_baked)
 BR_EVALUATOR_STEP(eval_step_user_function)
 {
     // a user-defined function
-    if (br_arg_get_type(context, args, -1) == BR_TYPE_USER_FUNCTION) 
+    if (br_arg_get_type(context, args, -1) == BR_TYPE_USER_FUNCTION)
     {
         BruterList *compiled = (BruterList*)br_arg_get_pointer(context, args, -1);
         BruterList *temp_list = bruter_new(sizeof(void*), false, false);
@@ -957,7 +1017,9 @@ BruterList* br_default_parser(BruterList* context)
     bruter_push(_parser, (BruterValue){.step = parser_expression}, "expression", 0);
     bruter_push(_parser, (BruterValue){.step = parser_string}, "string", 0);
     bruter_push(_parser, (BruterValue){.step = parser_number}, "number", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_attr}, "key", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_return}, "return", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_attr_get}, "attr_get", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_attr}, "attr", 0);
     bruter_push(_parser, (BruterValue){.step = parser_reuse}, "next", 0);
     bruter_push(_parser, (BruterValue){.step = parser_list}, "list", 0);
     bruter_push(_parser, (BruterValue){.step = parser_direct_access}, "direct_access", 0);
@@ -973,7 +1035,8 @@ BruterList* br_default_parser(BruterList* context)
 BruterList* br_default_evaluator(BruterList* context)
 {
     BruterList *_evaluator = br_get_evaluator(context);
-    
+
+    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_return}, "return", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_function}, "function", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_buffer}, "buffer", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_list}, "list", 0);
