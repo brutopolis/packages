@@ -36,7 +36,7 @@ BR_FUNCTION(repeat)
     {
         for (BruterInt i = 0; i < times; i++)
         {
-            result = br_eval(context, parser, code);
+            result = br_eval(context, code);
             if (result != -1)
             {
                 break;
@@ -66,11 +66,9 @@ BR_FUNCTION(forever)
     char* code = br_arg_get(context, args, 0).p;
     BruterInt result = -1;
 
-    BruterList *parser = br_get_parser(context);
-
     while(1)
     {
-        result = br_eval(context, parser, code);
+        result = br_eval(context, code);
         if (result != -1)
         {
             break;
@@ -85,15 +83,15 @@ BR_FUNCTION(while_)
     char *code = br_arg_get(context, args, 1).p;
     BruterInt result = -1;
     BruterList *parser = br_get_parser(context);
-    BruterInt condition_result = br_eval(context, parser, condition_code);
+    BruterInt condition_result = br_eval(context, condition_code);
     while (condition_result == 1)
     {
-        result = br_eval(context, parser, code);
+        result = br_eval(context, code);
         if (result != -1)
         {
             break;
         }
-        condition_result = br_eval(context, parser, condition_code);
+        condition_result = br_eval(context, condition_code);
     }
     
     return result;

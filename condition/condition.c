@@ -103,16 +103,16 @@ BR_FUNCTION(_if)
     }
     else
     {
-        result = br_eval(context, parser, cond);
+        result = br_eval(context, cond);
     }
 
     if (result == 1)
     {
-        result = br_eval(context, parser, true_part);
+        result = br_eval(context, true_part);
     }
     else if (false_part != NULL)
     {
-        result = br_eval(context, parser, false_part);
+        result = br_eval(context, false_part);
     }
     else
     {

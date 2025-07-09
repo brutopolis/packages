@@ -98,7 +98,7 @@ BR_PARSER_STEP(parser_expression)
         char* temp = current_word + 1;
         BruterInt res = -1;
         temp[strlen(temp) - 1] = '\0';
-        res = br_eval(context, parser, temp);
+        res = br_eval(context, temp);
         bruter_push(result, (BruterValue){.i = res}, NULL, 0);
         return true;
     }
@@ -857,7 +857,7 @@ BR_EVALUATOR_STEP(eval_step_function)
         return BR_SPECIAL_RETURN; 
     }
     
-    // means is not the type we are looking for;
+    // it is not the type we are looking for;
     return -1;
 };
 
@@ -866,7 +866,7 @@ BR_EVALUATOR_STEP(eval_step_buffer)
     if (br_arg_get_type(context, args, -1) == BR_TYPE_BUFFER)
     {
         // we will evaluate the buffer as a command
-        BruterInt result = br_eval(context, parser, (char*)br_arg_get_pointer(context, args, -1));
+        BruterInt result = br_eval(context, (char*)br_arg_get_pointer(context, args, -1));
         if (result >= 0)
         {
             // if the result is valid, we return it
@@ -877,7 +877,7 @@ BR_EVALUATOR_STEP(eval_step_buffer)
         return BR_SPECIAL_RETURN;
     }
 
-    // means is not the type we are looking for;
+    // it is not the type we are looking for;
     return -1;
 };
 
@@ -897,7 +897,7 @@ BR_EVALUATOR_STEP(eval_step_list)
         return BR_SPECIAL_RETURN;
     }
 
-    // means is not the type we are looking for;
+    // it is not the type we are looking for;
     return -1;
 };
 
@@ -918,7 +918,7 @@ BR_EVALUATOR_STEP(eval_step_baked)
         return BR_SPECIAL_RETURN;
     }
 
-    // means is not the type we are looking for;
+    // it is not the type we are looking for;
     return -1;
 };
 
