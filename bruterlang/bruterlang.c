@@ -36,15 +36,7 @@ BR_EVALUATOR_STEP(eval_step_user_function);
 // parsing steps
 BR_PARSER_STEP(parser_char)
 {
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-    
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if (current_word[0] == '\'' && current_word[2] == '\'')
     {
         BruterInt index = br_new_var(context, (BruterValue){.i = current_word[1]}, NULL, BR_TYPE_ANY);
@@ -56,16 +48,7 @@ BR_PARSER_STEP(parser_char)
 
 BR_PARSER_STEP(parser_list)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if (current_word[0] == '[') // its a list
     {
         BruterList *list = NULL;
@@ -81,16 +64,7 @@ BR_PARSER_STEP(parser_list)
 
 BR_PARSER_STEP(parser_expression)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if (current_word[0] == '(')
     {
         char* temp = current_word + 1;
@@ -105,16 +79,7 @@ BR_PARSER_STEP(parser_expression)
 
 BR_PARSER_STEP(parser_string)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if (current_word[0] == '{')
     {
         BruterInt index = -1;
@@ -128,16 +93,7 @@ BR_PARSER_STEP(parser_string)
 
 BR_PARSER_STEP(parser_number)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if ((current_word[0] >= '0' && current_word[0] <= '9') || (current_word[0] == '-' && isdigit(current_word[1]))) // number
     {
         BruterInt index = br_new_var(context, (BruterValue){.p=NULL}, NULL, 0);
@@ -177,16 +133,7 @@ BR_PARSER_STEP(parser_number)
 
 BR_PARSER_STEP(parser_attr)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     // attributes
     if (current_word[current_word_size - 1] == ':')
     {
@@ -246,16 +193,7 @@ BR_PARSER_STEP(parser_attr)
 
 BR_PARSER_STEP(parser_attr_get)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     // attributes
     if (current_word[0] == ':')
     {
@@ -363,16 +301,7 @@ BR_PARSER_STEP(parser_attr_get)
 // make sure the next created value is under the specified key, or index
 BR_PARSER_STEP(parser_reuse) 
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     if (current_word[0] == '$') // next key
     {
         BruterList *unused = br_get_unused(context);
@@ -453,14 +382,7 @@ BR_PARSER_STEP(parser_reuse)
 
 BR_PARSER_STEP(parser_conditional)
 {
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-    
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
+    BR_PARSER_STEP_BASICS();
     
     if (current_word[current_word_size - 1] == '?') // conditional
     {
@@ -521,16 +443,7 @@ BR_PARSER_STEP(parser_conditional)
 
 BR_PARSER_STEP(parser_variable)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
     BruterInt index = bruter_find_key(context, current_word);
     
     if (index != -1)
@@ -548,16 +461,7 @@ BR_PARSER_STEP(parser_variable)
 
 BR_PARSER_STEP(parser_comment)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
 
     // this is a comment parser, it will ignore the next word, doesnt matter what it is
     if (current_word[0] == '/' && current_word[1] == '/')
@@ -581,16 +485,7 @@ BR_PARSER_STEP(parser_comment)
 
 BR_PARSER_STEP(parser_spread)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
 
     // this is a spread parser, it will expand the list into the result
     if (current_word[0] == '.' && current_word[1] == '.' && current_word[2] == '.')
@@ -632,16 +527,7 @@ BR_PARSER_STEP(parser_spread)
 // remove it from the parser after baking a function, so remove its overhead and avoid conflict with other parser steps
 BR_PARSER_STEP(parser_function_arg)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
+    BR_PARSER_STEP_BASICS();
 
     // this is a function argument parser, it will be added to the parser just when baking a function
     if (current_word[0] == '%' && isdigit(current_word[1]))
@@ -670,14 +556,8 @@ BR_PARSER_STEP(parser_function_arg)
 
 BR_PARSER_STEP(parser_function)
 {
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
+    BR_PARSER_STEP_BASICS();
     
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
 
     
     if (current_word[0] == '(' && current_word[1] == '%')

@@ -421,12 +421,8 @@ else if (strcmp(current_word, "&" sym "=") == 0) { \
 
 BR_PARSER_STEP(parser_math)
 {
-    BR_SUPRESS_UNUSED_WARNING();
-
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-
+    BR_PARSER_STEP_BASICS();
+   
     INSERT_OP("+")
     else INSERT_OP("-")
     else INSERT_OP("*")
