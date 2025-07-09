@@ -138,7 +138,7 @@ BR_PARSER_STEP(parser_number)
     size_t current_word_size = 0;
     memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
     
-    if ((current_word[0] >= '0' && current_word[0] <= '9') || current_word[0] == '-') // number
+    if ((current_word[0] >= '0' && current_word[0] <= '9') || (current_word[0] == '-' && isdigit(current_word[1]))) // number
     {
         BruterInt index = br_new_var(context, (BruterValue){.p=NULL}, NULL, 0);
         

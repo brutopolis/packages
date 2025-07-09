@@ -1,5 +1,5 @@
 name bruterlang
-version 0.0.6
+version 0.0.7
 description "bruterlang dialect for bruter-representation"
 files bruterlang.c
 setup()

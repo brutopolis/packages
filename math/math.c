@@ -305,21 +305,197 @@ BR_FUNCTION(_amod)
     }
     return -1;
 }
+// math parser
+
+#define INSERT_OP(opchar) \
+if (strncmp(current_word, opchar, strlen(opchar)) == 0 && current_word[strlen(opchar)] == '\0') { \
+    if (result->size < 1 || word_index + 1 >= splited_command->size) { \
+        printf("BR_ERROR: math parser requires at least 1 result and 1 more word to operate\n"); \
+        return false; \
+    } \
+    size_t toksize = strlen(opchar) + 2; \
+    char* tmp_op = (char*)malloc(sizeof(size_t) + toksize); \
+    memcpy(tmp_op, (void*)&toksize, sizeof(size_t)); \
+    tmp_op[sizeof(size_t)] = '&'; \
+    memcpy(tmp_op + sizeof(size_t) + 1, opchar, toksize - 1); \
+    bruter_insert(splited_command, word_index + 2, (BruterValue){.p = tmp_op}, NULL, 0); \
+    return true; \
+}
+
+#define HANDLE_REAL_OP(sym, op) \
+else if (strcmp(current_word, "&" sym) == 0) { \
+    BruterInt second_index = bruter_pop_int(result); \
+    BruterInt first_index = bruter_pop_int(result); \
+    BruterInt index = br_new_var(context, (BruterValue){.i = 0}, NULL, BR_TYPE_ANY); \
+    bruter_push_int(result, index, NULL, 0); \
+    switch (bruter_get_type(context, first_index)) { \
+        case BR_TYPE_FLOAT: \
+            switch (bruter_get_type(context, second_index)) { \
+                case BR_TYPE_FLOAT: \
+                    context->data[index].f = bruter_get_float(context, first_index) op bruter_get_float(context, second_index); \
+                    context->types[index] = BR_TYPE_FLOAT; \
+                    break; \
+                default: \
+                    context->data[index].f = bruter_get_float(context, first_index) op (float)bruter_get_int(context, second_index); \
+                    context->types[index] = BR_TYPE_FLOAT; \
+                    break; \
+            } \
+            break; \
+        default: \
+            switch (bruter_get_type(context, second_index)) { \
+                case BR_TYPE_FLOAT: \
+                    context->data[index].f = (float)bruter_get_int(context, first_index) op bruter_get_float(context, second_index); \
+                    context->types[index] = BR_TYPE_FLOAT; \
+                    break; \
+                default: \
+                    context->data[index].i = bruter_get_int(context, first_index) op bruter_get_int(context, second_index); \
+                    context->types[index] = BR_TYPE_ANY; \
+                    break; \
+            } \
+            break; \
+    } \
+    return true; \
+}
+
+#define HANDLE_INT_OP(sym, op) \
+else if (strcmp(current_word, "&" sym) == 0) { \
+    BruterInt second_index = bruter_pop_int(result); \
+    BruterInt first_index = bruter_pop_int(result); \
+    BruterInt index = br_new_var(context, (BruterValue){.i = 0}, NULL, BR_TYPE_ANY); \
+    bruter_push_int(result, index, NULL, 0); \
+    if (bruter_get_type(context, first_index) == BR_TYPE_FLOAT || bruter_get_type(context, second_index) == BR_TYPE_FLOAT) { \
+        printf("BR_ERROR: %s only supports integer operands\n", sym); \
+        return true; \
+    } \
+    context->data[index].i = bruter_get_int(context, first_index) op bruter_get_int(context, second_index); \
+    context->types[index] = BR_TYPE_ANY; \
+    return true; \
+}
+
+#define HANDLE_COMPOUND_OP(sym, op) \
+else if (strcmp(current_word, "&" sym "=") == 0) { \
+    BruterInt second_index = bruter_pop_int(result); \
+    BruterInt first_index = bruter_pop_int(result); \
+    switch (bruter_get_type(context, first_index)) { \
+        case BR_TYPE_FLOAT: \
+            switch (bruter_get_type(context, second_index)) { \
+                case BR_TYPE_FLOAT: \
+                    context->data[first_index].f = context->data[first_index].f op bruter_get_float(context, second_index); \
+                    break; \
+                default: \
+                    context->data[first_index].f = context->data[first_index].f op (float)bruter_get_int(context, second_index); \
+                    break; \
+            } \
+            context->types[first_index] = BR_TYPE_FLOAT; \
+            break; \
+        default: \
+            switch (bruter_get_type(context, second_index)) { \
+                case BR_TYPE_FLOAT: \
+                    context->data[first_index].f = (float)bruter_get_int(context, first_index) op bruter_get_float(context, second_index); \
+                    context->types[first_index] = BR_TYPE_FLOAT; \
+                    break; \
+                default: \
+                    context->data[first_index].i = context->data[first_index].i op bruter_get_int(context, second_index); \
+                    context->types[first_index] = BR_TYPE_ANY; \
+                    break; \
+            } \
+            break; \
+    } \
+    bruter_push_int(result, first_index, NULL, 0); \
+    return true; \
+}
+
+#define HANDLE_INT_COMPOUND_OP(sym, op) \
+else if (strcmp(current_word, "&" sym "=") == 0) { \
+    BruterInt second_index = bruter_pop_int(result); \
+    BruterInt first_index = bruter_pop_int(result); \
+    if (bruter_get_type(context, first_index) == BR_TYPE_FLOAT || bruter_get_type(context, second_index) == BR_TYPE_FLOAT) { \
+        printf("BR_ERROR: %s= only supports integer operands\n", sym); \
+        return true; \
+    } \
+    context->data[first_index].i = context->data[first_index].i op bruter_get_int(context, second_index); \
+    context->types[first_index] = BR_TYPE_ANY; \
+    bruter_push_int(result, first_index, NULL, 0); \
+    return true; \
+}
+
+BR_PARSER_STEP(parser_math)
+{
+    BR_SUPRESS_UNUSED_WARNING();
+
+    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
+    size_t current_word_size = 0;
+    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
+
+    INSERT_OP("+")
+    else INSERT_OP("-")
+    else INSERT_OP("*")
+    else INSERT_OP("/")
+    else INSERT_OP("%")
+    else INSERT_OP("&")
+    else INSERT_OP("|")
+    else INSERT_OP("^")
+    else INSERT_OP("<<")
+    else INSERT_OP(">>")
+    else INSERT_OP("+=")
+    else INSERT_OP("-=")
+    else INSERT_OP("*=")
+    else INSERT_OP("/=")
+    else INSERT_OP("%=")
+    else INSERT_OP("&=")
+    else INSERT_OP("|=")
+    else INSERT_OP("^=")
+    else INSERT_OP("<<=")
+    else INSERT_OP(">>=")
+
+
+    HANDLE_REAL_OP("+", +)
+    HANDLE_REAL_OP("-", -)
+    HANDLE_REAL_OP("*", *)
+    HANDLE_REAL_OP("/", /)
+    HANDLE_INT_OP("%", %)
+    HANDLE_INT_OP("&", &)
+    HANDLE_INT_OP("|", |)
+    HANDLE_INT_OP("^", ^)
+    HANDLE_INT_OP("<<", <<)
+    HANDLE_INT_OP(">>", >>)
+
+    HANDLE_COMPOUND_OP("+", +)
+    HANDLE_COMPOUND_OP("-", -)
+    HANDLE_COMPOUND_OP("*", *)
+    HANDLE_COMPOUND_OP("/", /)
+    HANDLE_INT_COMPOUND_OP("%", %)
+    HANDLE_INT_COMPOUND_OP("&", &)
+    HANDLE_INT_COMPOUND_OP("|", |)
+    HANDLE_INT_COMPOUND_OP("^", ^)
+    HANDLE_INT_COMPOUND_OP("<<", <<)
+    HANDLE_INT_COMPOUND_OP(">>", >>)
+
+    return false;
+}
 
 BR_INIT(math)
 {
+    // register the math parser
+    BruterList *parser = br_get_parser(context);
+
+    // math parser must be before the last step(variable)
+    bruter_insert(parser, parser->size - 1, (BruterValue){.p = parser_math}, "math", 0);
+
     // int
     br_add_function(context, "i+", _iadd);
     br_add_function(context, "i-", _isub);
     br_add_function(context, "i*", _imul);
     br_add_function(context, "i/", _idiv);
     br_add_function(context, "i%", _imod);
+
     // float
     br_add_function(context, "f+", _fadd);
     br_add_function(context, "f-", _fsub);
     br_add_function(context, "f*", _fmul);
     br_add_function(context, "f/", _fdiv);
     br_add_function(context, "f%", _fmod);
+
     // auto 
     br_add_function(context, "a+", _aadd);
     br_add_function(context, "a-", _asub);
