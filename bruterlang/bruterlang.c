@@ -17,10 +17,8 @@ BR_PARSER_STEP(parser_spread);
 BR_PARSER_STEP(parser_comment);
 BR_PARSER_STEP(parser_expression);
 BR_PARSER_STEP(parser_attr);
-BR_PARSER_STEP(parser_return);
 BR_PARSER_STEP(parser_attr_get);
 BR_PARSER_STEP(parser_reuse);
-BR_PARSER_STEP(parser_direct_access);
 
 // default-lang evaluation steps declarations
 BR_EVALUATOR_STEP(eval_step_function);
@@ -246,26 +244,6 @@ BR_PARSER_STEP(parser_attr)
     return false;
 }
 
-BR_PARSER_STEP(parser_return)
-{
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
-    if (current_word[0] == ':' && current_word[1] == '\0')
-    {
-        bruter_push_int(result, BR_SPECIAL_RETURN, NULL, 0); // we return a special value to indicate that this is a return
-        return true;
-    }
-    return false;
-}
-
 BR_PARSER_STEP(parser_attr_get)
 {
     // just to ignore unused warning
@@ -299,7 +277,7 @@ BR_PARSER_STEP(parser_attr_get)
             if (strcmp(current_word + 1, "name") == 0) // name attribute
             {
                 // we need to get the last value from the result
-                BruterInt last_index = result->data[result->size - 1].i;
+                BruterInt last_index = bruter_pop_int(result);
                 
                 if (last_index < 0 || last_index >= context->size)
                 {
@@ -320,7 +298,7 @@ BR_PARSER_STEP(parser_attr_get)
             else if (strcmp(current_word + 1, "type") == 0) // type attribute
             {
                 // we need to get the last value from the result
-                BruterInt last_index = result->data[result->size - 1].i;
+                BruterInt last_index = bruter_pop_int(result);
                 if (last_index < 0 || last_index >= context->size)
                 {
                     printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
@@ -334,7 +312,7 @@ BR_PARSER_STEP(parser_attr_get)
             else if (strcmp(current_word + 1, "index") == 0) // index attribute
             {
                 // we need to get the last value from the result
-                BruterInt last_index = result->data[result->size - 1].i;
+                BruterInt last_index = bruter_pop_int(result);
                 if (last_index < 0 || last_index >= context->size)
                 {
                     printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
@@ -344,10 +322,22 @@ BR_PARSER_STEP(parser_attr_get)
                 BruterInt index = br_new_var(context, (BruterValue){.i = last_index}, NULL, BR_TYPE_ANY);
                 bruter_push(result, (BruterValue){.i = index}, NULL, 0);
             }
+            else if (strcmp(current_word + 1, ":index") == 0) // index attribute
+            {
+                // we need to get the last value from the result
+                BruterInt last_index = bruter_pop_int(result);
+                if (last_index < 0 || last_index >= context->size)
+                {
+                    printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
+                    return true;
+                }
+                // we put the value 
+                bruter_push_int(result, context->data[last_index].i, NULL, 0);
+            }
             else if (strcmp(current_word + 1, "value") == 0) // value attribute
             {
                 // we need to get the last value from the result
-                BruterInt last_index = result->data[result->size - 1].i;
+                BruterInt last_index = bruter_pop_int(result);
                 if (last_index < 0 || last_index >= context->size)
                 {
                     printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
@@ -456,44 +446,6 @@ BR_PARSER_STEP(parser_reuse)
                 }
             }
         }
-        return true;
-    }
-    return false;
-}
-
-BR_PARSER_STEP(parser_direct_access)
-{
-    // just to ignore unused warning
-    BR_SUPRESS_UNUSED_WARNING();
-    
-    // we need to get the current word from the splited command
-    char* current_word = ((char*)bruter_get_pointer(splited_command, word_index) + sizeof(size_t));
-
-    // we need to get the size of the current word, which is stored in the first bytes
-    size_t current_word_size = 0;
-    memcpy(&current_word_size, current_word - sizeof(size_t), sizeof(size_t));
-    
-    // direct access
-    if (current_word[0] == '&')
-    {
-        // skip the '&'
-        char* temp = current_word + 1;
-        
-        BruterList* direct_args = br_parse(context, parser, temp);
-        
-        if (direct_args->size > 0)
-        {
-            BruterInt index = bruter_pop_int(direct_args);
-
-            // raw way to avoid aggregate return from bruter_get;
-            bruter_push(result, context->data[index], NULL, 0);
-        }
-        else 
-        {
-            printf("BR_ERROR: empty direct access\n");
-            bruter_push_int(result, -1, NULL, 0);
-        }
-        bruter_free(direct_args);
         return true;
     }
     return false;
@@ -803,44 +755,6 @@ BR_PARSER_STEP(parser_function)
 // evatuation steps
 // evatuation steps
 // evatuation steps
-BR_EVALUATOR_STEP(eval_step_return)
-{
-    // we will check if the first arg is index BR_SPECIAL_RETURN
-    if (br_arg_get_index(args, -1) == BR_SPECIAL_RETURN)
-    {
-        if (br_arg_get_count(args) == 0)
-        {
-            // if there are no arguments, we return a null-type value
-            return br_new_var(context, (BruterValue){.p = NULL}, NULL, BR_TYPE_NULL);
-        }
-        else if (br_arg_get_count(args) == 1)
-        {
-            // if there is only one argument, we return it
-            return br_arg_get_index(args, 0);
-        }
-        else
-        {
-            // if there are more than one argument, we will return all them as a list
-            BruterList *list = bruter_new(br_arg_get_count(args), false, false);
-            for (BruterInt i = 0; i < br_arg_get_count(args); i++)
-            {
-                // we will push each argument to the list
-                bruter_push_int(list, br_arg_get_index(args, i), NULL, 0);
-            }
-
-            // we will return the list as a value
-            BruterInt index = br_new_var(context, (BruterValue){.p = (void*)list}, NULL, BR_TYPE_LIST);
-
-            return index;
-        }
-
-        // special return to interrupt the evaluation, because we already found a step that can handle this
-        return BR_SPECIAL_RETURN;
-    }
-    
-    // means this is not what we are looking for;
-    return -1;
-}
 
 BR_EVALUATOR_STEP(eval_step_function)
 {
@@ -1017,12 +931,10 @@ BruterList* br_default_parser(BruterList* context)
     bruter_push(_parser, (BruterValue){.step = parser_expression}, "expression", 0);
     bruter_push(_parser, (BruterValue){.step = parser_string}, "string", 0);
     bruter_push(_parser, (BruterValue){.step = parser_number}, "number", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_return}, "return", 0);
     bruter_push(_parser, (BruterValue){.step = parser_attr_get}, "attr_get", 0);
     bruter_push(_parser, (BruterValue){.step = parser_attr}, "attr", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_reuse}, "next", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_reuse}, "reuse", 0);
     bruter_push(_parser, (BruterValue){.step = parser_list}, "list", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_direct_access}, "direct_access", 0);
     bruter_push(_parser, (BruterValue){.step = parser_char}, "char", 0);
     bruter_push(_parser, (BruterValue){.step = parser_spread}, "spread", 0);
     bruter_push(_parser, (BruterValue){.step = parser_comment}, "comment", 0);
@@ -1036,7 +948,6 @@ BruterList* br_default_evaluator(BruterList* context)
 {
     BruterList *_evaluator = br_get_evaluator(context);
 
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_return}, "return", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_function}, "function", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_buffer}, "buffer", 0);
     bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_list}, "list", 0);

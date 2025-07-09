@@ -142,16 +142,6 @@ BR_FUNCTION(bake)
     return baked;
 }
 
-/*BR_FUNCTION(std_function)
-{
-    BruterList *parser = br_get_parser(context);
-    bruter_unshift(parser, bruter_value_pointer(parser_function_arg), "std_function", 0);
-    BruterInt baked = _bake(context, args);
-    context->types[baked] = BR_TYPE_USER_FUNCTION; // set the type to function
-    bruter_shift(parser); // remove the std_function from the parser
-    return baked;
-}*/
-
 void init_std(BruterList *context)
 {
     br_add_function(context, "name", key);
@@ -170,5 +160,4 @@ void init_std(BruterList *context)
 
     br_add_function(context, "set", set);
     br_add_function(context, "bake", bake);
-    //br_add_function(context, "function", std_function);
 }
