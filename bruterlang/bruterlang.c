@@ -135,30 +135,25 @@ BR_PARSER_STEP(parser_attr)
 {
     BR_PARSER_STEP_BASICS();
     // attributes
-    if (current_word[current_word_size - 1] == ':')
+    if (current_word[0] == '.')
     {
-        if (unlikely(result->size <= 0))
+        if (result->size <= 0)
         {
             printf("result size: %" PRIdPTR ", but we need at least 1 element\n", result->size);
             printf("BR_ERROR: %s has no previous value\n", current_word);
         }
-        else if (unlikely(result->data[result->size - 1].i == -1))
+        else if (result->data[result->size - 1].i == -1)
         {
             printf("BR_ERROR: %s previous value is not a variable\n", current_word);
         }
-        else if (current_word[1] ==  '\0') // invalid
+        // we need to verify if there is a next word yet to parse
+        else if (word_index + 1 >= splited_command->size)
         {
-            printf("BR_ERROR: : alone is not valid\n");
+            printf("BR_ERROR: %s attribute requires a name to be set\n", current_word);
+            return true;
         }
         else // default behavior
         {
-            // we need to verify if there is a next word yet to parse
-            if (word_index + 1 >= splited_command->size)
-            {
-                printf("BR_ERROR: %s attribute requires a name to be set\n", current_word);
-                return true;
-            }
-
             // we need to name the last value from the result
             BruterInt last_index = result->data[result->size - 1].i;
             
@@ -171,17 +166,15 @@ BR_PARSER_STEP(parser_attr)
             // we need to get the next word from the splited command
             char* next_word = ((char*)bruter_remove_pointer(splited_command, word_index + 1));
 
-            // remove the colon
-            current_word[current_word_size - 1] = '\0';
-
             // name attribute
-            if (strcmp(current_word, "name") == 0)
+            if (strcmp(current_word + 1, "name") == 0)
             {
-                context->keys[last_index] = br_str_duplicate(next_word + sizeof(size_t)); // set the key to the last value
+                context->keys[last_index] = br_str_duplicate(next_word); // set the key to the last value
+                printf("BR_DEBUG: setting key %s to %s\n", context->keys[last_index], next_word + 1);
             }
-            else if (strcmp(current_word, "type") == 0) 
+            else if (strcmp(current_word + 1, "type") == 0) 
             {
-                context->types[last_index] = (int8_t)atoi(next_word + sizeof(size_t)); // set the type to the last value
+                context->types[last_index] = (int8_t)atoi(next_word); // set the type to the last value
             }
 
             free(next_word);
@@ -299,7 +292,7 @@ BR_PARSER_STEP(parser_attr_get)
 }
 
 // make sure the next created value is under the specified key, or index
-BR_PARSER_STEP(parser_reuse) 
+BR_PARSER_STEP(parser_reuse)
 {
     BR_PARSER_STEP_BASICS();
     if (current_word[0] == '$') // next key
@@ -384,7 +377,7 @@ BR_PARSER_STEP(parser_conditional)
 {
     BR_PARSER_STEP_BASICS();
     
-    if (current_word[current_word_size - 1] == '?') // conditional
+    if (current_word[0] == '?' && current_word[1] == '\0') // conditional
     {
         // lets verify if we have a next word
         if (splited_command->size <= word_index + 1)
@@ -393,50 +386,44 @@ BR_PARSER_STEP(parser_conditional)
             // we return true to indicate that we successfully parsed this word, so the parser go to the next word
             return true;
         }
-
-        bool conditional = false;
+        // lets verify if we have any values on result
+        else if (result->size <= 0)
+        {
+            printf("BR_ERROR: conditional %s has no previous value to check condition\n", current_word);
+            // we return true to indicate that we successfully parsed this word, so the parser go to the next word
+            return true;
+        }
         
-        // lets remove the '?' from the end of the word
-        current_word[current_word_size - 1] = '\0';
-
-        BruterInt found = bruter_find_key(context, current_word);
-        if (found != -1)
+        BruterInt last_value = bruter_pop_int(result);
+        if (last_value != -1)
         {
             // we found the variable, lets check its type
-            if (context->types[found] == BR_TYPE_NULL)
+            if (context->types[last_value] == BR_TYPE_NULL)
             {
                 // the only way a existing variable can be false is if its type is null
-                conditional = false;
+                // we assume it is false
             }
             else 
             {
                 // if the type is not null, we can consider it true
-                conditional = true;
+                // ok its true, so lets end this word parsing here
+                return true;
             }
         }
         else 
         {
             // we didnt find the variable, so we assume its false
-            conditional = false;
         }
 
-        // found
-        if (conditional)
-        {
-            // ok its true, so lets end this word parsing here
-            return true;
-        }
-        else
-        {
-            // lets remove the next word
-            void* removed_str = bruter_remove_pointer(splited_command, word_index + 1);
+        // if the code reaches here, it means the condition is false
+        // lets remove the next word
+        void* removed_str = bruter_remove_pointer(splited_command, word_index + 1);
 
-            // and free it
-            free(removed_str);
+        // and free it
+        free(removed_str);
 
-            // we return true to indicate that we successfully parsed the string, so the parser go to the next word
-            return true;
-        }
+        // we return true to indicate that we successfully parsed the string, so the parser go to the next word
+        return true;
     }
     return false;
 }

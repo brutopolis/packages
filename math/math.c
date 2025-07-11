@@ -313,12 +313,7 @@ if (strncmp(current_word, opchar, strlen(opchar)) == 0 && current_word[strlen(op
         printf("BR_ERROR: math parser requires at least 1 result and 1 more word to operate\n"); \
         return false; \
     } \
-    size_t toksize = strlen(opchar) + 2; \
-    char* tmp_op = (char*)malloc(sizeof(size_t) + toksize); \
-    memcpy(tmp_op, (void*)&toksize, sizeof(size_t)); \
-    tmp_op[sizeof(size_t)] = '&'; \
-    memcpy(tmp_op + sizeof(size_t) + 1, opchar, toksize - 1); \
-    bruter_insert(splited_command, word_index + 2, (BruterValue){.p = tmp_op}, NULL, 0); \
+    bruter_insert(splited_command, word_index + 2, (BruterValue){.p = br_str_duplicate("&" opchar)}, NULL, 0); \
     return true; \
 }
 
