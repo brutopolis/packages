@@ -1,5 +1,5 @@
 name math
-version 0.1.1
+version 0.1.2
 description "buxu math library"
 files math.c
 setup()

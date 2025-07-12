@@ -19,6 +19,7 @@ BR_PARSER_STEP(parser_expression);
 BR_PARSER_STEP(parser_attr);
 BR_PARSER_STEP(parser_attr_get);
 BR_PARSER_STEP(parser_reuse);
+BR_PARSER_STEP(parser_macro);
 
 // default-lang evaluation steps declarations
 BR_EVALUATOR_STEP(eval_step_function);
@@ -54,7 +55,14 @@ BR_PARSER_STEP(parser_list)
         BruterList *list = NULL;
         BruterInt index = -1;
         current_word[strlen(current_word) - 1] = '\0'; // remove the closing parenthesis
-        list = br_parse(context, br_get_parser(context), current_word + 1); // parse the list
+        if (strchr(current_word + 1, ';')) // if it has a semicolon, we need to parse with br_bake instead
+        {
+            list = context->data[br_bake_code(context, br_get_parser(context), current_word + 1)].p;
+        }
+        else
+        {
+            list = br_parse(context, br_get_parser(context), current_word + 1);
+        }
         index = br_new_var(context, (BruterValue){.p=(void*)list}, NULL, BR_TYPE_LIST);
         bruter_push(result, (BruterValue){.i = index}, NULL, 0);
         return true;
@@ -131,59 +139,77 @@ BR_PARSER_STEP(parser_number)
     return false;
 }
 
-BR_PARSER_STEP(parser_attr)
+BR_PARSER_STEP(parser_macro)
 {
     BR_PARSER_STEP_BASICS();
     // attributes
-    if (current_word[0] == 'a' && current_word[1] == 's' && current_word[2] == '\0')
+    if (current_word[0] == '@' && current_word[1] != '\0')
     {
-        if (result->size <= 1)
+        // lets search for the macro in the context
+        BruterInt found = bruter_find_key(context, current_word + 1);
+        if (found == -1)
         {
-            printf("result size: %" PRIdPTR ", but we need at least 2 elements\n", result->size);
-            printf("BR_ERROR: %s has no previous value\n", current_word);
+            printf("BR_ERROR: macro %s not found\n", current_word + 1);
         }
-        else if (result->data[result->size - 1].i == -1 || result->data[result->size - 2].i == -1)
+        else
         {
-            printf("BR_ERROR: one of the previous values is not a variable\n");
-        }
-        // we need to verify if there is a next word yet to parse
-        else if (word_index + 1 >= splited_command->size)
-        {
-            printf("BR_ERROR: %s attribute requires a name to be set\n", current_word);
-            return true;
-        }
-        else // default behavior
-        {
-            // we need to pop the last value because it is the slot with the content to the attribute
-            BruterInt value_index = bruter_pop_int(result);
-
-            // we wont pop the second last value because it is the slot we want to set the attribute to
-            BruterInt obj_index = result->data[result->size - 1].i;
-            
-            // we need to get the next word from the splited command
-            char* next_word = ((char*)bruter_remove_pointer(splited_command, word_index + 1));
-
-            if (value_index < 0 || value_index >= context->size)
-            {
-                printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", value_index, context->size);
-                return true;
-            }
-            
-            // name attribute
-            if (strcmp(next_word, "name") == 0)
-            {
-                context->keys[obj_index] = br_str_duplicate(context->data[value_index].p); // set the key to the last value
-            }
-            else if (strcmp(next_word, "type") == 0) 
-            {
-                context->types[obj_index] = context->data[value_index].i;
-            }
-
-            free(next_word);
+            ParserStep step = context->data[found].step;
+            step(context, parser, result, splited_command, word_index, found);
         }
         return true;
     }
     return false;
+}
+
+BR_PARSER_STEP(parser_attr)
+{
+    BR_PARSER_STEP_BASICS();
+    // attributes
+    if (result->size <= 1)
+    {
+        printf("result size: %" PRIdPTR ", but we need at least 2 elements\n", result->size);
+        printf("BR_ERROR: %s has no previous value\n", current_word);
+    }
+    else if (result->data[result->size - 1].i == -1 || result->data[result->size - 2].i == -1)
+    {
+        printf("BR_ERROR: one of the previous values is not a variable\n");
+    }
+    // we need to verify if there is a next word yet to parse
+    else if (word_index + 1 >= splited_command->size)
+    {
+        printf("BR_ERROR: %s attribute requires a name to be set\n", current_word);
+        return true;
+    }
+    else // default behavior
+    {
+        // we need to pop the last value because it is the slot with the content to the attribute
+        BruterInt value_index = bruter_pop_int(result);
+
+        // we wont pop the second last value because it is the slot we want to set the attribute to
+        BruterInt obj_index = result->data[result->size - 1].i;
+        
+        // we need to get the next word from the splited command
+        char* next_word = ((char*)bruter_remove_pointer(splited_command, word_index + 1));
+
+        if (value_index < 0 || value_index >= context->size)
+        {
+            printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", value_index, context->size);
+            return true;
+        }
+        
+        // name attribute
+        if (strcmp(next_word, "name") == 0)
+        {
+            context->keys[obj_index] = br_str_duplicate(context->data[value_index].p); // set the key to the last value
+        }
+        else if (strcmp(next_word, "type") == 0) 
+        {
+            context->types[obj_index] = context->data[value_index].i;
+        }
+
+        free(next_word);
+    }
+    return true;
 }
 
 BR_PARSER_STEP(parser_attr_get)
@@ -192,12 +218,12 @@ BR_PARSER_STEP(parser_attr_get)
     // attributes
     if (current_word[0] == ':')
     {
-        if (unlikely(result->size <= 0))
+        if (result->size <= 0)
         {
             printf("result size: %" PRIdPTR ", but we need at least 1 element\n", result->size);
             printf("BR_ERROR: %s has no previous value\n", current_word);
         }
-        else if (unlikely(result->data[result->size - 1].i == -1))
+        else if (result->data[result->size - 1].i == -1)
         {
             printf("BR_ERROR: %s previous value is not a variable\n", current_word);
         }
@@ -546,9 +572,7 @@ BR_PARSER_STEP(parser_function_arg)
 BR_PARSER_STEP(parser_function)
 {
     BR_PARSER_STEP_BASICS();
-    
-
-    
+        
     if (current_word[0] == '(' && current_word[1] == '%')
     {
         const char* temp = NULL;
@@ -569,7 +593,7 @@ BR_PARSER_STEP(parser_function)
 
         list_ptr = (BruterList*)bruter_get_pointer(context, baked);
         
-        if (unlikely(list_ptr == NULL))
+        if (list_ptr == NULL)
         {
             printf("BR_ERROR: failed to get baked function from context\n");
             bruter_push(result, (BruterValue){.i = -1}, NULL, 0);
@@ -719,7 +743,7 @@ BR_EVALUATOR_STEP(eval_step_user_function)
         for (BruterInt i = 0; i < compiled->size; i++)
         {
             BruterList *current_command = (BruterList*)bruter_get_pointer(context, compiled->data[i].i);
-            if(unlikely(current_command == NULL))
+            if(current_command == NULL)
             {
                 printf("BR_ERROR: command %" PRIdPTR " is NULL in user function\n", i);
                 bruter_free(temp_list);
@@ -732,7 +756,7 @@ BR_EVALUATOR_STEP(eval_step_user_function)
             for (BruterInt j = 0; j < current_command->size; j++)
             {
                 // unlikely because we expect most of the arguments not to be provided by the user
-                if (unlikely(current_command->data[j].i < 0)) // if a function argument
+                if (current_command->data[j].i < 0) // if a function argument
                 {
                     if (current_command->data[j].i == BR_SPECIAL_RETURN) // if it is a spread argument
                     {
@@ -748,7 +772,7 @@ BR_EVALUATOR_STEP(eval_step_user_function)
                         // if index is %0, we will use args->data[1]
                         // convert to positive index
                         BruterInt arg_index = -current_command->data[j].i - 1;
-                        if (unlikely(arg_index < 0 || arg_index >= args->size))
+                        if (arg_index < 0 || arg_index >= args->size)
                         {
                             printf("BR_ERROR: argument index %" PRIdPTR " out of range in args of size %" PRIdPTR "\n", arg_index, args->size);
                             
@@ -801,15 +825,20 @@ BruterList* br_default_parser(BruterList* context)
     bruter_push(_parser, (BruterValue){.step = parser_string}, "string", 0);
     bruter_push(_parser, (BruterValue){.step = parser_number}, "number", 0);
     bruter_push(_parser, (BruterValue){.step = parser_attr_get}, "attr_get", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_attr}, "attr", 0);
+    //bruter_push(_parser, (BruterValue){.step = parser_attr}, "attr", 0);
     bruter_push(_parser, (BruterValue){.step = parser_reuse}, "reuse", 0);
     bruter_push(_parser, (BruterValue){.step = parser_list}, "list", 0);
     bruter_push(_parser, (BruterValue){.step = parser_char}, "char", 0);
     bruter_push(_parser, (BruterValue){.step = parser_spread}, "spread", 0);
     bruter_push(_parser, (BruterValue){.step = parser_comment}, "comment", 0);
     bruter_push(_parser, (BruterValue){.step = parser_conditional}, "conditional", 0);
+    bruter_push(_parser, (BruterValue){.step = parser_macro}, "macro", 0);
+    // parser_variable should be the last step, so it can catch any variable that is not matched by the previous steps
     bruter_push(_parser, (BruterValue){.step = parser_variable}, "variable", 0);
     
+    bruter_push(context, (BruterValue){.step = parser_attr}, "as", 0);
+
+
     return _parser;
 }
 

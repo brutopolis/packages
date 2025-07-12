@@ -29,6 +29,6 @@ BR_FUNCTION(_alloc_get_byte)
 
 BR_INIT(alloc)
 {
-    br_add_function(context, "alloc.byte_set", _alloc_set_byte);
-    br_add_function(context, "alloc.byte_get", _alloc_get_byte);
+    bruter_push_function(context, _alloc_set_byte, "alloc.byte_set", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _alloc_get_byte, "alloc.byte_get", BR_TYPE_FUNCTION);
 }

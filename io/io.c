@@ -172,18 +172,18 @@ BR_FUNCTION(io_print)
 
 BR_INIT(io)
 {
-    br_add_function(context, "print.int", print_int);
-    br_add_function(context, "print.uint", print_uint);
-    br_add_function(context, "print.float", print_float);
-    br_add_function(context, "print.string", print_string);
-    br_add_function(context, "print.bool", print_bool);
-    br_add_function(context, "print.pointer", print_pointer);
-    br_add_function(context, "print.bits", print_bits);
-    br_add_function(context, "print.bytes", print_bytearray);
-    br_add_function(context, "print.octal", print_octal);
-    br_add_function(context, "print.hex", print_hex);
-    br_add_function(context, "print.bitarray", print_bitarray);
-    br_add_function(context, "print.index", print_index);
-    br_add_function(context, "print.list", print_list);
-    br_add_function(context, "print", io_print); // auto print
+    bruter_push_function(context, print_int, "print.int", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_uint, "print.uint", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_float, "print.float", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_string, "print.string", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_bool, "print.bool", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_pointer, "print.pointer", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_bits, "print.bits", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_bytearray, "print.bytes", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_octal, "print.octal", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_hex, "print.hex", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_bitarray, "print.bitarray", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_index, "print.index", BR_TYPE_FUNCTION);
+    bruter_push_function(context, print_list, "print.list", BR_TYPE_FUNCTION);
+    bruter_push_function(context, io_print, "print", BR_TYPE_FUNCTION); // auto print
 }

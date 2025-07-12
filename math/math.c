@@ -474,23 +474,23 @@ BR_INIT(math)
     bruter_insert(parser, parser->size - 1, (BruterValue){.p = parser_math}, "math", 0);
 
     // int
-    br_add_function(context, "i+", _iadd);
-    br_add_function(context, "i-", _isub);
-    br_add_function(context, "i*", _imul);
-    br_add_function(context, "i/", _idiv);
-    br_add_function(context, "i%", _imod);
+    bruter_push_function(context, _iadd, "i+", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _isub, "i-", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _imul, "i*", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _idiv, "i/", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _imod, "i%", BR_TYPE_FUNCTION);
 
     // float
-    br_add_function(context, "f+", _fadd);
-    br_add_function(context, "f-", _fsub);
-    br_add_function(context, "f*", _fmul);
-    br_add_function(context, "f/", _fdiv);
-    br_add_function(context, "f%", _fmod);
+    bruter_push_function(context, _fadd, "f+", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fsub, "f-", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fmul, "f*", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fdiv, "f/", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fmod, "f%", BR_TYPE_FUNCTION);
 
     // auto 
-    br_add_function(context, "a+", _aadd);
-    br_add_function(context, "a-", _asub);
-    br_add_function(context, "a*", _amul);
-    br_add_function(context, "a/", _adiv);
-    br_add_function(context, "a%", _amod);
+    bruter_push_function(context, _aadd, "a+", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _asub, "a-", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _amul, "a*", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _adiv, "a/", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _amod, "a%", BR_TYPE_FUNCTION);
 }

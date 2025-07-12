@@ -144,20 +144,20 @@ BR_FUNCTION(bake)
 
 void init_std(BruterList *context)
 {
-    br_add_function(context, "name", key);
-    br_add_function(context, "unname", unkey);
-    br_add_function(context, "rename", rename_);
+    bruter_push_function(context, key, "name", BR_TYPE_FUNCTION);
+    bruter_push_function(context, unkey, "unname", BR_TYPE_FUNCTION);
+    bruter_push_function(context, rename_, "rename", BR_TYPE_FUNCTION);
     
-    br_add_function(context, "delete", delete);
+    bruter_push_function(context, delete, "delete", BR_TYPE_FUNCTION);
         
-    br_add_function(context, "#", ignore);
+    bruter_push_function(context, ignore, "#", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "return", return_);
+    bruter_push_function(context, return_, "return", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "repeat", repeat);
-    br_add_function(context, "forever", forever);
-    br_add_function(context, "while", while_);
+    bruter_push_function(context, repeat, "repeat", BR_TYPE_FUNCTION);
+    bruter_push_function(context, forever, "forever", BR_TYPE_FUNCTION);
+    bruter_push_function(context, while_, "while", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "set", set);
-    br_add_function(context, "bake", bake);
+    bruter_push_function(context, set, "set", BR_TYPE_FUNCTION);
+    bruter_push_function(context, bake, "bake", BR_TYPE_FUNCTION);
 }

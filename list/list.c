@@ -161,23 +161,23 @@ BR_FUNCTION(brl_list_call)
 }
 BR_INIT(list)
 {
-    br_add_function(context, "list.new", brl_list_new);
-    br_add_function(context, "list.push", brl_list_push);
-    br_add_function(context, "list.unshift", brl_list_unshift);
-    br_add_function(context, "list.insert", brl_list_insert);
-    br_add_function(context, "list.pop", brl_list_pop);
-    br_add_function(context, "list.shift", brl_list_shift);
-    br_add_function(context, "list.remove", brl_list_remove);
-    br_add_function(context, "list.get", brl_list_get);
-    br_add_function(context, "list.set", brl_list_set);
-    br_add_function(context, "list.size", brl_list_size);
-    br_add_function(context, "list.reverse", brl_list_reverse);
-    br_add_function(context, "list.swap", brl_list_swap);
-    br_add_function(context, "list.find", brl_list_find);
-    br_add_function(context, "list.copy", brl_list_copy);
-    br_add_function(context, "list.concat", brl_list_concat);
-    br_add_function(context, "list.fast_remove", brl_list_fast_remove);
-    br_add_function(context, "list.double", brl_list_double);
-    br_add_function(context, "list.half", brl_list_half);
-    br_add_function(context, "list.call", brl_list_call);
+    bruter_push_function(context, brl_list_new, "list.new", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_push, "list.push", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_unshift, "list.unshift", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_insert, "list.insert", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_pop, "list.pop", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_shift, "list.shift", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_remove, "list.remove", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_get, "list.get", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_set, "list.set", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_size, "list.size", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_reverse, "list.reverse", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_swap, "list.swap", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_find, "list.find", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_copy, "list.copy", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_concat, "list.concat", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_fast_remove, "list.fast_remove", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_double, "list.double", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_half, "list.half", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_list_call, "list.call", BR_TYPE_FUNCTION);
 }
