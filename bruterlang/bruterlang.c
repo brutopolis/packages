@@ -135,16 +135,16 @@ BR_PARSER_STEP(parser_attr)
 {
     BR_PARSER_STEP_BASICS();
     // attributes
-    if (current_word[0] == '.')
+    if (current_word[0] == 'a' && current_word[1] == 's' && current_word[2] == '\0')
     {
-        if (result->size <= 0)
+        if (result->size <= 1)
         {
-            printf("result size: %" PRIdPTR ", but we need at least 1 element\n", result->size);
+            printf("result size: %" PRIdPTR ", but we need at least 2 elements\n", result->size);
             printf("BR_ERROR: %s has no previous value\n", current_word);
         }
-        else if (result->data[result->size - 1].i == -1)
+        else if (result->data[result->size - 1].i == -1 || result->data[result->size - 2].i == -1)
         {
-            printf("BR_ERROR: %s previous value is not a variable\n", current_word);
+            printf("BR_ERROR: one of the previous values is not a variable\n");
         }
         // we need to verify if there is a next word yet to parse
         else if (word_index + 1 >= splited_command->size)
@@ -154,27 +154,29 @@ BR_PARSER_STEP(parser_attr)
         }
         else // default behavior
         {
-            // we need to name the last value from the result
-            BruterInt last_index = result->data[result->size - 1].i;
-            
-            if (last_index < 0 || last_index >= context->size)
-            {
-                printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", last_index, context->size);
-                return true;
-            }
+            // we need to pop the last value because it is the slot with the content to the attribute
+            BruterInt value_index = bruter_pop_int(result);
+
+            // we wont pop the second last value because it is the slot we want to set the attribute to
+            BruterInt obj_index = result->data[result->size - 1].i;
             
             // we need to get the next word from the splited command
             char* next_word = ((char*)bruter_remove_pointer(splited_command, word_index + 1));
 
-            // name attribute
-            if (strcmp(current_word + 1, "name") == 0)
+            if (value_index < 0 || value_index >= context->size)
             {
-                context->keys[last_index] = br_str_duplicate(next_word); // set the key to the last value
-                printf("BR_DEBUG: setting key %s to %s\n", context->keys[last_index], next_word + 1);
+                printf("BR_WARNING: index %" PRIdPTR " out of range in context of size %" PRIdPTR "\n", value_index, context->size);
+                return true;
             }
-            else if (strcmp(current_word + 1, "type") == 0) 
+            
+            // name attribute
+            if (strcmp(next_word, "name") == 0)
             {
-                context->types[last_index] = (int8_t)atoi(next_word); // set the type to the last value
+                context->keys[obj_index] = br_str_duplicate(context->data[value_index].p); // set the key to the last value
+            }
+            else if (strcmp(next_word, "type") == 0) 
+            {
+                context->types[obj_index] = context->data[value_index].i;
             }
 
             free(next_word);
