@@ -1,5 +1,8 @@
 name math
-version 0.0.9
+version 0.1.2
 description "buxu math library"
 files math.c
-setup "bucc -o math.brl math.c -lm"
+setup()
+{
+    gcc -fPIC -shared -O3 -Wl,-rpath=/lib -o math.brl math.c -lm
+}

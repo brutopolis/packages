@@ -103,16 +103,16 @@ BR_FUNCTION(_if)
     }
     else
     {
-        result = br_eval(context, parser, cond);
+        result = br_eval(context, cond);
     }
 
     if (result == 1)
     {
-        result = br_eval(context, parser, true_part);
+        result = br_eval(context, true_part);
     }
     else if (false_part != NULL)
     {
-        result = br_eval(context, parser, false_part);
+        result = br_eval(context, false_part);
     }
     else
     {
@@ -124,19 +124,19 @@ BR_FUNCTION(_if)
 
 BR_INIT(condition)
 {
-    br_add_function(context, "i==", _iequals);
-    br_add_function(context, "i!=", _inotequals);
-    br_add_function(context, "i>", _ibigger);
-    br_add_function(context, "i>=", _ibiggerorequals);
-    br_add_function(context, "i<", _ilower);
-    br_add_function(context, "i<=", _ilowerorequals);
+    bruter_push_function(context, _iequals, "i==", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _inotequals, "i!=", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _ibigger, "i>", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _ibiggerorequals, "i>=", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _ilower, "i<", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _ilowerorequals, "i<=", BR_TYPE_FUNCTION);
     
-    br_add_function(context, "f==", _fequals);
-    br_add_function(context, "f!=", _fnotequals);
-    br_add_function(context, "f>", _fbigger);
-    br_add_function(context, "f>=", _fbiggerorequals);
-    br_add_function(context, "f<", _flower);
-    br_add_function(context, "f<=", _flowerorequals);
+    bruter_push_function(context, _fequals, "f==", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fnotequals, "f!=", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fbigger, "f>", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _fbiggerorequals, "f>=", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _flower, "f<", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _flowerorequals, "f<=", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "if", _if);
+    bruter_push_function(context, _if, "if", BR_TYPE_FUNCTION);
 }

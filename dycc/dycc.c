@@ -10,42 +10,6 @@
 BruterList *dycc_state_list;
 
 const char* bruter_header = "#include \"bruter-representation.h\"\n";
-/*
-void add_common_symbols(TCCState *tcc)
-{
-    const void *core_funcs[] = {
-        br_str_duplicate,
-        br_str_nduplicate,
-        br_str_space_split,
-        br_str_split,
-        br_str_format,
-
-        br_new_var,
-        br_parser_number,
-        br_parse,
-
-        br_eval
-    };
-
-    const char *core_names[] = {
-        "br_str_duplicate",
-        "br_str_nduplicate",
-        "br_str_space_split",
-        "br_str_split",
-        "br_str_format",
-
-        "br_new_var",
-        "br_parser_number",
-        "parse",
-        "eval"
-    };
-
-    for (BruterInt i = 0; i < sizeof(core_funcs) / sizeof(core_funcs[0]); i++) 
-    {
-        tcc_add_symbol(tcc, core_names[i], core_funcs[i]);
-    }
-}
-*/
 
 BR_FUNCTION(brl_tcc_clear_states)
 {
@@ -140,8 +104,8 @@ BR_INIT(dycc)
         return;
     }
 
-    br_add_function(context, "dycc.clear", brl_tcc_clear_states);
-    br_add_function(context, "dycc.compile", brl_tcc_c_new_function);
+    bruter_push_function(context, brl_tcc_clear_states, "dycc.clear", BR_TYPE_FUNCTION);
+    bruter_push_function(context, brl_tcc_c_new_function, "dycc.compile", BR_TYPE_FUNCTION);
 
     atexit(_terminate_tcc_at_exit_handler);
 }

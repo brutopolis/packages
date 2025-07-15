@@ -36,7 +36,7 @@ BR_FUNCTION(repeat)
     {
         for (BruterInt i = 0; i < times; i++)
         {
-            result = br_eval(context, parser, code);
+            result = br_eval(context, code);
             if (result != -1)
             {
                 break;
@@ -66,11 +66,9 @@ BR_FUNCTION(forever)
     char* code = br_arg_get(context, args, 0).p;
     BruterInt result = -1;
 
-    BruterList *parser = br_get_parser(context);
-
     while(1)
     {
-        result = br_eval(context, parser, code);
+        result = br_eval(context, code);
         if (result != -1)
         {
             break;
@@ -85,15 +83,15 @@ BR_FUNCTION(while_)
     char *code = br_arg_get(context, args, 1).p;
     BruterInt result = -1;
     BruterList *parser = br_get_parser(context);
-    BruterInt condition_result = br_eval(context, parser, condition_code);
+    BruterInt condition_result = br_eval(context, condition_code);
     while (condition_result == 1)
     {
-        result = br_eval(context, parser, code);
+        result = br_eval(context, code);
         if (result != -1)
         {
             break;
         }
-        condition_result = br_eval(context, parser, condition_code);
+        condition_result = br_eval(context, condition_code);
     }
     
     return result;
@@ -144,33 +142,22 @@ BR_FUNCTION(bake)
     return baked;
 }
 
-/*BR_FUNCTION(std_function)
-{
-    BruterList *parser = br_get_parser(context);
-    bruter_unshift(parser, bruter_value_pointer(parser_function_arg), "std_function", 0);
-    BruterInt baked = _bake(context, args);
-    context->types[baked] = BR_TYPE_USER_FUNCTION; // set the type to function
-    bruter_shift(parser); // remove the std_function from the parser
-    return baked;
-}*/
-
 void init_std(BruterList *context)
 {
-    br_add_function(context, "name", key);
-    br_add_function(context, "unname", unkey);
-    br_add_function(context, "rename", rename_);
+    bruter_push_function(context, key, "name", BR_TYPE_FUNCTION);
+    bruter_push_function(context, unkey, "unname", BR_TYPE_FUNCTION);
+    bruter_push_function(context, rename_, "rename", BR_TYPE_FUNCTION);
     
-    br_add_function(context, "delete", delete);
+    bruter_push_function(context, delete, "delete", BR_TYPE_FUNCTION);
         
-    br_add_function(context, "#", ignore);
+    bruter_push_function(context, ignore, "#", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "return", return_);
+    bruter_push_function(context, return_, "return", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "repeat", repeat);
-    br_add_function(context, "forever", forever);
-    br_add_function(context, "while", while_);
+    bruter_push_function(context, repeat, "repeat", BR_TYPE_FUNCTION);
+    bruter_push_function(context, forever, "forever", BR_TYPE_FUNCTION);
+    bruter_push_function(context, while_, "while", BR_TYPE_FUNCTION);
 
-    br_add_function(context, "set", set);
-    br_add_function(context, "bake", bake);
-    //br_add_function(context, "function", std_function);
+    bruter_push_function(context, set, "set", BR_TYPE_FUNCTION);
+    bruter_push_function(context, bake, "bake", BR_TYPE_FUNCTION);
 }

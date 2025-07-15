@@ -86,16 +86,16 @@ BR_FUNCTION(_bit_swap)
 
 BR_INIT(bit)
 {
-    br_add_function(context, "bit.and", _bit_and);
-    br_add_function(context, "bit.or", _bit_or);
-    br_add_function(context, "bit.xor", _bit_xor);
-    br_add_function(context, "bit.not", _bit_not);
-    br_add_function(context, "bit.lshift", _bit_lshift);
-    br_add_function(context, "bit.rshift", _bit_rshift);
-    br_add_function(context, "bit.on", _bit_on);
-    br_add_function(context, "bit.off", _bit_off);
-    br_add_function(context, "bit.set", _bit_set);
-    br_add_function(context, "bit.get", _bit_get);
-    br_add_function(context, "bit.switch", _bit_switch);
-    br_add_function(context, "bit.swap", _bit_swap);
+    bruter_push_function(context, _bit_and, "bit.and", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_or, "bit.or", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_xor, "bit.xor", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_not, "bit.not", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_lshift, "bit.lshift", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_rshift, "bit.rshift", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_on, "bit.on", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_off, "bit.off", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_set, "bit.set", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_get, "bit.get", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_switch, "bit.switch", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _bit_swap, "bit.swap", BR_TYPE_FUNCTION);
 }

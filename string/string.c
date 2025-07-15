@@ -47,7 +47,7 @@ BR_FUNCTION(_string_compare)
 
 BR_INIT(string)
 {
-    br_add_function(context, "string.concat", _string_concat);
-    br_add_function(context, "string.length", _string_length);
-    br_add_function(context, "string.compare", _string_compare);
+    bruter_push_function(context, _string_concat, "string.concat", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _string_length, "string.length", BR_TYPE_FUNCTION);
+    bruter_push_function(context, _string_compare, "string.compare", BR_TYPE_FUNCTION);
 }

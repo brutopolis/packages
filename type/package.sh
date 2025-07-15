@@ -1,5 +1,8 @@
 name type
-version 0.0.1
+version 0.0.2
 description "buxu standard type library"
 files type.c
-setup "bucc -o type.brl type.c"
+setup()
+{
+    gcc -fPIC -shared -O3 -Wl,-rpath=/lib -o type.brl type.c
+}
