@@ -172,18 +172,18 @@ BR_FUNCTION(io_print)
 
 BR_INIT(io)
 {
-    bruter_push_function(context, print_int, "print.int", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_uint, "print.uint", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_float, "print.float", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_string, "print.string", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_bool, "print.bool", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_pointer, "print.pointer", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_bits, "print.bits", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_bytearray, "print.bytes", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_octal, "print.octal", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_hex, "print.hex", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_bitarray, "print.bitarray", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_index, "print.index", BR_TYPE_FUNCTION);
-    bruter_push_function(context, print_list, "print.list", BR_TYPE_FUNCTION);
-    bruter_push_function(context, io_print, "print", BR_TYPE_FUNCTION); // auto print
+    bruter_push_pointer(context, print_int, "print.int", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_uint, "print.uint", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_float, "print.float", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_string, "print.string", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_bool, "print.bool", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_pointer, "print.pointer", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_bits, "print.bits", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_bytearray, "print.bytes", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_octal, "print.octal", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_hex, "print.hex", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_bitarray, "print.bitarray", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_index, "print.index", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, print_list, "print.list", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, io_print, "print", BR_TYPE_FUNCTION); // auto print
 }

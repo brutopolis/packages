@@ -30,6 +30,6 @@ BR_FUNCTION(_type_get)
 
 BR_INIT(type)
 {
-    bruter_push_function(context, _type_set, "type.set", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _type_get, "type.get", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _type_set, "type.set", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _type_get, "type.get", BR_TYPE_FUNCTION);
 }

@@ -1,5 +1,5 @@
 name list
-version 0.1.7
+version 0.1.8
 description "buxu list library, basically a bruter wrapper"
 files list.c
 setup()

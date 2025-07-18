@@ -124,19 +124,19 @@ BR_FUNCTION(_if)
 
 BR_INIT(condition)
 {
-    bruter_push_function(context, _iequals, "i==", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _inotequals, "i!=", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _ibigger, "i>", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _ibiggerorequals, "i>=", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _ilower, "i<", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _ilowerorequals, "i<=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _iequals, "i==", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _inotequals, "i!=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _ibigger, "i>", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _ibiggerorequals, "i>=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _ilower, "i<", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _ilowerorequals, "i<=", BR_TYPE_FUNCTION);
     
-    bruter_push_function(context, _fequals, "f==", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fnotequals, "f!=", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fbigger, "f>", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fbiggerorequals, "f>=", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _flower, "f<", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _flowerorequals, "f<=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fequals, "f==", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fnotequals, "f!=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fbigger, "f>", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fbiggerorequals, "f>=", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _flower, "f<", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _flowerorequals, "f<=", BR_TYPE_FUNCTION);
 
-    bruter_push_function(context, _if, "if", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _if, "if", BR_TYPE_FUNCTION);
 }

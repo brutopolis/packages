@@ -144,20 +144,20 @@ BR_FUNCTION(bake)
 
 void init_std(BruterList *context)
 {
-    bruter_push_function(context, key, "name", BR_TYPE_FUNCTION);
-    bruter_push_function(context, unkey, "unname", BR_TYPE_FUNCTION);
-    bruter_push_function(context, rename_, "rename", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, key, "name", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, unkey, "unname", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rename_, "rename", BR_TYPE_FUNCTION);
     
-    bruter_push_function(context, delete, "delete", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, delete, "delete", BR_TYPE_FUNCTION);
         
-    bruter_push_function(context, ignore, "#", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, ignore, "#", BR_TYPE_FUNCTION);
 
-    bruter_push_function(context, return_, "return", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, return_, "return", BR_TYPE_FUNCTION);
 
-    bruter_push_function(context, repeat, "repeat", BR_TYPE_FUNCTION);
-    bruter_push_function(context, forever, "forever", BR_TYPE_FUNCTION);
-    bruter_push_function(context, while_, "while", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, repeat, "repeat", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, forever, "forever", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, while_, "while", BR_TYPE_FUNCTION);
 
-    bruter_push_function(context, set, "set", BR_TYPE_FUNCTION);
-    bruter_push_function(context, bake, "bake", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, set, "set", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, bake, "bake", BR_TYPE_FUNCTION);
 }

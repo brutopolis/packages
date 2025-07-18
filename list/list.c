@@ -150,34 +150,24 @@ BR_FUNCTION(brl_list_half)
     return -1;
 }
 
-BR_FUNCTION(brl_list_call)
-{
-    
-    BruterList* sub_context = (BruterList*)br_arg_get(context, args, 0).p;
-    BruterList* cmd = (BruterList*)br_arg_get(context, args, 1).p;
-    
-
-    return bruter_call(sub_context, cmd);
-}
 BR_INIT(list)
 {
-    bruter_push_function(context, brl_list_new, "list.new", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_push, "list.push", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_unshift, "list.unshift", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_insert, "list.insert", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_pop, "list.pop", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_shift, "list.shift", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_remove, "list.remove", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_get, "list.get", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_set, "list.set", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_size, "list.size", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_reverse, "list.reverse", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_swap, "list.swap", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_find, "list.find", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_copy, "list.copy", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_concat, "list.concat", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_fast_remove, "list.fast_remove", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_double, "list.double", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_half, "list.half", BR_TYPE_FUNCTION);
-    bruter_push_function(context, brl_list_call, "list.call", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_new, "list.new", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_push, "list.push", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_unshift, "list.unshift", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_insert, "list.insert", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_pop, "list.pop", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_shift, "list.shift", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_remove, "list.remove", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_get, "list.get", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_set, "list.set", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_size, "list.size", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_reverse, "list.reverse", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_swap, "list.swap", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_find, "list.find", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_copy, "list.copy", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_concat, "list.concat", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_fast_remove, "list.fast_remove", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_double, "list.double", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, brl_list_half, "list.half", BR_TYPE_FUNCTION);
 }
