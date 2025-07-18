@@ -474,23 +474,23 @@ BR_INIT(math)
     bruter_insert(parser, parser->size - 1, (BruterValue){.p = parser_math}, "math", 0);
 
     // int
-    bruter_push_function(context, _iadd, "i+", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _isub, "i-", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _imul, "i*", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _idiv, "i/", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _imod, "i%", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _iadd, "i+", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _isub, "i-", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _imul, "i*", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _idiv, "i/", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _imod, "i%", BR_TYPE_FUNCTION);
 
     // float
-    bruter_push_function(context, _fadd, "f+", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fsub, "f-", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fmul, "f*", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fdiv, "f/", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _fmod, "f%", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fadd, "f+", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fsub, "f-", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fmul, "f*", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fdiv, "f/", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _fmod, "f%", BR_TYPE_FUNCTION);
 
     // auto 
-    bruter_push_function(context, _aadd, "a+", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _asub, "a-", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _amul, "a*", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _adiv, "a/", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _amod, "a%", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _aadd, "a+", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _asub, "a-", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _amul, "a*", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _adiv, "a/", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _amod, "a%", BR_TYPE_FUNCTION);
 }

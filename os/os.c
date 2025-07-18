@@ -99,7 +99,7 @@ BR_FUNCTION(_file_exists)
 BR_INIT(os)
 {
     // register functions
-    bruter_push_function(context, _read_file, "file.read", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _write_file, "file.write", BR_TYPE_FUNCTION);
-    bruter_push_function(context, _file_exists, "file.exists", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _read_file, "file.read", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _write_file, "file.write", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, _file_exists, "file.exists", BR_TYPE_FUNCTION);
 }

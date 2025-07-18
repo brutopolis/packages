@@ -153,7 +153,7 @@ BR_PARSER_STEP(parser_macro)
         }
         else
         {
-            ParserStep step = context->data[found].step;
+            ParserStep step = context->data[found].p;
             step(context, parser, result, splited_command, word_index, found);
         }
         return true;
@@ -580,7 +580,7 @@ BR_PARSER_STEP(parser_function)
         BruterInt baked = -1;
         BruterList *list_ptr = NULL;
         
-        bruter_unshift(parser, (BruterValue){.step = parser_function_arg}, "std_function", 0);
+        bruter_unshift(parser, (BruterValue){.p = parser_function_arg}, "std_function", 0);
         current_word[strlen(current_word) - 1] = '\0'; // remove the closing parenthesis
 
         temp = current_word + 2;
@@ -653,7 +653,7 @@ BR_EVALUATOR_STEP(eval_step_function)
 {
     if (br_arg_get_type(context, args, -1) == BR_TYPE_FUNCTION)
     {
-        BruterInt result = bruter_call(context, args);
+        BruterInt result = br_call(context, args);
         if (result >= 0)
         {
             // if the result is valid, we return it
@@ -693,7 +693,7 @@ BR_EVALUATOR_STEP(eval_step_list)
     if (br_arg_get_type(context, args, -1) == BR_TYPE_LIST)
     {
         // we will evaluate the list as a command
-        BruterInt result = bruter_call(context, args);
+        BruterInt result = br_call(context, args);
         if (result >= 0)
         {
             // if the result is valid, we return it
@@ -788,7 +788,7 @@ BR_EVALUATOR_STEP(eval_step_user_function)
                     bruter_push(temp_list, current_command->data[j], NULL, 0);
                 }
             }
-            result = bruter_call(context, temp_list);
+            result = br_call(context, temp_list);
             if (result > -1)
             {
                 // if the result > -1, we can break the loop
@@ -820,23 +820,23 @@ BruterList* br_default_parser(BruterList* context)
 {
     BruterList *_parser = br_get_parser(context);
     
-    bruter_push(_parser, (BruterValue){.step = parser_function}, "function", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_expression}, "expression", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_string}, "string", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_number}, "number", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_attr_get}, "attr_get", 0);
-    //bruter_push(_parser, (BruterValue){.step = parser_attr}, "attr", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_reuse}, "reuse", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_list}, "list", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_char}, "char", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_spread}, "spread", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_comment}, "comment", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_conditional}, "conditional", 0);
-    bruter_push(_parser, (BruterValue){.step = parser_macro}, "macro", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_function}, "function", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_expression}, "expression", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_string}, "string", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_number}, "number", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_attr_get}, "attr_get", 0);
+    //bruter_push(_parser, (BruterValue){.p = parser_attr}, "attr", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_reuse}, "reuse", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_list}, "list", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_char}, "char", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_spread}, "spread", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_comment}, "comment", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_conditional}, "conditional", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_macro}, "macro", 0);
     // parser_variable should be the last step, so it can catch any variable that is not matched by the previous steps
-    bruter_push(_parser, (BruterValue){.step = parser_variable}, "variable", 0);
+    bruter_push(_parser, (BruterValue){.p = parser_variable}, "variable", 0);
     
-    bruter_push(context, (BruterValue){.step = parser_attr}, "as", 0);
+    bruter_push(context, (BruterValue){.p = parser_attr}, "as", 0);
 
 
     return _parser;
@@ -846,11 +846,11 @@ BruterList* br_default_evaluator(BruterList* context)
 {
     BruterList *_evaluator = br_get_evaluator(context);
 
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_function}, "function", 0);
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_buffer}, "buffer", 0);
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_list}, "list", 0);
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_baked}, "baked", 0);
-    bruter_push(_evaluator, (BruterValue){.eval_step = eval_step_user_function}, "user_function", 0);
+    bruter_push(_evaluator, (BruterValue){.p = eval_step_function}, "function", 0);
+    bruter_push(_evaluator, (BruterValue){.p = eval_step_buffer}, "buffer", 0);
+    bruter_push(_evaluator, (BruterValue){.p = eval_step_list}, "list", 0);
+    bruter_push(_evaluator, (BruterValue){.p = eval_step_baked}, "baked", 0);
+    bruter_push(_evaluator, (BruterValue){.p = eval_step_user_function}, "user_function", 0);
     
     return _evaluator;
 }
