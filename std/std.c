@@ -106,17 +106,10 @@ function(rawer_sub)
     }
 }
 
-function(rawer_register)
-{
-    BruterList *context = bruter_pop_pointer(stack);
-    BruterMetaValue meta = bruter_pop_meta(stack);
-    bruter_push_meta(context, meta);
-}
-
 function(rawer_rename)
 {
-    char* new_key = bruter_pop_pointer(stack);
     BruterMetaValue value = bruter_pop_meta(stack);
+    char* new_key = bruter_pop_pointer(stack);
 
     if (value.key != NULL)
     {
@@ -154,11 +147,7 @@ function(rawer_list)
 function(rawer_list_pop)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterInt amount = bruter_pop_int(stack);
-    for (BruterInt i = 0; i < amount && list->size > 0; i++)
-    {
-        bruter_push_meta(stack, bruter_pop_meta(list));
-    }
+    bruter_push_meta(stack, bruter_pop_meta(list));
 }
 
 function(rawer_list_push)
@@ -171,11 +160,7 @@ function(rawer_list_push)
 function(rawer_list_shift)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterInt amount = bruter_pop_int(stack);
-    for (BruterInt i = 0; i < amount && list->size > 0; i++)
-    {
-        bruter_push_meta(stack, bruter_shift_meta(list));
-    }
+    bruter_push_meta(stack, bruter_shift_meta(list));
 }
 
 function(rawer_list_unshift)
@@ -211,7 +196,22 @@ function(rawer_list_remove)
         exit(EXIT_FAILURE);
     }
 
-    bruter_remove_meta(list, index);
+    BruterMetaValue removed_value = bruter_remove_meta(list, index);
+    bruter_push_meta(stack, removed_value); // Push the removed value back to the stack
+}
+
+function(rawer_list_register)
+{
+    BruterList *list = bruter_pop_pointer(stack);
+    BruterMetaValue meta = bruter_pop_meta(stack);
+    bruter_register_meta(list, meta);
+}
+
+function(rawer_list_unregister)
+{
+    BruterList *list = bruter_pop_pointer(stack);
+    char* key = bruter_pop_pointer(stack);
+    bruter_push_meta(stack, bruter_unregister_meta(list, key));
 }
 
 function(rawer_list_get)
@@ -317,7 +317,6 @@ init(std)
     bruter_push_pointer(context, rawer_sub, "sub", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_rename, "rename", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_retype, "retype", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_register, "register", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_clear, "clear", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list, "list", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_pop, "pop", BR_TYPE_FUNCTION);
@@ -326,6 +325,8 @@ init(std)
     bruter_push_pointer(context, rawer_list_unshift, "unshift", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_insert, "insert", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_remove, "remove", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_register, "register", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_unregister, "unregister", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_get, "get", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_set, "set", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_find, "where", BR_TYPE_FUNCTION);
