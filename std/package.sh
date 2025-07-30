@@ -1,6 +1,6 @@
 name std
 files std.c
-version 0.0.2
+version 0.0.3
 description "rawer standard library"
 setup()
 {

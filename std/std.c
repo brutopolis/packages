@@ -200,24 +200,33 @@ function(rawer_list_remove)
     bruter_push_meta(stack, removed_value); // Push the removed value back to the stack
 }
 
-function(rawer_list_register)
+function(rawer_list_define)
 {
     BruterList *list = bruter_pop_pointer(stack);
     BruterMetaValue meta = bruter_pop_meta(stack);
-    bruter_register_meta(list, meta);
+    bruter_define_meta(list, meta);
 }
 
-function(rawer_list_unregister)
+function(rawer_list_undefine)
 {
     BruterList *list = bruter_pop_pointer(stack);
     char* key = bruter_pop_pointer(stack);
-    bruter_push_meta(stack, bruter_unregister_meta(list, key));
+    bruter_push_meta(stack, bruter_undefine_meta(list, key));
 }
 
 function(rawer_list_get)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterInt index = bruter_pop_int(stack);
+    BruterMetaValue index_meta = bruter_pop_meta(stack);
+    BruterInt index = index_meta.value.i;
+    if (index_meta.type == BR_TYPE_FLOAT)
+    {
+        index = (BruterInt)index_meta.value.f; // Convert float to integer if necessary
+    }
+    else if (index_meta.type == BR_TYPE_BUFFER)
+    {
+        index = bruter_find_key(list, (char*)index_meta.value.p);
+    }
 
     if (index < 0 || index >= list->size)
     {
@@ -325,8 +334,8 @@ init(std)
     bruter_push_pointer(context, rawer_list_unshift, "unshift", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_insert, "insert", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_remove, "remove", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_register, "register", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_unregister, "unregister", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_define, "define", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_undefine, "undefine", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_get, "get", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_set, "set", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_find, "where", BR_TYPE_FUNCTION);
