@@ -7,7 +7,7 @@
 
 function(rawer_print)
 {
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     switch (value.type)
     {
         case BR_TYPE_FLOAT:
@@ -19,7 +19,7 @@ function(rawer_print)
         case BR_TYPE_LIST:
             for (BruterInt i = 0; i < ((BruterList*)value.value.p)->size; i++)
             {
-                BruterMetaValue item = bruter_get_meta((BruterList*)value.value.p, i);
+                BruterMeta item = bruter_get_meta((BruterList*)value.value.p, i);
                 switch (item.type)
                 {
                     case BR_TYPE_FLOAT:
@@ -46,8 +46,8 @@ function(rawer_print)
 
 function(rawer_add)
 {
-    BruterMetaValue a = bruter_pop_meta(stack);
-    BruterMetaValue b = bruter_pop_meta(stack);
+    BruterMeta a = bruter_pop_meta(stack);
+    BruterMeta b = bruter_pop_meta(stack);
     switch (a.type)
     {
         case BR_TYPE_FLOAT:
@@ -77,8 +77,8 @@ function(rawer_add)
 
 function(rawer_sub)
 {
-    BruterMetaValue a = bruter_pop_meta(stack);
-    BruterMetaValue b = bruter_pop_meta(stack);
+    BruterMeta a = bruter_pop_meta(stack);
+    BruterMeta b = bruter_pop_meta(stack);
     switch (a.type)
     {
         case BR_TYPE_FLOAT:
@@ -108,7 +108,7 @@ function(rawer_sub)
 
 function(rawer_rename)
 {
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     char* new_key = bruter_pop_pointer(stack);
 
     if (value.key != NULL)
@@ -122,7 +122,7 @@ function(rawer_rename)
 function(rawer_retype)
 {
     BruterInt new_type = bruter_pop_int(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     value.type = new_type; // Update the type of the value
     bruter_push_meta(stack, value);
 }
@@ -138,7 +138,7 @@ function(rawer_list)
     BruterList *list = bruter_new(8, true, true);
     for (BruterInt i = 0; i < size; i++)
     {
-        BruterMetaValue value = bruter_pop_meta(stack);
+        BruterMeta value = bruter_pop_meta(stack);
         bruter_push_meta(list, value);
     }
     bruter_push_pointer(stack, list, NULL, BR_TYPE_LIST);
@@ -153,7 +153,7 @@ function(rawer_list_pop)
 function(rawer_list_push)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     bruter_push_meta(list, value);
 }
 
@@ -166,7 +166,7 @@ function(rawer_list_shift)
 function(rawer_list_unshift)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     bruter_unshift_meta(list, value);
 }
 
@@ -174,7 +174,7 @@ function(rawer_list_insert)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterInt index = bruter_pop_int(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
 
     if (index < 0 || index > list->size)
     {
@@ -196,14 +196,14 @@ function(rawer_list_remove)
         exit(EXIT_FAILURE);
     }
 
-    BruterMetaValue removed_value = bruter_remove_meta(list, index);
+    BruterMeta removed_value = bruter_remove_meta(list, index);
     bruter_push_meta(stack, removed_value); // Push the removed value back to the stack
 }
 
 function(rawer_list_define)
 {
     BruterList *list = bruter_pop_pointer(stack);
-    BruterMetaValue meta = bruter_pop_meta(stack);
+    BruterMeta meta = bruter_pop_meta(stack);
     bruter_define_meta(list, meta);
 }
 
@@ -217,7 +217,7 @@ function(rawer_list_undefine)
 function(rawer_list_get)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterMetaValue index_meta = bruter_pop_meta(stack);
+    BruterMeta index_meta = bruter_pop_meta(stack);
     BruterInt index = index_meta.value.i;
     if (index_meta.type == BR_TYPE_FLOAT)
     {
@@ -241,7 +241,7 @@ function(rawer_list_set)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterInt index = bruter_pop_int(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
 
     if (index < 0 || index >= list->size)
     {
@@ -255,7 +255,7 @@ function(rawer_list_set)
 function(rawer_list_find)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     BruterInt found_index = -1;
 
     for (BruterInt i = 0; i < list->size; i++)
@@ -290,7 +290,7 @@ function(rawer_list_find_key)
 
 function(rawer_dup)
 {
-    BruterMetaValue value = bruter_pop_meta(stack);
+    BruterMeta value = bruter_pop_meta(stack);
     bruter_push_meta(stack, value); // Push the value back to the stack
     bruter_push_meta(stack, value); // Duplicate it
 }
@@ -311,6 +311,14 @@ function(rawer_buffer)
     }
 
     bruter_push_pointer(stack, str, NULL, BR_TYPE_BUFFER);
+}
+
+function(rawer_create)
+{
+    BruterMeta value = bruter_pop_meta(stack);
+    char* key = bruter_pop_pointer(stack);
+    BruterInt type = bruter_pop_int(stack);
+    bruter_push_meta(stack, (BruterMeta){.value = value.value, .key = key, .type = type});
 }
 
 init(std)
@@ -342,6 +350,7 @@ init(std)
     bruter_push_pointer(context, rawer_list_find_key, "find", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_dup, "dup", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_buffer, "buffer", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_create, "create", BR_TYPE_FUNCTION);
 
     bruter_push_int(context, BR_TYPE_NULL, "Null", BR_TYPE_ANY);
     bruter_push_int(context, BR_TYPE_ANY, "Any", BR_TYPE_ANY);
@@ -349,4 +358,6 @@ init(std)
     bruter_push_int(context, BR_TYPE_BUFFER, "Buffer", BR_TYPE_ANY);
     bruter_push_int(context, BR_TYPE_LIST, "List", BR_TYPE_ANY);
     bruter_push_int(context, BR_TYPE_FUNCTION, "Function", BR_TYPE_ANY);
+
+    bruter_push_pointer(context, NULL, "null", BR_TYPE_NULL);
 }
