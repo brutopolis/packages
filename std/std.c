@@ -127,11 +127,6 @@ function(rawer_retype)
     bruter_push_meta(stack, value);
 }
 
-function(rawer_clear)
-{
-    clear_context(stack);
-}
-
 function(rawer_list)
 {
     BruterInt size = bruter_pop_int(stack);
@@ -288,6 +283,12 @@ function(rawer_list_find_key)
     bruter_push_int(stack, found_index, NULL, BR_TYPE_ANY);
 }
 
+function(rawer_list_length)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    bruter_push_int(stack, list->size, NULL, BR_TYPE_ANY);
+}
+
 function(rawer_dup)
 {
     BruterMeta value = bruter_pop_meta(stack);
@@ -321,6 +322,34 @@ function(rawer_create)
     bruter_push_meta(stack, (BruterMeta){.value = value.value, .key = key, .type = type});
 }
 
+function(rawer_drop)
+{
+    BruterMeta value = bruter_pop_meta(stack);
+    if (value.type == BR_TYPE_BUFFER)
+    {
+        free(value.value.p); // Free the buffer if it was allocated
+    }
+    else if (value.type == BR_TYPE_LIST)
+    {
+        bruter_free((BruterList*)value.value.p); // Free the list if it was allocated
+    }
+    // No action needed for other types, as they are not dynamically allocated
+}
+
+function(rawer_free)
+{
+    BruterMeta value = bruter_pop_meta(stack);
+    if (value.type == BR_TYPE_BUFFER)
+    {
+        free(value.value.p); // Free the buffer if it was allocated
+    }
+    else if (value.type == BR_TYPE_LIST)
+    {
+        bruter_free((BruterList*)value.value.p); // Free the list if it was allocated
+    }
+    // No action needed for other types, as they are not dynamically allocated
+}
+
 init(std)
 {
     BruterInt found = bruter_find_key(context, "context");
@@ -334,7 +363,7 @@ init(std)
     bruter_push_pointer(context, rawer_sub, "sub", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_rename, "rename", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_retype, "retype", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_clear, "clear", BR_TYPE_FUNCTION);
+    
     bruter_push_pointer(context, rawer_list, "list", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_pop, "pop", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_push, "push", BR_TYPE_FUNCTION);
@@ -348,9 +377,13 @@ init(std)
     bruter_push_pointer(context, rawer_list_set, "set", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_find, "where", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_list_find_key, "find", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_length, "length", BR_TYPE_FUNCTION);
+
     bruter_push_pointer(context, rawer_dup, "dup", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_buffer, "buffer", BR_TYPE_FUNCTION);
     bruter_push_pointer(context, rawer_create, "create", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_drop, "drop", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_free, "free", BR_TYPE_FUNCTION);
 
     bruter_push_int(context, BR_TYPE_NULL, "Null", BR_TYPE_ANY);
     bruter_push_int(context, BR_TYPE_ANY, "Any", BR_TYPE_ANY);
