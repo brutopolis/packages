@@ -1,163 +1,363 @@
-#include <bruter-representation.h>
+#include "rawer.h"
 
-BR_FUNCTION(key)
-{
-    free(context->keys[br_arg_get_index(args, 0)]);
-    context->keys[br_arg_get_index(args, 1)] = br_str_duplicate(br_arg_get(context, args, 0).p);
-    return -1;
-}
+// functions
+// functions
+// functions
+// functions
 
-BR_FUNCTION(return_)
+function(rawer_print)
 {
-    if (br_arg_get_count(args) < 1)
+    BruterMeta value = bruter_pop_meta(stack);
+    switch (value.type)
     {
-        return -1;
-    }
-    else
-    {
-        return br_arg_get_index(args, 0);
-    }
-}
-
-BR_FUNCTION(ignore)
-{
-    return -1;
-}
-
-BR_FUNCTION(repeat)
-{
-    BruterInt times = br_arg_get(context, args, 0).i;
-    char* code = br_arg_get(context, args, 1).p;
-    BruterInt result = -1;
-
-    BruterList *parser = br_get_parser(context);
-    
-    if (strchr(code, '(') != NULL) // do not optimize
-    {
-        for (BruterInt i = 0; i < times; i++)
-        {
-            result = br_eval(context, code);
-            if (result != -1)
+        case BR_TYPE_FLOAT:
+            printf("%f\n", value.value.f);
+            break;
+        case BR_TYPE_BUFFER:
+            printf("%s\n", (char*)value.value.p);
+            break;
+        case BR_TYPE_LIST:
+            for (BruterInt i = 0; i < ((BruterList*)value.value.p)->size; i++)
             {
-                break;
+                BruterMeta item = bruter_get_meta((BruterList*)value.value.p, i);
+                switch (item.type)
+                {
+                    case BR_TYPE_FLOAT:
+                        printf("%f ", item.value.f);
+                        break;
+                    case BR_TYPE_BUFFER:
+                        printf("%s ", (char*)item.value.p);
+                        break;
+                    case BR_TYPE_LIST:
+                        printf("[List] ");
+                        break;
+                    default:
+                        printf("%ld ", item.value.i);
+                        break;
+                }
             }
-        }
+            printf("\n");
+            break;
+        default:
+            printf("%ld\n", value.value.i);
+            break;
     }
-    else
-    {
-        BruterInt compiled = br_bake_code(context, parser, code);
-        BruterList *compiled_list = (BruterList*)bruter_get(context, compiled).p;
-        for (BruterInt i = 0; i < times; i++)
-        {
-
-            result = br_baked_call(context, compiled_list);
-            if (result != -1)
-            {
-                break;
-            }
-        }
-    }
-
-    return result;
 }
 
-BR_FUNCTION(forever)
+function(rawer_add)
 {
-    char* code = br_arg_get(context, args, 0).p;
-    BruterInt result = -1;
-
-    while(1)
+    BruterMeta a = bruter_pop_meta(stack);
+    BruterMeta b = bruter_pop_meta(stack);
+    switch (a.type)
     {
-        result = br_eval(context, code);
-        if (result != -1)
+        case BR_TYPE_FLOAT:
+            switch (b.type)
+            {
+                case BR_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.f + b.value.f, NULL, BR_TYPE_FLOAT);
+                    break;
+                default:
+                    bruter_push_float(stack, a.value.f + b.value.i, NULL, BR_TYPE_FLOAT);
+                    break;
+            }
+            break;
+        default:
+            switch (b.type)
+            {
+                case BR_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.i + b.value.f, NULL, BR_TYPE_FLOAT);
+                    break;
+                default:
+                    bruter_push_int(stack, a.value.i + b.value.i, NULL, 0);
+                    break;
+            }
+            break;
+    }
+}
+
+function(rawer_sub)
+{
+    BruterMeta a = bruter_pop_meta(stack);
+    BruterMeta b = bruter_pop_meta(stack);
+    switch (a.type)
+    {
+        case BR_TYPE_FLOAT:
+            switch (b.type)
+            {
+                case BR_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.f - b.value.f, NULL, BR_TYPE_FLOAT);
+                    break;
+                default:
+                    bruter_push_float(stack, a.value.f - b.value.i, NULL, BR_TYPE_FLOAT);
+                    break;
+            }
+            break;
+        default:
+            switch (b.type)
+            {
+                case BR_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.i - b.value.f, NULL, BR_TYPE_FLOAT);
+                    break;
+                default:
+                    bruter_push_int(stack, a.value.i - b.value.i, NULL, 0);
+                    break;
+            }
+            break;
+    }
+}
+
+function(rawer_rename)
+{
+    BruterMeta value = bruter_pop_meta(stack);
+    char* new_key = bruter_pop_pointer(stack);
+
+    if (value.key != NULL)
+    {
+        free(value.key); // Free the old key if it was allocated
+    }
+    value.key = new_key;
+    bruter_push_meta(stack, value);
+}
+
+function(rawer_retype)
+{
+    BruterInt new_type = bruter_pop_int(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+    value.type = new_type; // Update the type of the value
+    bruter_push_meta(stack, value);
+}
+
+function(rawer_clear)
+{
+    clear_context(stack);
+}
+
+function(rawer_list)
+{
+    BruterInt size = bruter_pop_int(stack);
+    BruterList *list = bruter_new(8, true, true);
+    for (BruterInt i = 0; i < size; i++)
+    {
+        BruterMeta value = bruter_pop_meta(stack);
+        bruter_push_meta(list, value);
+    }
+    bruter_push_pointer(stack, list, NULL, BR_TYPE_LIST);
+}
+
+function(rawer_list_pop)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    bruter_push_meta(stack, bruter_pop_meta(list));
+}
+
+function(rawer_list_push)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+    bruter_push_meta(list, value);
+}
+
+function(rawer_list_shift)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    bruter_push_meta(stack, bruter_shift_meta(list));
+}
+
+function(rawer_list_unshift)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+    bruter_unshift_meta(list, value);
+}
+
+function(rawer_list_insert)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterInt index = bruter_pop_int(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+
+    if (index < 0 || index > list->size)
+    {
+        fprintf(stderr, "ERROR: Index out of bounds for list insertion\n");
+        exit(EXIT_FAILURE);
+    }
+
+    bruter_insert_meta(list, index, value);
+}
+
+function(rawer_list_remove)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterInt index = bruter_pop_int(stack);
+
+    if (index < 0 || index >= list->size)
+    {
+        fprintf(stderr, "ERROR: Index out of bounds for list removal\n");
+        exit(EXIT_FAILURE);
+    }
+
+    BruterMeta removed_value = bruter_remove_meta(list, index);
+    bruter_push_meta(stack, removed_value); // Push the removed value back to the stack
+}
+
+function(rawer_list_define)
+{
+    BruterList *list = bruter_pop_pointer(stack);
+    BruterMeta meta = bruter_pop_meta(stack);
+    bruter_define_meta(list, meta);
+}
+
+function(rawer_list_undefine)
+{
+    BruterList *list = bruter_pop_pointer(stack);
+    char* key = bruter_pop_pointer(stack);
+    bruter_push_meta(stack, bruter_undefine_meta(list, key));
+}
+
+function(rawer_list_get)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterMeta index_meta = bruter_pop_meta(stack);
+    BruterInt index = index_meta.value.i;
+    if (index_meta.type == BR_TYPE_FLOAT)
+    {
+        index = (BruterInt)index_meta.value.f; // Convert float to integer if necessary
+    }
+    else if (index_meta.type == BR_TYPE_BUFFER)
+    {
+        index = bruter_find_key(list, (char*)index_meta.value.p);
+    }
+
+    if (index < 0 || index >= list->size)
+    {
+        fprintf(stderr, "ERROR: Index out of bounds for list access\n");
+        exit(EXIT_FAILURE);
+    }
+
+    bruter_push_meta(stack, bruter_get_meta(list, index));
+}
+
+function(rawer_list_set)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterInt index = bruter_pop_int(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+
+    if (index < 0 || index >= list->size)
+    {
+        fprintf(stderr, "ERROR: Index out of bounds for list set\n");
+        exit(EXIT_FAILURE);
+    }
+
+    bruter_set_meta(list, index, value);
+}
+
+function(rawer_list_find)
+{
+    BruterList* list = bruter_pop_pointer(stack);
+    BruterMeta value = bruter_pop_meta(stack);
+    BruterInt found_index = -1;
+
+    for (BruterInt i = 0; i < list->size; i++)
+    {
+        if (list->types[i] == value.type && list->data[i].i == value.value.i)
         {
+            found_index = i;
             break;
         }
     }
-    return result;
+
+    bruter_push_int(stack, found_index, NULL, BR_TYPE_ANY);
 }
 
-BR_FUNCTION(while_)
+function(rawer_list_find_key)
 {
-    char *condition_code = br_arg_get(context, args, 0).p;
-    char *code = br_arg_get(context, args, 1).p;
-    BruterInt result = -1;
-    BruterList *parser = br_get_parser(context);
-    BruterInt condition_result = br_eval(context, condition_code);
-    while (condition_result == 1)
+    BruterList* list = bruter_pop_pointer(stack);
+    char* key = bruter_pop_pointer(stack);
+    BruterInt found_index = -1;
+
+    for (BruterInt i = 0; i < list->size; i++)
     {
-        result = br_eval(context, code);
-        if (result != -1)
+        if (list->keys[i] != NULL && strcmp(list->keys[i], key) == 0)
         {
+            found_index = i;
             break;
         }
-        condition_result = br_eval(context, condition_code);
     }
-    
-    return result;
+
+    bruter_push_int(stack, found_index, NULL, BR_TYPE_ANY);
 }
 
-BR_FUNCTION(set)
+function(rawer_dup)
 {
-    BruterInt index = br_arg_get_index(args, 0);
-    BruterInt value = br_arg_get(context, args, 1).i;
-    context->data[index].i = value;
-    return -1;
+    BruterMeta value = bruter_pop_meta(stack);
+    bruter_push_meta(stack, value); // Push the value back to the stack
+    bruter_push_meta(stack, value); // Duplicate it
 }
 
-BR_FUNCTION(unkey)
+function(rawer_buffer)
 {
-    free(context->keys[br_arg_get_index(args, 0)]);
-    context->keys[br_arg_get_index(args, 0)] = NULL;
-    return -1;
-}
-
-BR_FUNCTION(rename_)
-{
-    free(context->keys[br_arg_get_index(args, 0)]);
-    context->keys[br_arg_get_index(args, 0)] = br_str_duplicate(br_arg_get(context, args, 1).p);
-    return -1;
-}
-
-BR_FUNCTION(delete)
-{
-    free(context->keys[br_arg_get_index(args, 0)]);
-    context->keys[br_arg_get_index(args, 0)] = NULL;
-
-    br_clear_var(context, br_arg_get_index(args, 0));
-    bruter_push(br_get_unused(context), bruter_value_int(br_arg_get_index(args, 0)), NULL, 0);
-    
-    return -1;
-}
-
-BR_FUNCTION(bake)
-{
-    char *code = br_arg_get(context, args, 0).p;
-    BruterList *parser = br_get_parser(context);
-    BruterInt baked = br_bake_code(context, parser, code);
-    if (baked == -1)
+    BruterInt size = bruter_pop_int(stack);
+    char* str = (char*)malloc(size);
+    if (str == NULL)
     {
-        return -1; // error
+        fprintf(stderr, "ERROR: Memory allocation failed for buffer\n");
+        exit(EXIT_FAILURE);
     }
-    return baked;
+
+    for (BruterInt i = 0; i < size; i++)
+    {
+        str[i] = (char)bruter_pop_int(stack);
+    }
+
+    bruter_push_pointer(stack, str, NULL, BR_TYPE_BUFFER);
 }
 
-void init_std(BruterList *context)
+function(rawer_create)
 {
-    bruter_push_pointer(context, key, "name", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, unkey, "unname", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rename_, "rename", BR_TYPE_FUNCTION);
-    
-    bruter_push_pointer(context, delete, "delete", BR_TYPE_FUNCTION);
-        
-    bruter_push_pointer(context, ignore, "#", BR_TYPE_FUNCTION);
+    BruterMeta value = bruter_pop_meta(stack);
+    char* key = bruter_pop_pointer(stack);
+    BruterInt type = bruter_pop_int(stack);
+    bruter_push_meta(stack, (BruterMeta){.value = value.value, .key = key, .type = type});
+}
 
-    bruter_push_pointer(context, return_, "return", BR_TYPE_FUNCTION);
+init(std)
+{
+    BruterInt found = bruter_find_key(context, "context");
+    if (found == -1)
+    {
+        bruter_push_pointer(context, context, "context", BR_TYPE_ANY);
+    }
 
-    bruter_push_pointer(context, repeat, "repeat", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, forever, "forever", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, while_, "while", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_print, "print", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_add, "add", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_sub, "sub", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_rename, "rename", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_retype, "retype", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_clear, "clear", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list, "list", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_pop, "pop", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_push, "push", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_shift, "shift", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_unshift, "unshift", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_insert, "insert", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_remove, "remove", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_define, "define", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_undefine, "undefine", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_get, "get", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_set, "set", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_find, "where", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_list_find_key, "find", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_dup, "dup", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_buffer, "buffer", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, rawer_create, "create", BR_TYPE_FUNCTION);
 
-    bruter_push_pointer(context, set, "set", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, bake, "bake", BR_TYPE_FUNCTION);
+    bruter_push_int(context, BR_TYPE_NULL, "Null", BR_TYPE_ANY);
+    bruter_push_int(context, BR_TYPE_ANY, "Any", BR_TYPE_ANY);
+    bruter_push_int(context, BR_TYPE_FLOAT, "Float", BR_TYPE_ANY);
+    bruter_push_int(context, BR_TYPE_BUFFER, "Buffer", BR_TYPE_ANY);
+    bruter_push_int(context, BR_TYPE_LIST, "List", BR_TYPE_ANY);
+    bruter_push_int(context, BR_TYPE_FUNCTION, "Function", BR_TYPE_ANY);
+
+    bruter_push_pointer(context, NULL, "null", BR_TYPE_NULL);
 }
