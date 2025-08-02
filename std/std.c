@@ -1,34 +1,34 @@
-#include "rawer.h"
+#include "feraw.h"
 
 // functions
 // functions
 // functions
 // functions
 
-function(rawer_print)
+function(feraw_print)
 {
     BruterMeta value = bruter_pop_meta(stack);
     switch (value.type)
     {
-        case BR_TYPE_FLOAT:
+        case BRUTER_TYPE_FLOAT:
             printf("%f\n", value.value.f);
             break;
-        case BR_TYPE_BUFFER:
+        case BRUTER_TYPE_BUFFER:
             printf("%s\n", (char*)value.value.p);
             break;
-        case BR_TYPE_LIST:
+        case BRUTER_TYPE_LIST:
             for (BruterInt i = 0; i < ((BruterList*)value.value.p)->size; i++)
             {
                 BruterMeta item = bruter_get_meta((BruterList*)value.value.p, i);
                 switch (item.type)
                 {
-                    case BR_TYPE_FLOAT:
+                    case BRUTER_TYPE_FLOAT:
                         printf("%f ", item.value.f);
                         break;
-                    case BR_TYPE_BUFFER:
+                    case BRUTER_TYPE_BUFFER:
                         printf("%s ", (char*)item.value.p);
                         break;
-                    case BR_TYPE_LIST:
+                    case BRUTER_TYPE_LIST:
                         printf("[List] ");
                         break;
                     default:
@@ -44,28 +44,28 @@ function(rawer_print)
     }
 }
 
-function(rawer_add)
+function(feraw_add)
 {
     BruterMeta a = bruter_pop_meta(stack);
     BruterMeta b = bruter_pop_meta(stack);
     switch (a.type)
     {
-        case BR_TYPE_FLOAT:
+        case BRUTER_TYPE_FLOAT:
             switch (b.type)
             {
-                case BR_TYPE_FLOAT:
-                    bruter_push_float(stack, a.value.f + b.value.f, NULL, BR_TYPE_FLOAT);
+                case BRUTER_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.f + b.value.f, NULL, BRUTER_TYPE_FLOAT);
                     break;
                 default:
-                    bruter_push_float(stack, a.value.f + b.value.i, NULL, BR_TYPE_FLOAT);
+                    bruter_push_float(stack, a.value.f + b.value.i, NULL, BRUTER_TYPE_FLOAT);
                     break;
             }
             break;
         default:
             switch (b.type)
             {
-                case BR_TYPE_FLOAT:
-                    bruter_push_float(stack, a.value.i + b.value.f, NULL, BR_TYPE_FLOAT);
+                case BRUTER_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.i + b.value.f, NULL, BRUTER_TYPE_FLOAT);
                     break;
                 default:
                     bruter_push_int(stack, a.value.i + b.value.i, NULL, 0);
@@ -75,28 +75,28 @@ function(rawer_add)
     }
 }
 
-function(rawer_sub)
+function(feraw_sub)
 {
     BruterMeta a = bruter_pop_meta(stack);
     BruterMeta b = bruter_pop_meta(stack);
     switch (a.type)
     {
-        case BR_TYPE_FLOAT:
+        case BRUTER_TYPE_FLOAT:
             switch (b.type)
             {
-                case BR_TYPE_FLOAT:
-                    bruter_push_float(stack, a.value.f - b.value.f, NULL, BR_TYPE_FLOAT);
+                case BRUTER_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.f - b.value.f, NULL, BRUTER_TYPE_FLOAT);
                     break;
                 default:
-                    bruter_push_float(stack, a.value.f - b.value.i, NULL, BR_TYPE_FLOAT);
+                    bruter_push_float(stack, a.value.f - b.value.i, NULL, BRUTER_TYPE_FLOAT);
                     break;
             }
             break;
         default:
             switch (b.type)
             {
-                case BR_TYPE_FLOAT:
-                    bruter_push_float(stack, a.value.i - b.value.f, NULL, BR_TYPE_FLOAT);
+                case BRUTER_TYPE_FLOAT:
+                    bruter_push_float(stack, a.value.i - b.value.f, NULL, BRUTER_TYPE_FLOAT);
                     break;
                 default:
                     bruter_push_int(stack, a.value.i - b.value.i, NULL, 0);
@@ -106,7 +106,7 @@ function(rawer_sub)
     }
 }
 
-function(rawer_rename)
+function(feraw_rename)
 {
     BruterMeta value = bruter_pop_meta(stack);
     char* new_key = bruter_pop_pointer(stack);
@@ -119,7 +119,7 @@ function(rawer_rename)
     bruter_push_meta(stack, value);
 }
 
-function(rawer_retype)
+function(feraw_retype)
 {
     BruterInt new_type = bruter_pop_int(stack);
     BruterMeta value = bruter_pop_meta(stack);
@@ -127,7 +127,7 @@ function(rawer_retype)
     bruter_push_meta(stack, value);
 }
 
-function(rawer_list)
+function(feraw_list)
 {
     BruterInt size = bruter_pop_int(stack);
     BruterList *list = bruter_new(8, true, true);
@@ -136,36 +136,36 @@ function(rawer_list)
         BruterMeta value = bruter_pop_meta(stack);
         bruter_push_meta(list, value);
     }
-    bruter_push_pointer(stack, list, NULL, BR_TYPE_LIST);
+    bruter_push_pointer(stack, list, NULL, BRUTER_TYPE_LIST);
 }
 
-function(rawer_list_pop)
+function(feraw_list_pop)
 {
     BruterList* list = bruter_pop_pointer(stack);
     bruter_push_meta(stack, bruter_pop_meta(list));
 }
 
-function(rawer_list_push)
+function(feraw_list_push)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterMeta value = bruter_pop_meta(stack);
     bruter_push_meta(list, value);
 }
 
-function(rawer_list_shift)
+function(feraw_list_shift)
 {
     BruterList* list = bruter_pop_pointer(stack);
     bruter_push_meta(stack, bruter_shift_meta(list));
 }
 
-function(rawer_list_unshift)
+function(feraw_list_unshift)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterMeta value = bruter_pop_meta(stack);
     bruter_unshift_meta(list, value);
 }
 
-function(rawer_list_insert)
+function(feraw_list_insert)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterInt index = bruter_pop_int(stack);
@@ -180,7 +180,7 @@ function(rawer_list_insert)
     bruter_insert_meta(list, index, value);
 }
 
-function(rawer_list_remove)
+function(feraw_list_remove)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterInt index = bruter_pop_int(stack);
@@ -195,30 +195,30 @@ function(rawer_list_remove)
     bruter_push_meta(stack, removed_value); // Push the removed value back to the stack
 }
 
-function(rawer_list_define)
+function(feraw_list_define)
 {
     BruterList *list = bruter_pop_pointer(stack);
     BruterMeta meta = bruter_pop_meta(stack);
     bruter_define_meta(list, meta);
 }
 
-function(rawer_list_undefine)
+function(feraw_list_undefine)
 {
     BruterList *list = bruter_pop_pointer(stack);
     char* key = bruter_pop_pointer(stack);
     bruter_push_meta(stack, bruter_undefine_meta(list, key));
 }
 
-function(rawer_list_get)
+function(feraw_list_get)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterMeta index_meta = bruter_pop_meta(stack);
     BruterInt index = index_meta.value.i;
-    if (index_meta.type == BR_TYPE_FLOAT)
+    if (index_meta.type == BRUTER_TYPE_FLOAT)
     {
         index = (BruterInt)index_meta.value.f; // Convert float to integer if necessary
     }
-    else if (index_meta.type == BR_TYPE_BUFFER)
+    else if (index_meta.type == BRUTER_TYPE_BUFFER)
     {
         index = bruter_find_key(list, (char*)index_meta.value.p);
     }
@@ -232,7 +232,7 @@ function(rawer_list_get)
     bruter_push_meta(stack, bruter_get_meta(list, index));
 }
 
-function(rawer_list_set)
+function(feraw_list_set)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterInt index = bruter_pop_int(stack);
@@ -247,7 +247,7 @@ function(rawer_list_set)
     bruter_set_meta(list, index, value);
 }
 
-function(rawer_list_find)
+function(feraw_list_find)
 {
     BruterList* list = bruter_pop_pointer(stack);
     BruterMeta value = bruter_pop_meta(stack);
@@ -262,10 +262,10 @@ function(rawer_list_find)
         }
     }
 
-    bruter_push_int(stack, found_index, NULL, BR_TYPE_ANY);
+    bruter_push_int(stack, found_index, NULL, BRUTER_TYPE_ANY);
 }
 
-function(rawer_list_find_key)
+function(feraw_list_find_key)
 {
     BruterList* list = bruter_pop_pointer(stack);
     char* key = bruter_pop_pointer(stack);
@@ -280,23 +280,23 @@ function(rawer_list_find_key)
         }
     }
 
-    bruter_push_int(stack, found_index, NULL, BR_TYPE_ANY);
+    bruter_push_int(stack, found_index, NULL, BRUTER_TYPE_ANY);
 }
 
-function(rawer_list_length)
+function(feraw_list_length)
 {
     BruterList* list = bruter_pop_pointer(stack);
-    bruter_push_int(stack, list->size, NULL, BR_TYPE_ANY);
+    bruter_push_int(stack, list->size, NULL, BRUTER_TYPE_ANY);
 }
 
-function(rawer_dup)
+function(feraw_dup)
 {
     BruterMeta value = bruter_pop_meta(stack);
     bruter_push_meta(stack, value); // Push the value back to the stack
     bruter_push_meta(stack, value); // Duplicate it
 }
 
-function(rawer_buffer)
+function(feraw_buffer)
 {
     BruterInt size = bruter_pop_int(stack);
     char* str = (char*)malloc(size);
@@ -311,10 +311,10 @@ function(rawer_buffer)
         str[i] = (char)bruter_pop_int(stack);
     }
 
-    bruter_push_pointer(stack, str, NULL, BR_TYPE_BUFFER);
+    bruter_push_pointer(stack, str, NULL, BRUTER_TYPE_BUFFER);
 }
 
-function(rawer_create)
+function(feraw_create)
 {
     BruterMeta value = bruter_pop_meta(stack);
     char* key = bruter_pop_pointer(stack);
@@ -322,28 +322,28 @@ function(rawer_create)
     bruter_push_meta(stack, (BruterMeta){.value = value.value, .key = key, .type = type});
 }
 
-function(rawer_drop)
+function(feraw_drop)
 {
     BruterMeta value = bruter_pop_meta(stack);
-    if (value.type == BR_TYPE_BUFFER)
+    if (value.type == BRUTER_TYPE_BUFFER)
     {
         free(value.value.p); // Free the buffer if it was allocated
     }
-    else if (value.type == BR_TYPE_LIST)
+    else if (value.type == BRUTER_TYPE_LIST)
     {
         bruter_free((BruterList*)value.value.p); // Free the list if it was allocated
     }
     // No action needed for other types, as they are not dynamically allocated
 }
 
-function(rawer_free)
+function(feraw_free)
 {
     BruterMeta value = bruter_pop_meta(stack);
-    if (value.type == BR_TYPE_BUFFER)
+    if (value.type == BRUTER_TYPE_BUFFER)
     {
         free(value.value.p); // Free the buffer if it was allocated
     }
-    else if (value.type == BR_TYPE_LIST)
+    else if (value.type == BRUTER_TYPE_LIST)
     {
         bruter_free((BruterList*)value.value.p); // Free the list if it was allocated
     }
@@ -355,42 +355,42 @@ init(std)
     BruterInt found = bruter_find_key(context, "context");
     if (found == -1)
     {
-        bruter_push_pointer(context, context, "context", BR_TYPE_ANY);
+        bruter_push_pointer(context, context, "context", BRUTER_TYPE_ANY);
     }
 
-    bruter_push_pointer(context, rawer_print, "print", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_add, "add", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_sub, "sub", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_rename, "rename", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_retype, "retype", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_print, "print", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_add, "add", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_sub, "sub", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_rename, "rename", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_retype, "retype", BRUTER_TYPE_FUNCTION);
     
-    bruter_push_pointer(context, rawer_list, "list", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_pop, "pop", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_push, "push", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_shift, "shift", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_unshift, "unshift", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_insert, "insert", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_remove, "remove", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_define, "define", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_undefine, "undefine", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_get, "get", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_set, "set", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_find, "where", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_find_key, "find", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_list_length, "length", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list, "list", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_pop, "pop", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_push, "push", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_shift, "shift", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_unshift, "unshift", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_insert, "insert", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_remove, "remove", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_define, "define", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_undefine, "undefine", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_get, "get", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_set, "set", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_find, "where", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_find_key, "find", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_list_length, "length", BRUTER_TYPE_FUNCTION);
 
-    bruter_push_pointer(context, rawer_dup, "dup", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_buffer, "buffer", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_create, "create", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_drop, "drop", BR_TYPE_FUNCTION);
-    bruter_push_pointer(context, rawer_free, "free", BR_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_dup, "dup", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_buffer, "buffer", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_create, "create", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_drop, "drop", BRUTER_TYPE_FUNCTION);
+    bruter_push_pointer(context, feraw_free, "free", BRUTER_TYPE_FUNCTION);
 
-    bruter_push_int(context, BR_TYPE_NULL, "Null", BR_TYPE_ANY);
-    bruter_push_int(context, BR_TYPE_ANY, "Any", BR_TYPE_ANY);
-    bruter_push_int(context, BR_TYPE_FLOAT, "Float", BR_TYPE_ANY);
-    bruter_push_int(context, BR_TYPE_BUFFER, "Buffer", BR_TYPE_ANY);
-    bruter_push_int(context, BR_TYPE_LIST, "List", BR_TYPE_ANY);
-    bruter_push_int(context, BR_TYPE_FUNCTION, "Function", BR_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_NULL, "Null", BRUTER_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_ANY, "Any", BRUTER_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_FLOAT, "Float", BRUTER_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_BUFFER, "Buffer", BRUTER_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_LIST, "List", BRUTER_TYPE_ANY);
+    bruter_push_int(context, BRUTER_TYPE_FUNCTION, "Function", BRUTER_TYPE_ANY);
 
-    bruter_push_pointer(context, NULL, "null", BR_TYPE_NULL);
+    bruter_push_pointer(context, NULL, "null", BRUTER_TYPE_NULL);
 }
